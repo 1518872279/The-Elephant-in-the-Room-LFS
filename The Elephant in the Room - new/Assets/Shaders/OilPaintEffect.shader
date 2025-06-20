@@ -113,13 +113,13 @@ Shader "Hidden/OilPaintEffect"
                     float4 color = lerp(baseCol, quantCol, _EnableQuantize);
 
                     // 4) Canvas grain (height only, no color)
-    float3 bumpCol = tex2D(_BumpMap, uv * _BumpTiling).rgb;
-    float bump = dot(bumpCol, float3(0.299,0.587,0.114));
-    float noise = hash21(uv * _NoiseFreq);
-    float grain = bump * _BumpInfluence + noise * _NoiseInfluence;
-    color.rgb += (grain - 0.5) * _GrainStrength;
+                    float3 bumpCol = tex2D(_BumpMap, uv * _BumpTiling).rgb;
+                    float bump = dot(bumpCol, float3(0.299,0.587,0.114));
+                    float noise = hash21(uv * _NoiseFreq);
+                    float grain = bump * _BumpInfluence + noise * _NoiseInfluence;
+                    color.rgb += (grain - 0.5) * _GrainStrength;
 
-    // 5) Contrast boost boost
+                    // 5) Contrast boost boost
                     color.rgb = (color.rgb - 0.5) * _Contrast + 0.5;
 
                     // 6) Reflection attenuation
