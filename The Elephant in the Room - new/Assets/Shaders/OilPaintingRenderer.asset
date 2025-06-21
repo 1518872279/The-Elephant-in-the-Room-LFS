@@ -54,7 +54,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 87a4f5100f9166b4f9a41f5ae3938925, type: 3}
   m_Name: KuwaharaRenderFeature
   m_EditorClassIdentifier: 
-  m_Active: 0
+  m_Active: 1
   shader: {fileID: 4800000, guid: 44f434172dfff7c4280b304e621a2cfd, type: 3}
   radius: 1
 --- !u!114 &11400000
@@ -170,7 +170,7 @@ MonoBehaviour:
   contrast: 1.03
   reflectThreshold: 0
   reflectAttenuation: 0
-  lift: 0.036
-  gamma: 0.987
+  lift: 0.051
+  gamma: 1.015
   gain: 1
   saturation: 1
