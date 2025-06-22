@@ -1,0 +1,16 @@
+fileFormatVersion: 2
+guid: 07649f45a4d09104eb922756342033de
+timeCreated: 1520875801
+licenseType: Store
+NativeFormatImporter:
+  mainObjectFileID: 100100000
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 94243
+  packageName: Old Brick House
+  packageVersion: 2.2
+  assetPath: Assets/OldBrickHouse/Prefabs/Props/Kitchen/Steel_Cup_Large.prefab
+  uploadId: 401718

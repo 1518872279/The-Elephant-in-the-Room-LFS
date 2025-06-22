@@ -1,0 +1,16 @@
+fileFormatVersion: 2
+guid: 44b9d0abd5138eb48a2ad2d57bd0bad7
+timeCreated: 1520875767
+licenseType: Store
+NativeFormatImporter:
+  mainObjectFileID: 100100000
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 94243
+  packageName: Old Brick House
+  packageVersion: 2.2
+  assetPath: Assets/OldBrickHouse/Prefabs/Props/Kitchen/Pitcher.prefab
+  uploadId: 401718

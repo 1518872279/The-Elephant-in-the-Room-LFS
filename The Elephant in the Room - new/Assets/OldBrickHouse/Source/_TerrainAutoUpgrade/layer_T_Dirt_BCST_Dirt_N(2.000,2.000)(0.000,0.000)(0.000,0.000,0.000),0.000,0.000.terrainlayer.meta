@@ -1,0 +1,15 @@
+fileFormatVersion: 2
+guid: cd7f6b235484eaf4cb8fbe415f7bbe95
+NativeFormatImporter:
+  externalObjects: {}
+  mainObjectFileID: 8574412962073106934
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 94243
+  packageName: Old Brick House
+  packageVersion: 2.2
+  assetPath: Assets/OldBrickHouse/Source/_TerrainAutoUpgrade/layer_T_Dirt_BCST_Dirt_N(2.000,2.000)(0.000,0.000)(0.000,0.000,0.000),0.000,0.000.terrainlayer
+  uploadId: 401718

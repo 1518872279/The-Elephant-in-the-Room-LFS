@@ -1,0 +1,16 @@
+fileFormatVersion: 2
+guid: afa3db1f27fc17f4b8bd2825126843b0
+timeCreated: 1520951708
+licenseType: Store
+NativeFormatImporter:
+  mainObjectFileID: 100100000
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 94243
+  packageName: Old Brick House
+  packageVersion: 2.2
+  assetPath: Assets/OldBrickHouse/Prefabs/Props/Kitchen/Table_02.prefab
+  uploadId: 401718

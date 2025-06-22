@@ -1,0 +1,16 @@
+fileFormatVersion: 2
+guid: d4cf346fae7530648ba5830fa4ec0d90
+timeCreated: 1520869925
+licenseType: Store
+NativeFormatImporter:
+  mainObjectFileID: 100100000
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 94243
+  packageName: Old Brick House
+  packageVersion: 2.2
+  assetPath: Assets/OldBrickHouse/Prefabs/Props/Others/Amplifier.prefab
+  uploadId: 401718

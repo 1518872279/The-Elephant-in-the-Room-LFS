@@ -1,0 +1,16 @@
+fileFormatVersion: 2
+guid: 4d9ffadf6b9ebe34f81a03358edd30aa
+timeCreated: 1520871191
+licenseType: Store
+NativeFormatImporter:
+  mainObjectFileID: 100100000
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 94243
+  packageName: Old Brick House
+  packageVersion: 2.2
+  assetPath: Assets/OldBrickHouse/Prefabs/Props/Furniture/Cupboard_02.prefab
+  uploadId: 401718

@@ -1,0 +1,16 @@
+fileFormatVersion: 2
+guid: 4e9a838f88e5d4440bd17a25f2d24bb6
+timeCreated: 1520888482
+licenseType: Store
+NativeFormatImporter:
+  mainObjectFileID: 100100000
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 94243
+  packageName: Old Brick House
+  packageVersion: 2.2
+  assetPath: Assets/OldBrickHouse/Prefabs/Props/Lamps/TableLamp_01.prefab
+  uploadId: 401718

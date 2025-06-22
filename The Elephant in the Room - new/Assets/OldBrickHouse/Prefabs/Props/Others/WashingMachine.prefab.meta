@@ -1,0 +1,16 @@
+fileFormatVersion: 2
+guid: 65926f3e1c3d1b84a91f0a66fc91c5b6
+timeCreated: 1520889213
+licenseType: Store
+NativeFormatImporter:
+  mainObjectFileID: 100100000
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 94243
+  packageName: Old Brick House
+  packageVersion: 2.2
+  assetPath: Assets/OldBrickHouse/Prefabs/Props/Others/WashingMachine.prefab
+  uploadId: 401718

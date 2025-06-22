@@ -1,0 +1,16 @@
+fileFormatVersion: 2
+guid: 6afe2330dc3fc984396ec8f5718437b0
+timeCreated: 1520887463
+licenseType: Store
+NativeFormatImporter:
+  mainObjectFileID: 100100000
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 94243
+  packageName: Old Brick House
+  packageVersion: 2.2
+  assetPath: Assets/OldBrickHouse/Prefabs/Props/Kitchen/Jar_Tea.prefab
+  uploadId: 401718

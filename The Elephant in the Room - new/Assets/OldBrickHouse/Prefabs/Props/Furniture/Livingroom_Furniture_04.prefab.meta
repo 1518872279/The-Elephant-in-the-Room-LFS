@@ -1,0 +1,16 @@
+fileFormatVersion: 2
+guid: 0f90700c684b46c4e8cb1c76c003f646
+timeCreated: 1511608922
+licenseType: Store
+NativeFormatImporter:
+  mainObjectFileID: 100100000
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 94243
+  packageName: Old Brick House
+  packageVersion: 2.2
+  assetPath: Assets/OldBrickHouse/Prefabs/Props/Furniture/Livingroom_Furniture_04.prefab
+  uploadId: 401718

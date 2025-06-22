@@ -1,0 +1,16 @@
+fileFormatVersion: 2
+guid: bc6d82db5a122204d91c392d3fdb40a3
+timeCreated: 1520887457
+licenseType: Store
+NativeFormatImporter:
+  mainObjectFileID: 100100000
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 94243
+  packageName: Old Brick House
+  packageVersion: 2.2
+  assetPath: Assets/OldBrickHouse/Prefabs/Props/Kitchen/Jar_Coffee.prefab
+  uploadId: 401718

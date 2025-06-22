@@ -1,0 +1,16 @@
+fileFormatVersion: 2
+guid: 79ea98d943075f34fbb711a1d68e1382
+timeCreated: 1520871667
+licenseType: Store
+NativeFormatImporter:
+  mainObjectFileID: 100100000
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 94243
+  packageName: Old Brick House
+  packageVersion: 2.2
+  assetPath: Assets/OldBrickHouse/Prefabs/Props/Kitchen/Plate_04.prefab
+  uploadId: 401718

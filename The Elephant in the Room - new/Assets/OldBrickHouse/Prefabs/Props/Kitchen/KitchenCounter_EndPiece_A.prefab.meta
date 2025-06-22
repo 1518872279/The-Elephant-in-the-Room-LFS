@@ -1,0 +1,16 @@
+fileFormatVersion: 2
+guid: cbf40b20320720646b3055aa897e1788
+timeCreated: 1511608901
+licenseType: Store
+NativeFormatImporter:
+  mainObjectFileID: 100100000
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 94243
+  packageName: Old Brick House
+  packageVersion: 2.2
+  assetPath: Assets/OldBrickHouse/Prefabs/Props/Kitchen/KitchenCounter_EndPiece_A.prefab
+  uploadId: 401718

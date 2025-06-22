@@ -1,0 +1,16 @@
+fileFormatVersion: 2
+guid: 41440be74e4c8034281e4fb8af2af425
+timeCreated: 1520871536
+licenseType: Store
+NativeFormatImporter:
+  mainObjectFileID: 100100000
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 94243
+  packageName: Old Brick House
+  packageVersion: 2.2
+  assetPath: Assets/OldBrickHouse/Prefabs/Props/Lamps/CandleHolder.prefab
+  uploadId: 401718

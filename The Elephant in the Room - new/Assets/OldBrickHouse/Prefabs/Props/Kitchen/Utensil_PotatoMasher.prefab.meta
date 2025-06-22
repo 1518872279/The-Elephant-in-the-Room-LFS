@@ -1,0 +1,16 @@
+fileFormatVersion: 2
+guid: fd7cf7cdec76dfb40982f56ac30564b7
+timeCreated: 1520875513
+licenseType: Store
+NativeFormatImporter:
+  mainObjectFileID: 100100000
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 94243
+  packageName: Old Brick House
+  packageVersion: 2.2
+  assetPath: Assets/OldBrickHouse/Prefabs/Props/Kitchen/Utensil_PotatoMasher.prefab
+  uploadId: 401718
