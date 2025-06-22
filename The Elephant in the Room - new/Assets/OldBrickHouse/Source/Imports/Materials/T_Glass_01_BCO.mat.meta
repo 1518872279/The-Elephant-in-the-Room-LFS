@@ -1,0 +1,16 @@
+fileFormatVersion: 2
+guid: 368e5f92aba0f4144abd635400c43b6b
+timeCreated: 1521105082
+licenseType: Store
+NativeFormatImporter:
+  mainObjectFileID: 2100000
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 94243
+  packageName: Old Brick House
+  packageVersion: 2.2
+  assetPath: Assets/OldBrickHouse/Source/Imports/Materials/T_Glass_01_BCO.mat
+  uploadId: 401718

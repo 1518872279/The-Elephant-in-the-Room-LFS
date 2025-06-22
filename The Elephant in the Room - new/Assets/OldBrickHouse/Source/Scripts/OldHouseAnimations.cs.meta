@@ -1,0 +1,19 @@
+fileFormatVersion: 2
+guid: 1dae12ca425d75848b91e78e534a5ba2
+timeCreated: 1497372488
+licenseType: Store
+MonoImporter:
+  serializedVersion: 2
+  defaultReferences: []
+  executionOrder: 0
+  icon: {instanceID: 0}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 94243
+  packageName: Old Brick House
+  packageVersion: 2.2
+  assetPath: Assets/OldBrickHouse/Source/Scripts/OldHouseAnimations.cs
+  uploadId: 401718
