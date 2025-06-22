@@ -154,9 +154,9 @@ MonoBehaviour:
   enableOilPaint: 1
   enableColorQuantize: 0
   enableCanvasGrain: 0
-  enableBumpAndNoise: 0
+  enableBumpAndNoise: 1
   enableContrast: 1
-  enableReflection: 1
+  enableReflection: 0
   shader: {fileID: 4800000, guid: 7068703b048d350428503d00ffd21664, type: 3}
   brushSize: 1
   colorSteps: 100
