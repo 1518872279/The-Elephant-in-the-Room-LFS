@@ -91,7 +91,7 @@ Shader "Custom/OilPaintObject"
 
                 float4 frag(Varyings i) : SV_Target
                 {
-                    // now do real grain©\map sample here
+                    // now do real grainï¿½\map sample here
                     float height = SAMPLE_TEXTURE2D(_GrainMap, sampler_GrainMap, i.uv * _GrainScale).r;
 
                 // bump normal
