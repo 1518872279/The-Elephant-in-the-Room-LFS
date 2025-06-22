@@ -1,0 +1,16 @@
+fileFormatVersion: 2
+guid: 345ca2e7d49f5f840a1d967fa0d35b8c
+timeCreated: 1520887154
+licenseType: Store
+NativeFormatImporter:
+  mainObjectFileID: 100100000
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 94243
+  packageName: Old Brick House
+  packageVersion: 2.2
+  assetPath: Assets/OldBrickHouse/Prefabs/Props/Bathroom/Towel_04.prefab
+  uploadId: 401718

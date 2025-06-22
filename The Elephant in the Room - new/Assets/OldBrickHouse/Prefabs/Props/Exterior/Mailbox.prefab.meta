@@ -1,0 +1,16 @@
+fileFormatVersion: 2
+guid: bdd706d7265682140933ec2fc009bdc6
+timeCreated: 1520871584
+licenseType: Store
+NativeFormatImporter:
+  mainObjectFileID: 100100000
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 94243
+  packageName: Old Brick House
+  packageVersion: 2.2
+  assetPath: Assets/OldBrickHouse/Prefabs/Props/Exterior/Mailbox.prefab
+  uploadId: 401718

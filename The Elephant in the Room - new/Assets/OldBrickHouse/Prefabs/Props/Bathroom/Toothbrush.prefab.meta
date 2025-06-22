@@ -1,0 +1,16 @@
+fileFormatVersion: 2
+guid: 05e2acee3ab525940be2f3fc2f195506
+timeCreated: 1520887097
+licenseType: Store
+NativeFormatImporter:
+  mainObjectFileID: 100100000
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 94243
+  packageName: Old Brick House
+  packageVersion: 2.2
+  assetPath: Assets/OldBrickHouse/Prefabs/Props/Bathroom/Toothbrush.prefab
+  uploadId: 401718

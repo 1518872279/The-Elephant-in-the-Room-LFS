@@ -1,0 +1,16 @@
+fileFormatVersion: 2
+guid: dae3731c87c39ea4c84fc238769e37a8
+timeCreated: 1520889050
+licenseType: Store
+NativeFormatImporter:
+  mainObjectFileID: 100100000
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 94243
+  packageName: Old Brick House
+  packageVersion: 2.2
+  assetPath: Assets/OldBrickHouse/Prefabs/Props/Decoration/Walldecor_06.prefab
+  uploadId: 401718

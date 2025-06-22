@@ -1,0 +1,16 @@
+fileFormatVersion: 2
+guid: cca30507c3bc77d4085b30f7fb9db103
+timeCreated: 1520876183
+licenseType: Store
+NativeFormatImporter:
+  mainObjectFileID: 100100000
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 94243
+  packageName: Old Brick House
+  packageVersion: 2.2
+  assetPath: Assets/OldBrickHouse/Prefabs/Props/Decoration/Plant_05.prefab
+  uploadId: 401718

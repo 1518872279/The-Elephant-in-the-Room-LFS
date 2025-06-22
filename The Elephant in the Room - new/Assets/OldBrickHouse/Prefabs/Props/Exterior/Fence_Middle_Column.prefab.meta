@@ -1,0 +1,16 @@
+fileFormatVersion: 2
+guid: a4248fd75c1ac5d4ab2d9a9925387782
+timeCreated: 1498219865
+licenseType: Store
+NativeFormatImporter:
+  mainObjectFileID: 100100000
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 94243
+  packageName: Old Brick House
+  packageVersion: 2.2
+  assetPath: Assets/OldBrickHouse/Prefabs/Props/Exterior/Fence_Middle_Column.prefab
+  uploadId: 401718

@@ -1,0 +1,16 @@
+fileFormatVersion: 2
+guid: 376ab2f44569c1e4d959eaa609fafa7e
+timeCreated: 1520869402
+licenseType: Store
+NativeFormatImporter:
+  mainObjectFileID: 100100000
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 94243
+  packageName: Old Brick House
+  packageVersion: 2.2
+  assetPath: Assets/OldBrickHouse/Prefabs/Props/Furniture/Cabinet_03_White.prefab
+  uploadId: 401718

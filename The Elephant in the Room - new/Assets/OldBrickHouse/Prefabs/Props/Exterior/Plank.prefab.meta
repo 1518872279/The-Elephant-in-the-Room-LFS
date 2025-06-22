@@ -1,0 +1,16 @@
+fileFormatVersion: 2
+guid: 30057090fdabbc448b44891fc2ed11aa
+timeCreated: 1520888318
+licenseType: Store
+NativeFormatImporter:
+  mainObjectFileID: 100100000
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 94243
+  packageName: Old Brick House
+  packageVersion: 2.2
+  assetPath: Assets/OldBrickHouse/Prefabs/Props/Exterior/Plank.prefab
+  uploadId: 401718

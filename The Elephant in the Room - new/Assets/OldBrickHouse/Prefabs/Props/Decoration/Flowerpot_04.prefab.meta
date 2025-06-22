@@ -1,0 +1,16 @@
+fileFormatVersion: 2
+guid: 58028035d97829749aca9f4ff7bdeffb
+timeCreated: 1520870961
+licenseType: Store
+NativeFormatImporter:
+  mainObjectFileID: 100100000
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 94243
+  packageName: Old Brick House
+  packageVersion: 2.2
+  assetPath: Assets/OldBrickHouse/Prefabs/Props/Decoration/Flowerpot_04.prefab
+  uploadId: 401718

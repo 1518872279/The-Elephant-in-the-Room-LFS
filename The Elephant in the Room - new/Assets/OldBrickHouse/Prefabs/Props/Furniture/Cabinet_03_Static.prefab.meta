@@ -1,0 +1,16 @@
+fileFormatVersion: 2
+guid: d7b2152398206e344a4433819e4ea7c8
+timeCreated: 1511608721
+licenseType: Store
+NativeFormatImporter:
+  mainObjectFileID: 100100000
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 94243
+  packageName: Old Brick House
+  packageVersion: 2.2
+  assetPath: Assets/OldBrickHouse/Prefabs/Props/Furniture/Cabinet_03_Static.prefab
+  uploadId: 401718

@@ -1,0 +1,16 @@
+fileFormatVersion: 2
+guid: 4aa2f949e3ecb7645a64bcdffbb1393b
+timeCreated: 1498232220
+licenseType: Store
+NativeFormatImporter:
+  mainObjectFileID: 100100000
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 94243
+  packageName: Old Brick House
+  packageVersion: 2.2
+  assetPath: Assets/OldBrickHouse/Prefabs/Props/Exterior/Ivy_03.prefab
+  uploadId: 401718

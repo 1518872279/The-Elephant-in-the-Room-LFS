@@ -1,0 +1,16 @@
+fileFormatVersion: 2
+guid: 12f1bc5ab80fa8b42a6c8328ca021a42
+timeCreated: 1520875671
+licenseType: Store
+NativeFormatImporter:
+  mainObjectFileID: 100100000
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 94243
+  packageName: Old Brick House
+  packageVersion: 2.2
+  assetPath: Assets/OldBrickHouse/Prefabs/Props/Bathroom/Soap.prefab
+  uploadId: 401718

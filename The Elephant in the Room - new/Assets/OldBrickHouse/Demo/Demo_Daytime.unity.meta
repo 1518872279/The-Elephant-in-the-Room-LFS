@@ -1,0 +1,15 @@
+fileFormatVersion: 2
+guid: cc6ce732a28edde44864193c4727d781
+timeCreated: 1496136237
+licenseType: Store
+DefaultImporter:
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 94243
+  packageName: Old Brick House
+  packageVersion: 2.2
+  assetPath: Assets/OldBrickHouse/Demo/Demo_Daytime.unity
+  uploadId: 401718
