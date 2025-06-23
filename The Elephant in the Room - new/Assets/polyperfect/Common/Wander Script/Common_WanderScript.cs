@@ -318,8 +318,21 @@ namespace PolyPerfect
 
             if (navMeshAgent)
             {
-                useNavMesh = true;
-                navMeshAgent.stoppingDistance = contingencyDistance;
+                // Check if the agent is on a NavMesh
+                NavMeshHit hit;
+                if (NavMesh.SamplePosition(transform.position, out hit, 1.0f, NavMesh.AllAreas))
+                {
+                    useNavMesh = true;
+                    navMeshAgent.stoppingDistance = contingencyDistance;
+                    // Ensure the agent is properly positioned on the NavMesh
+                    navMeshAgent.Warp(hit.position);
+                }
+                else
+                {
+                    Debug.LogWarning(string.Format("{0} has a NavMeshAgent but is not on a NavMesh. Switching to non-NavMesh movement.", gameObject.name));
+                    useNavMesh = false;
+                    navMeshAgent.enabled = false;
+                }
             }
 
             if (matchSurfaceRotation && transform.childCount > 0)
@@ -551,6 +564,15 @@ namespace PolyPerfect
         {
             moving = true;
 
+            // Safety check: ensure NavMeshAgent is valid and on NavMesh
+            if (!navMeshAgent || !navMeshAgent.isOnNavMesh || !navMeshAgent.isActiveAndEnabled)
+            {
+                Debug.LogWarning(string.Format("{0}: NavMeshAgent is not valid, switching to non-NavMesh movement.", gameObject.name));
+                useNavMesh = false;
+                StartCoroutine(NonNavMeshMovementState(target));
+                yield break;
+            }
+
             navMeshAgent.speed = movementStates[currentState].moveSpeed;
             navMeshAgent.angularSpeed = movementStates[currentState].turnSpeed;
             navMeshAgent.SetDestination(target);
@@ -558,6 +580,16 @@ namespace PolyPerfect
             float timeMoving = 0f;
             while ((navMeshAgent.remainingDistance > navMeshAgent.stoppingDistance || timeMoving < 0.1f) && timeMoving < movementStates[currentState].maxStateTime)
             {
+                // Additional safety check during movement
+                if (!navMeshAgent.isOnNavMesh || !navMeshAgent.isActiveAndEnabled)
+                {
+                    Debug.LogWarning(string.Format("{0}: NavMeshAgent lost NavMesh connection during movement, switching to non-NavMesh.", gameObject.name));
+                    useNavMesh = false;
+                    navMeshAgent.enabled = false;
+                    StartCoroutine(NonNavMeshMovementState(target));
+                    yield break;
+                }
+                
                 timeMoving += Time.deltaTime;
                 yield return null;
             }
@@ -641,6 +673,16 @@ namespace PolyPerfect
 
         private IEnumerator RunAwayState(Vector3 target, Common_WanderScript predator)
         {
+            // Safety check: ensure NavMeshAgent is valid and on NavMesh
+            if (!navMeshAgent || !navMeshAgent.isOnNavMesh || !navMeshAgent.isActiveAndEnabled)
+            {
+                Debug.LogWarning(string.Format("{0}: NavMeshAgent is not valid during run away, switching to non-NavMesh.", gameObject.name));
+                useNavMesh = false;
+                navMeshAgent.enabled = false;
+                StartCoroutine(NonNavMeshRunAwayState(target, predator));
+                yield break;
+            }
+
             navMeshAgent.speed = movementStates[currentState].moveSpeed;
             navMeshAgent.angularSpeed = movementStates[currentState].turnSpeed;
             navMeshAgent.SetDestination(target);
@@ -648,6 +690,16 @@ namespace PolyPerfect
             float timeMoving = 0f;
             while ((navMeshAgent.remainingDistance > navMeshAgent.stoppingDistance || timeMoving < 0.1f) && timeMoving < stamina)
             {
+                // Additional safety check during movement
+                if (!navMeshAgent.isOnNavMesh || !navMeshAgent.isActiveAndEnabled)
+                {
+                    Debug.LogWarning(string.Format("{0}: NavMeshAgent lost NavMesh connection during run away, switching to non-NavMesh.", gameObject.name));
+                    useNavMesh = false;
+                    navMeshAgent.enabled = false;
+                    StartCoroutine(NonNavMeshRunAwayState(target, predator));
+                    yield break;
+                }
+                
                 timeMoving += Time.deltaTime;
                 yield return null;
             }
@@ -779,6 +831,16 @@ namespace PolyPerfect
         {
             moving = true;
 
+            // Safety check: ensure NavMeshAgent is valid and on NavMesh
+            if (!navMeshAgent || !navMeshAgent.isOnNavMesh || !navMeshAgent.isActiveAndEnabled)
+            {
+                Debug.LogWarning(string.Format("{0}: NavMeshAgent is not valid during chase, switching to non-NavMesh.", gameObject.name));
+                useNavMesh = false;
+                navMeshAgent.enabled = false;
+                StartCoroutine(NonNavMeshChaseState(prey));
+                yield break;
+            }
+
             navMeshAgent.speed = movementStates[currentState].moveSpeed;
             navMeshAgent.angularSpeed = movementStates[currentState].turnSpeed;
             navMeshAgent.SetDestination(prey.transform.position);
@@ -787,6 +849,16 @@ namespace PolyPerfect
             bool gotAway = false;
             while ((navMeshAgent.remainingDistance > navMeshAgent.stoppingDistance || timeMoving < 0.1f) && timeMoving < stamina)
             {
+                // Additional safety check during movement
+                if (!navMeshAgent.isOnNavMesh || !navMeshAgent.isActiveAndEnabled)
+                {
+                    Debug.LogWarning(string.Format("{0}: NavMeshAgent lost NavMesh connection during chase, switching to non-NavMesh.", gameObject.name));
+                    useNavMesh = false;
+                    navMeshAgent.enabled = false;
+                    StartCoroutine(NonNavMeshChaseState(prey));
+                    yield break;
+                }
+
                 navMeshAgent.SetDestination(prey.transform.position);
 
                 timeMoving += Time.deltaTime;

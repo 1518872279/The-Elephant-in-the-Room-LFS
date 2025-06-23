@@ -239,11 +239,113 @@ public class TimeManager : MonoBehaviour
 
 **Usage Notes:**
 
-- Call `Inventory.Instance.Add(itemSO)` within `IInteractable.Interact()` to pick up items.
-- Use `TimeManager.Instance.StartAction("ActionName")` and `EndAction()` around significant actions.
-- Wire up prefabs, UI panels, layers, and input keys in the Inspector.
+* Call `Inventory.Instance.Add(itemSO)` within `IInteractable.Interact()` to pick up items.
+* Use `TimeManager.Instance.StartAction("ActionName")` and `EndAction()` around significant actions.
+* Wire up prefabs, UI panels, layers, and input keys in the Inspector.
 
 ---
 
-*End of setup.*
+## 5. Pickup & Examine System
 
+**Overview:** Allows the player to pick up non-inventory objects tagged as "Examinable", hold them in front of the camera, and rotate them by moving the mouse. Press left click to pick up or drop the object, and while holding, spin the mouse to examine.
+
+**Setup Steps:**
+
+1. **Layer & Components**: Create a layer named **Examinable**. Assign it to all objects you want to inspect. Ensure each has a Collider and a Rigidbody (set **isKinematic** to **false** by default).
+2. **Hold Parent**: Under your **Camera**, create an empty GameObject called **HoldPoint** at a suitable distance (e.g. 2 units forward). Assign it as the `holdParent` in the script.
+3. **ExamineController**: Attach this to your **Player** (same GameObject as FirstPersonController).
+4. **ExaminableObject**: Attach to each object to inspect.
+
+```csharp
+// ExamineController.cs
+using UnityEngine;
+
+[RequireComponent(typeof(Camera))]
+public class ExamineController : MonoBehaviour
+{
+    public float examineDistance = 3f;
+    public LayerMask examinableLayer;
+    public Transform holdParent;
+    public float rotationSpeed = 5f;
+
+    private Camera cam;
+    private GameObject currentObject;
+    private bool isExamining;
+    private FirstPersonController fpController;
+
+    void Start()
+    {
+        cam = GetComponent<Camera>();
+        fpController = GetComponent<FirstPersonController>();
+    }
+
+    void Update()
+    {
+        if (Input.GetMouseButtonDown(0) && !isExamining)
+        {
+            TryPickUp();
+        }
+        else if (Input.GetMouseButton(0) && isExamining)
+        {
+            RotateObject();
+        }
+        else if (Input.GetMouseButtonUp(0) && isExamining)
+        {
+            Drop();
+        }
+    }
+
+    void TryPickUp()
+    {
+        Ray ray = cam.ScreenPointToRay(Input.mousePosition);
+        if (Physics.Raycast(ray, out RaycastHit hit, examineDistance, examinableLayer))
+        {
+            currentObject = hit.collider.gameObject;
+            var rb = currentObject.GetComponent<Rigidbody>();
+            if (rb) rb.isKinematic = true;
+            currentObject.transform.SetParent(holdParent);
+            currentObject.transform.localPosition = Vector3.zero;
+            currentObject.transform.localRotation = Quaternion.identity;
+            isExamining = true;
+            if (fpController) fpController.enabled = false;
+        }
+    }
+
+    void RotateObject()
+    {
+        float rotX = Input.GetAxis("Mouse X") * rotationSpeed;
+        float rotY = Input.GetAxis("Mouse Y") * rotationSpeed;
+        currentObject.transform.Rotate(cam.transform.up, -rotX, Space.World);
+        currentObject.transform.Rotate(cam.transform.right, rotY, Space.World);
+    }
+
+    void Drop()
+    {
+        if (currentObject == null) return;
+        var rb = currentObject.GetComponent<Rigidbody>();
+        if (rb) rb.isKinematic = false;
+        currentObject.transform.SetParent(null);
+        currentObject = null;
+        isExamining = false;
+        if (fpController) fpController.enabled = true;
+    }
+}
+```
+
+```csharp
+// ExaminableObject.cs
+using UnityEngine;
+
+[RequireComponent(typeof(Collider), typeof(Rigidbody))]
+public class ExaminableObject : MonoBehaviour
+{
+    void Reset()
+    {
+        gameObject.layer = LayerMask.NameToLayer("Examinable");
+        var rb = GetComponent<Rigidbody>();
+        rb.isKinematic = false;
+    }
+}
+```
+
+*End of setup.*

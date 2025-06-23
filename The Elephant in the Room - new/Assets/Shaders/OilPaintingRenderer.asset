@@ -77,8 +77,7 @@ MonoBehaviour:
   - {fileID: 6099914046740359608}
   - {fileID: -7364555196389410392}
   - {fileID: -3584564712602361263}
-  - {fileID: 2342102365372471799}
-  m_RendererFeatureMap: b8e95fbc813fa754a8b9736611d8cb9951a2efbe621141cef7d9a03bb1d18020
+  m_RendererFeatureMap: b8e95fbc813fa754a8b9736611d8cb9951a2efbe621141ce
   m_UseNativeRenderPass: 0
   postProcessData: {fileID: 11400000, guid: 41439944d30ece34e96484bdb6645b55, type: 2}
   xrSystemData: {fileID: 11400000, guid: 60e1133243b97e347b653163a8c01b64, type: 2}
@@ -121,23 +120,6 @@ MonoBehaviour:
   m_CopyDepthMode: 0
   m_AccurateGbufferNormals: 0
   m_IntermediateTextureMode: 1
---- !u!114 &2342102365372471799
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 0de8ac6b38b213848ac8f740af010190, type: 3}
-  m_Name: CameraProjectorFeature
-  m_EditorClassIdentifier: 
-  m_Active: 0
-  settings:
-    projectorShader: {fileID: 4800000, guid: f5c5abbb79e293d4cbe7ad8dc0aae4d0, type: 3}
-    projectorTexture: {fileID: 0}
-    renderPassEvent: 300
 --- !u!114 &6099914046740359608
 MonoBehaviour:
   m_ObjectHideFlags: 0

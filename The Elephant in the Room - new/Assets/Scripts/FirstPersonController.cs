@@ -8,9 +8,16 @@ public class FirstPersonController : MonoBehaviour
     public Transform cameraTransform;
     public float interactDistance = 3f;
     public LayerMask interactLayer;
+    
+    [Header("Stair Climbing")]
+    public float maxStepHeight = 0.3f;
+    public float stepSmooth = 0.1f;
+    public LayerMask groundLayer = -1;
 
     private CharacterController controller;
     private float pitch;
+    private Vector3 velocity;
+    private bool isGrounded;
 
     void Start()
     {
@@ -36,9 +43,62 @@ public class FirstPersonController : MonoBehaviour
 
     void HandleMove()
     {
+        // Check if grounded
+        isGrounded = controller.isGrounded;
+        
+        // Get input
         Vector3 input = new Vector3(Input.GetAxis("Horizontal"), 0, Input.GetAxis("Vertical"));
         Vector3 move = (transform.right * input.x + transform.forward * input.z) * walkSpeed;
+        
+        // Apply gravity
+        if (isGrounded && velocity.y < 0)
+        {
+            velocity.y = -2f; // Small downward force when grounded
+        }
+        else
+        {
+            velocity.y += Physics.gravity.y * Time.deltaTime;
+        }
+        
+        // Add vertical velocity to movement
+        move.y = velocity.y;
+        
+        // Try to move
+        Vector3 originalMove = move;
         controller.Move(move * Time.deltaTime);
+        
+        // If we hit something and we're trying to move forward, try to step up
+        if (!isGrounded && input.magnitude > 0.1f)
+        {
+            TryStepUp(originalMove);
+        }
+    }
+
+    void TryStepUp(Vector3 moveDirection)
+    {
+        // Cast a ray forward to detect obstacles
+        Vector3 rayStart = transform.position + Vector3.up * 0.1f;
+        Vector3 rayDirection = new Vector3(moveDirection.x, 0, moveDirection.z).normalized;
+        
+        if (Physics.Raycast(rayStart, rayDirection, out RaycastHit hit, 0.5f, groundLayer))
+        {
+            // Check if the obstacle is within step height
+            if (hit.distance < 0.5f && hit.point.y - transform.position.y <= maxStepHeight)
+            {
+                // Try to step up
+                Vector3 stepUpPosition = transform.position + Vector3.up * maxStepHeight;
+                
+                // Check if there's space above the step
+                if (!Physics.CheckCapsule(stepUpPosition, stepUpPosition + Vector3.up * (controller.height - maxStepHeight), 
+                    controller.radius, groundLayer))
+                {
+                    // Move up the step
+                    transform.position = Vector3.Lerp(transform.position, 
+                        new Vector3(transform.position.x, hit.point.y + 0.1f, transform.position.z), 
+                        stepSmooth);
+                }
+            }
+        }
     }
 
     void HandleInteract()

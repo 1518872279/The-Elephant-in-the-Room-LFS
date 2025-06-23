@@ -34,8 +34,8 @@ public class OilPaintRenderFeature : ScriptableRendererFeature
 
             // Run effect
             Blit(cmd, source, tempRT.Identifier(), mat);
-            // Copy back
-            cmd.CopyTexture(tempRT.Identifier(), source);
+            // good: Blit will resolve MSAA and copy back
+            Blit(cmd, tempRT.Identifier(), source);
 
             context.ExecuteCommandBuffer(cmd);
             CommandBufferPool.Release(cmd);
@@ -98,7 +98,7 @@ public class OilPaintRenderFeature : ScriptableRendererFeature
         material = CoreUtils.CreateEngineMaterial(shader);
         pass = new CustomRenderPass(material)
         {
-            renderPassEvent = RenderPassEvent.AfterRenderingTransparents
+            renderPassEvent = RenderPassEvent.AfterRenderingOpaques
         };
     }
 
