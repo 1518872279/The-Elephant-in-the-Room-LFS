@@ -16,148 +16,78 @@ This document summarizes the foundational systems for your Unity project and pro
 4. Define an “Interactable” layer for clickable objects.
 
 ```csharp
-// FirstPersonController.cs
-using UnityEngine;
-
-[RequireComponent(typeof(CharacterController))]
-public class FirstPersonController : MonoBehaviour
-{
-    public float walkSpeed = 5f;
-    public float lookSpeed = 2f;
-    public Transform cameraTransform;
-    public float interactDistance = 3f;
-    public LayerMask interactLayer;
-
-    private CharacterController controller;
-    private float pitch;
-
-    void Start()
-    {
-        controller = GetComponent<CharacterController>();
-        Cursor.lockState = CursorLockMode.Locked;
-    }
-
-    void Update()
-    {
-        HandleLook();
-        HandleMove();
-        if (Input.GetMouseButtonDown(0)) HandleInteract();
-    }
-
-    void HandleLook()
-    {
-        float yaw = Input.GetAxis("Mouse X") * lookSpeed;
-        float pitchDelta = -Input.GetAxis("Mouse Y") * lookSpeed;
-        transform.Rotate(Vector3.up, yaw);
-        pitch = Mathf.Clamp(pitch + pitchDelta, -80f, 80f);
-        cameraTransform.localEulerAngles = Vector3.right * pitch;
-    }
-
-    void HandleMove()
-    {
-        Vector3 input = new Vector3(Input.GetAxis("Horizontal"), 0, Input.GetAxis("Vertical"));
-        Vector3 move = (transform.right * input.x + transform.forward * input.z) * walkSpeed;
-        controller.Move(move * Time.deltaTime);
-    }
-
-    void HandleInteract()
-    {
-        Ray ray = new Ray(cameraTransform.position, cameraTransform.forward);
-        if (Physics.Raycast(ray, out RaycastHit hit, interactDistance, interactLayer))
-            hit.collider.GetComponent<IInteractable>()?.Interact();
-    }
-}
-```
-
-```csharp
-// IInteractable.cs
-public interface IInteractable
-{
-    void Interact();
-}
-```
-
----
-
-## 2. Inventory System + UI
-
-**Overview:** Manages item data, storage, and a toggleable inventory panel.
-
-**Scripts & Setup:**
-
-```csharp
-// Item.cs
-using UnityEngine;
-[CreateAssetMenu(menuName = "Inventory/Item")]
-public class Item : ScriptableObject
-{
-    public string itemName;
-    public Sprite icon;
-}
-```
-
-```csharp
-// Inventory.cs
-using System;
-using System.Collections.Generic;
-using UnityEngine;
-
-public class Inventory : MonoBehaviour
-{
-    public static Inventory Instance { get; private set; }
-    public event Action OnChanged;
-    private List<Item> items = new List<Item>();
-    public IReadOnlyList<Item> Items => items;
-
-    void Awake()
-    {
-        if (Instance == null) Instance = this;
-        else Destroy(gameObject);
-    }
-
-    public void Add(Item item)
-    {
-        items.Add(item);
-        OnChanged?.Invoke();
-    }
-
-    public void Remove(Item item)
-    {
-        if (items.Remove(item)) OnChanged?.Invoke();
-    }
-}
-```
-
-```csharp
 // InventoryUI.cs
 using UnityEngine;
 using UnityEngine.UI;
+using System.Collections.Generic;
 
 public class InventoryUI : MonoBehaviour
 {
-    public GameObject panel;
-    public Transform itemsParent;
-    public GameObject slotPrefab;
+    [Header("Hotbar Slots (Bottom HUD)")]
+    [Tooltip("Assign six slot UI Images in order: slots 1-6 from left to right")]  
+    public Image[] hotbarSlots;    // length = 6
+
+    [Header("Fixed Items (Slots 1-3)")]
+    [Tooltip("Assign the Phone, Wallet, and Watch ScriptableItems here in order")]  
+    public List<Item> fixedItems;  // must contain exactly 3 items: Phone, Wallet, Watch
 
     void Start()
     {
         Inventory.Instance.OnChanged += RefreshUI;
-        panel.SetActive(false);
-    }
-
-    void Update()
-    {
-        if (Input.GetKeyDown(KeyCode.I))
-            panel.SetActive(!panel.activeSelf);
+        // initially hide all slot icons
+        ClearAllSlots();
     }
 
     void RefreshUI()
     {
-        foreach (Transform t in itemsParent) Destroy(t.gameObject);
+        ClearAllSlots();
+
+        // 1. Place fixed items in slots 1-3 if owned
+        for (int i = 0; i < fixedItems.Count && i < hotbarSlots.Length; i++)
+        {
+            if (Inventory.Instance.Items.Contains(fixedItems[i]))
+            {
+                hotbarSlots[i].sprite = fixedItems[i].icon;
+                hotbarSlots[i].enabled = true;
+            }
+        }
+
+        // 2. Place remaining items in FILO order into slots 4-6
+        List<Item> dynamicItems = new List<Item>();
         foreach (var item in Inventory.Instance.Items)
         {
-            var slot = Instantiate(slotPrefab, itemsParent);
-            slot.GetComponent<Image>().sprite = item.icon;
+            if (!fixedItems.Contains(item))
+                dynamicItems.Add(item);
+        }
+        
+        // FILO: most recently added item first
+        dynamicItems.Reverse();
+        int startIndex = fixedItems.Count;
+        for (int j = 0; j < dynamicItems.Count && (startIndex + j) < hotbarSlots.Length; j++)
+        {
+            hotbarSlots[startIndex + j].sprite = dynamicItems[j].icon;
+            hotbarSlots[startIndex + j].enabled = true;
+        }
+    }
+
+    void ClearAllSlots()
+    {
+        foreach (var slot in hotbarSlots)
+        {
+            slot.sprite = null;
+            slot.enabled = false;
+        }
+    }
+
+    void Update()
+    {
+        // Optionally, handle hotkey selection: 1-6
+        for (int i = 0; i < hotbarSlots.Length; i++)
+        {
+            if (Input.GetKeyDown(KeyCode.Alpha1 + i))
+            {
+                // TODO: implement use of that slot's item
+            }
         }
     }
 }
@@ -167,30 +97,133 @@ public class InventoryUI : MonoBehaviour
 
 ## 3. Phone UI Panel
 
-**Overview:** Toggleable panel for in-game phone interface.
+**Overview:** Toggleable panel for in-game phone interface with URP Post-Processing blur effect.
+
+**Prerequisites:** Ensure your project uses the **Universal Render Pipeline** and has Post-Processing enabled in your URP Asset.
+
+**Setup Steps:**
+
+1. **Create UI Panel**: In your Canvas, create a **PhonePanel** GameObject (design your UI here) and set it inactive.
+2. **Add a Global Volume**:
+
+   * In the Hierarchy, create an empty GameObject named **PostProcessVolume**.
+   * Add a **Volume** component, check **Is Global**, and assign a new **Volume Profile**.
+   * In the Volume Profile, click **Add Override** ▶ **Unity** ▶ **DepthOfField**.
+   * Configure **DepthOfField** settings:
+
+     * **Focus Distance**: e.g. 0.1 (keeps the phone in sharp focus)
+     * **Aperture**: e.g. 32 (higher values yield stronger blur)
+     * **Focal Length**: e.g. 50
+   * Set the Volume’s **Weight** to **0**.
+3. **Assign References**: On your **PhoneUIController** script, expose the **Volume** reference alongside the **phonePanel**.
+4. **Toggle Logic**: Update your script to enable/disable both the phone UI and the Volume’s weight.
 
 ```csharp
 // PhoneUIController.cs
 using UnityEngine;
+using UnityEngine.Rendering;
+using UnityEngine.Rendering.Universal;
 
 public class PhoneUIController : MonoBehaviour
 {
+    [Header("UI and Post-Process References")]
     public GameObject phonePanel;
+    public Volume postProcessVolume;
+
+    private DepthOfField dof;
 
     void Start()
     {
+        // Start with UI and blur disabled
         phonePanel.SetActive(false);
+        postProcessVolume.weight = 0f;
+
+        // Cache the DepthOfField override
+        if (!postProcessVolume.profile.TryGet(out dof))
+            Debug.LogWarning("DepthOfField override not found on Volume Profile.");
     }
 
     void Update()
     {
         if (Input.GetKeyDown(KeyCode.P))
-            phonePanel.SetActive(!phonePanel.activeSelf);
+            TogglePhone();
+    }
+
+    void TogglePhone()
+    {
+        bool isActive = !phonePanel.activeSelf;
+        phonePanel.SetActive(isActive);
+        postProcessVolume.weight = isActive ? 1f : 0f;
+
+        if (isActive && dof != null)
+        {
+            // Focus very close so the background blurs
+            dof.focusDistance.value = 0.1f;
+        }
     }
 }
 ```
 
----
+## *End of setup.*
+
+**UI Blur Shader & Material:**
+
+1. **Create the Shader:** In `Assets/Shaders/`, create a new shader file named **UIBlur.shader** with the following content:
+
+```shader
+Shader "UI/Blur"
+{
+    Properties
+    {
+        _MainTex ("Texture", 2D) = "white" {}
+        _Size ("Blur Size", Range(0,10)) = 2
+    }
+    SubShader
+    {
+        Tags { "Queue"="Transparent" "RenderType"="Transparent" }
+        LOD 100
+        Pass
+        {
+            Cull Off ZWrite Off ZTest Always
+            CGPROGRAM
+            #pragma vertex vert
+            #pragma fragment frag
+            #include "UnityCG.cginc"
+
+            struct appdata_t { float4 vertex : POSITION; float2 texcoord : TEXCOORD0; };
+            struct v2f { float4 vertex : SV_POSITION; float2 uv : TEXCOORD0; };
+
+            sampler2D _MainTex;
+            float4 _MainTex_TexelSize;
+            float _Size;
+
+            v2f vert(appdata_t v)
+            {
+                v2f o;
+                o.vertex = UnityObjectToClipPos(v.vertex);
+                o.uv = v.texcoord;
+                return o;
+            }
+
+            fixed4 frag(v2f i) : SV_Target
+            {
+                fixed4 col = tex2D(_MainTex, i.uv) * 0.227027;
+                col += tex2D(_MainTex, i.uv + float2(_Size, 0) * _MainTex_TexelSize.xy) * 0.316216;
+                col += tex2D(_MainTex, i.uv - float2(_Size, 0) * _MainTex_TexelSize.xy) * 0.316216;
+                col += tex2D(_MainTex, i.uv + float2(0, _Size) * _MainTex_TexelSize.xy) * 0.070270;
+                col += tex2D(_MainTex, i.uv - float2(0, _Size) * _MainTex_TexelSize.xy) * 0.070270;
+                return col;
+            }
+            ENDCG
+        }
+    }
+}
+```
+
+2. **Create the Material:** Right-click the **UIBlur.shader** > **Create** > **Material**. Name it **UIBlurMat** and set its shader to **UI/Blur**.
+3. **Assign Material:** Select your **BlurOverlay** Image and set its **Material** to **UIBlurMat**. Adjust the **\_Size** property on the material to control blur strength.
+
+## *End of setup.*
 
 ## 4. Time Progression System
 
