@@ -164,6 +164,99 @@ public class PhoneUIController : MonoBehaviour
 }
 ```
 
+## 7. Event Trigger Tester
+
+**Overview:**
+A simple prototype script that lets you trigger defined events via number keys (1–n) to advance game time and test your event logic.
+
+```csharp
+// EventTester.cs
+using UnityEngine;
+
+public class EventTester : MonoBehaviour
+{
+    [Tooltip("List of event names defined in TimeManager, order corresponds to number keys 1..n")]  
+    public string[] testEvents;
+
+    void Update()
+    {
+        for (int i = 0; i < testEvents.Length; i++)
+        {
+            if (Input.GetKeyDown(KeyCode.Alpha1 + i))
+            {
+                bool started = TimeManager.Instance.TryStartEvent(testEvents[i]);
+                if (started)
+                    Debug.Log($"[EventTester] Started event '{testEvents[i]}'. Current time: {TimeManager.Instance.GetCurrentTime()} mins since midnight.");
+                else
+                    Debug.LogWarning($"[EventTester] Failed to start '{testEvents[i]}'. Either undefined or exceeds window.");
+            }
+        }
+    }
+}
+```
+
+Place this on any GameObject (e.g. a DebugManager) and assign your event names in the inspector to quickly test your time-driven events.
+
+*End of setup.*
+
+---
+
+## 6. Day-Part Manager
+
+**Overview:** Automatically switches URP post-processing volumes and lighting settings based on the current game time window (morning/evening).
+
+```csharp
+// DayPartManager.cs
+using UnityEngine;
+using UnityEngine.Rendering;
+using UnityEngine.Rendering.Universal;
+
+public class DayPartManager : MonoBehaviour
+{
+    public Volume morningVolume;
+    public Volume eveningVolume;
+    public Light directionalLight;
+
+    [Header("Lighting Intensities")]
+    public float morningIntensity = 1f;
+    public float eveningIntensity = 0.5f;
+
+    private enum DayPart { None, Morning, Evening }
+    private DayPart currentPart = DayPart.None;
+
+    void Start()
+    {
+        TimeManager.Instance.OnTimeChanged += OnTimeChanged;
+        OnTimeChanged(TimeManager.Instance.GetCurrentTime());
+    }
+
+    private void OnTimeChanged(int minutes)
+    {
+        DayPart newPart = DeterminePart(minutes);
+        if (newPart != currentPart)
+        {
+            ApplyPart(newPart);
+            currentPart = newPart;
+        }
+    }
+
+    private DayPart DeterminePart(int minutes)
+        => minutes >= TimeManager.Instance.morningStart && minutes < TimeManager.Instance.morningEnd ? DayPart.Morning
+         : minutes >= TimeManager.Instance.eveningStart && minutes < TimeManager.Instance.eveningEnd ? DayPart.Evening
+         : DayPart.None;
+
+    private void ApplyPart(DayPart part)
+    {
+        morningVolume.weight = part == DayPart.Morning ? 1f : 0f;
+        eveningVolume.weight = part == DayPart.Evening ? 1f : 0f;
+        if (part == DayPart.Morning)
+            directionalLight.intensity = morningIntensity;
+        else if (part == DayPart.Evening)
+            directionalLight.intensity = eveningIntensity;
+    }
+}
+```
+
 ## *End of setup.*
 
 **UI Blur Shader & Material:**
@@ -225,60 +318,217 @@ Shader "UI/Blur"
 
 ## *End of setup.*
 
-## 4. Time Progression System
+\$1
 
-**Overview:** Tracks duration of named actions to accumulate time spent.
+### Note: Manual Time Progression
+
+TimeManager advances `currentTime` only when `TryStartEvent` is called, so time remains static until the player triggers events.
+
+## 7. Event Interaction System
+
+**Overview:**
+Allows players to trigger events by interacting with world objects on the **EventObject** layer. Each object specifies its associated `eventName`, and interaction attempts to start the event and advance time.
+
+**Setup Steps:**
+
+1. Create a layer named **EventObject** and assign it to all event-trigger objects.
+2. Attach the `EventObject` component to each, setting the `eventName` in the Inspector.
+3. Add the `EventInteractionController` to the Player (with a Camera component).
+4. Configure the `eventLayer` mask to include **EventObject** and set `interactDistance`.
 
 ```csharp
+// EventObject.cs
+using UnityEngine;
+
+public class EventObject : MonoBehaviour
+{
+    [Tooltip("Name of the event defined in TimeManager to trigger when interacted")]
+    public string eventName;
+}
+```
+
+````csharp
+// EventInteractionController.cs
+```csharp
+// EventInteractionController.cs
+using UnityEngine;
+
+[RequireComponent(typeof(Camera))]
+public class EventInteractionController : MonoBehaviour
+{
+    [Header("Event Interaction Settings")]
+    public LayerMask eventLayer;
+    public float interactDistance = 3f;
+    public Camera cam;
+
+    void Start()
+    {
+        if (cam == null) cam = GetComponent<Camera>();
+    }
+
+    void Update()
+    {
+        if (Input.GetMouseButtonDown(0))
+        {
+            Ray ray = cam.ScreenPointToRay(Input.mousePosition);
+            if (Physics.Raycast(ray, out RaycastHit hit, interactDistance, eventLayer))
+            {
+                var evtObj = hit.collider.GetComponent<EventObject>();
+                if (evtObj)
+                {
+                    bool started = TimeManager.Instance.TryStartEvent(evtObj.eventName);
+                    if (!started)
+                        Debug.LogWarning($"Failed to trigger event '{evtObj.eventName}'.");
+                }
+            }
+        }
+    }
+}
+````
+
+## 8. Interaction Hint UI
+
+**Overview:**
+Displays a context-sensitive cursor hint at the screen center when an interactable object is in range.
+
+**Setup Steps:**
+
+1. **Canvas & Hint Image**: In your UI Canvas (Screen Space – Overlay), add a full‑screen **HintCanvas**. Under it, create an **Image** named **HintIcon**, anchored to center (position (0.5,0.5)).
+
+   * Default: assign a small white dot sprite and disable the Image component.
+2. **Layers/Tags**: Ensure your interactive objects use layers or tags:
+
+   * **Door** objects: tag as "Door".
+   * **Pickable** objects: layer "Pickable" (or tag).
+   * Other interactive: use your existing "Interactable" layer.
+3. **InteractionHintController**: Attach this to your Player (with Camera). Assign:
+
+   * `cam`: your main Camera.
+   * `hintImage`: the HintIcon Image.
+   * Sprites: `defaultDot`, `doorIcon`, `handIcon`.
+   * `hintDistance`: matching your interaction range.
+   * `interactableLayers`: mask including Door, Pickable, and Interactable layers.
+
+```csharp
+// InteractionHintController.cs
+using UnityEngine;
+using UnityEngine.UI;
+
+[RequireComponent(typeof(Camera))]
+public class InteractionHintController : MonoBehaviour
+{
+    public Camera cam;
+    public Image hintImage;
+    public float hintDistance = 3f;
+    public LayerMask interactableLayers;
+
+    [Header("Hint Sprites")]
+    public Sprite defaultDot;
+    public Sprite doorIcon;
+    public Sprite handIcon;
+
+    void Start()
+    {
+        if (cam == null) cam = GetComponent<Camera>();
+        hintImage.enabled = false;
+    }
+
+    void Update()
+    {
+        // Raycast from screen center
+        Ray ray = cam.ViewportPointToRay(new Vector3(0.5f, 0.5f, 0f));
+        if (Physics.Raycast(ray, out RaycastHit hit, hintDistance, interactableLayers))
+        {
+            // Determine icon based on object
+            if (hit.collider.CompareTag("Door"))
+                hintImage.sprite = doorIcon;
+            else if (hit.collider.gameObject.layer == LayerMask.NameToLayer("Pickable"))
+                hintImage.sprite = handIcon;
+            else
+                hintImage.sprite = defaultDot;
+
+            hintImage.enabled = true;
+        }
+        else
+        {
+            hintImage.enabled = false;
+        }
+    }
+}
+```
+
+\*End of setup.\*csharp
 // TimeManager.cs
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 
 public class TimeManager : MonoBehaviour
 {
-    public static TimeManager Instance { get; private set; }
-    private Dictionary<string, float> timeSpent = new Dictionary<string, float>();
-    private string currentAction;
-    private float actionStartTime;
+public static TimeManager Instance { get; private set; }
 
-    void Awake()
-    {
-        if (Instance == null) Instance = this;
-        else Destroy(gameObject);
-    }
+```
+[Header("Day Schedule (minutes since midnight)")]
+public int morningStart = 8 * 60;
+public int morningEnd   = 9 * 60;
+public int eveningStart = 18 * 60;
+public int eveningEnd   = 23 * 60;
 
-    public void StartAction(string actionName)
-    {
-        if (!string.IsNullOrEmpty(currentAction)) EndAction();
-        currentAction = actionName;
-        actionStartTime = Time.time;
-    }
+[Header("Fixed Event Durations")]
+public List<string> eventNames;
+public List<int> eventDurations; // in minutes
 
-    public void EndAction()
-    {
-        if (string.IsNullOrEmpty(currentAction)) return;
-        float duration = Time.time - actionStartTime;
-        if (!timeSpent.ContainsKey(currentAction)) timeSpent[currentAction] = 0f;
-        timeSpent[currentAction] += duration;
-        currentAction = null;
-    }
+private Dictionary<string, int> durations = new Dictionary<string,int>();
+private int currentTime;
 
-    public float GetTimeSpent(string actionName)
-        => timeSpent.TryGetValue(actionName, out var t) ? t : 0f;
+public event Action<int> OnTimeChanged;
+
+void Awake()
+{
+    if (Instance == null) Instance = this;
+    else { Destroy(gameObject); return; }
+
+    for (int i = 0; i < Math.Min(eventNames.Count, eventDurations.Count); i++)
+        durations[eventNames[i]] = eventDurations[i];
+
+    currentTime = morningStart;
+    OnTimeChanged?.Invoke(currentTime);
 }
+
+/// <summary>Tries to start an event by name. Advances time if within window.</summary>
+public bool TryStartEvent(string eventName)
+{
+    if (!durations.TryGetValue(eventName, out int duration))
+    {
+        Debug.LogWarning($"Event '{eventName}' not defined.");
+        return false;
+    }
+    int windowEnd = GetWindowEnd();
+    if (currentTime + duration > windowEnd)
+    {
+        Debug.LogWarning($"Cannot start '{eventName}': exceeds time window.");
+        return false;
+    }
+    currentTime += duration;
+    OnTimeChanged?.Invoke(currentTime);
+    return true;
+}
+
+private int GetWindowEnd()
+{
+    if (currentTime >= morningStart && currentTime < morningEnd)
+        return morningEnd;
+    if (currentTime >= eveningStart && currentTime < eveningEnd)
+        return eveningEnd;
+    return currentTime;
+}
+
+public int GetCurrentTime() => currentTime;
 ```
 
----
+}
 
-**Usage Notes:**
-
-* Call `Inventory.Instance.Add(itemSO)` within `IInteractable.Interact()` to pick up items.
-* Use `TimeManager.Instance.StartAction("ActionName")` and `EndAction()` around significant actions.
-* Wire up prefabs, UI panels, layers, and input keys in the Inspector.
-
----
-
-## 5. Pickup & Examine System
+````## 5. Pickup & Examine System
 
 **Overview:** Allows the player to pick up non-inventory objects tagged as "Examinable", hold them in front of the camera, and rotate them by moving the mouse. Press left click to pick up or drop the object, and while holding, spin the mouse to examine.
 
@@ -363,7 +613,7 @@ public class ExamineController : MonoBehaviour
         if (fpController) fpController.enabled = true;
     }
 }
-```
+````
 
 ```csharp
 // ExaminableObject.cs

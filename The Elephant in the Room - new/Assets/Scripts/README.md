@@ -114,28 +114,49 @@ If you prefer a UI-based blur instead of post-processing:
 - Style the panel to look like a phone interface
 - Configure blur intensity through DepthOfField settings or shader properties
 
-## ⏰ 4. Time Manager Setup
+## ⏰ 4. Time Progression System
 
 ### Step 1: Create Time Manager
 1. Create an empty GameObject in your scene
 2. Rename it to "TimeManager"
 3. Add the `TimeManager` script to it
+4. Configure day schedule times (morning/evening windows)
+5. Add event names and their durations in the inspector
 
-### Step 2: Usage in Your Game
-Use the TimeManager to track player actions:
+### Step 2: Setup Day-Part Manager (Optional)
+1. Create an empty GameObject named "DayPartManager"
+2. Add the `DayPartManager` script to it
+3. Create two Volume GameObjects for morning and evening post-processing
+4. Assign the volumes and directional light to the script
+5. Configure lighting intensities for different times of day
+
+### Step 3: Create Event Objects
+1. Create a new layer called "EventObject"
+2. Create GameObjects for event-trigger objects in your world
+3. Add the `EventObject` script to each
+4. Set the `eventName` to match names defined in TimeManager
+5. Assign objects to the "EventObject" layer
+
+### Step 4: Setup Event Interaction
+1. Add the `EventInteractionController` script to your Camera
+2. Set the `eventLayer` to include "EventObject"
+3. Configure `interactDistance` as needed
+
+### Step 5: Debug Testing (Optional)
+1. Create an empty GameObject named "EventTester"
+2. Add the `EventTester` script to it
+3. Assign event names to test via number keys
+
+### Usage in Your Game
+The time system now works with events:
 
 ```csharp
-// Start tracking an action
-TimeManager.Instance.StartAction("Reading");
-
-// End tracking when action is complete
-TimeManager.Instance.EndAction();
-
-// Get total time spent on an action
-float timeSpent = TimeManager.Instance.GetTimeSpent("Reading");
+// Events are triggered by interacting with EventObject components
+// Time advances automatically when events are triggered
+// Day-part changes happen automatically based on current time
 ```
 
-## 🔍 5. Pickup & Examine System Setup
+## 🔍 5. Examine System Setup
 
 ### Step 1: Create Examinable Layer
 1. Go to **Edit > Project Settings > Tags and Layers**
@@ -169,6 +190,34 @@ float timeSpent = TimeManager.Instance.GetTimeSpent("Reading");
 - **Layer**: Must be set to "Examinable"
 - **Size**: Ensure the object is appropriately sized for examination
 
+## 🎯 6. Interaction Hint UI Setup
+
+### Step 1: Create Hint Canvas
+1. In your UI Canvas (Screen Space - Overlay), create a **HintCanvas** GameObject
+2. Create an **Image** as a child named "HintIcon"
+3. Anchor the HintIcon to center (position 0.5, 0.5)
+4. Assign a small white dot sprite as default
+5. Set the Image component to **disabled** by default
+
+### Step 2: Setup Hint Controller
+1. Add the `InteractionHintController` script to your **Player** (with Camera)
+2. Assign your main Camera to the `cam` field
+3. Assign the HintIcon Image to the `hintImage` field
+4. Set `hintDistance` to match your interaction range (e.g., 3f)
+5. Set `interactableLayers` to include Door, Pickable, and Interactable layers
+
+### Step 3: Configure Hint Sprites
+1. Create or assign sprites for different interaction types:
+   - **defaultDot**: Small white dot for general interaction
+   - **doorIcon**: Door icon for door interactions
+   - **handIcon**: Hand icon for pickup interactions
+2. Assign these sprites to the corresponding fields in the script
+
+### Step 4: Setup Object Tags and Layers
+1. **Door objects**: Tag as "Door"
+2. **Pickable objects**: Set layer to "Pickable" (or use existing "Interactable")
+3. **Other interactive objects**: Use your existing "Interactable" layer
+
 ## 🎯 6. Complete Scene Setup Checklist
 
 ### Player Setup
@@ -197,6 +246,13 @@ float timeSpent = TimeManager.Instance.GetTimeSpent("Reading");
 
 ### Time Tracking Setup
 - [ ] TimeManager GameObject with TimeManager script
+- [ ] Day schedule times configured (morning/evening windows)
+- [ ] Event names and durations defined in inspector
+- [ ] DayPartManager GameObject with DayPartManager script (optional)
+- [ ] Morning and evening Volume GameObjects created (optional)
+- [ ] EventObject layer created
+- [ ] EventInteractionController attached to Camera
+- [ ] EventTester GameObject for debugging (optional)
 
 ### Examine System Setup
 - [ ] Examinable layer created
@@ -206,19 +262,25 @@ float timeSpent = TimeManager.Instance.GetTimeSpent("Reading");
 - [ ] Examinable layer assigned in ExamineController
 - [ ] At least one examinable object created with proper components
 
-### Interactable Objects
-- [ ] Objects assigned to "Interactable" layer
-- [ ] Colliders added to interactable objects
-- [ ] IInteractable scripts implemented
+### Interaction Hint UI Setup
+- [ ] HintCanvas created in UI Canvas
+- [ ] HintIcon Image created and centered
+- [ ] InteractionHintController attached to Player
+- [ ] Camera assigned to hint controller
+- [ ] HintIcon assigned to hint controller
+- [ ] Hint sprites (defaultDot, doorIcon, handIcon) assigned
+- [ ] Interactable layers configured
+- [ ] Object tags and layers set up (Door, Pickable, Interactable)
 
 ## 🎮 Input Controls
 
 - **WASD**: Move player (disabled while examining objects)
 - **Mouse**: Look around (disabled while examining objects)
-- **Left Click**: Interact with objects
+- **Left Click**: Interact with objects / Trigger events
 - **Left Click + Hold**: Pick up and examine objects (while holding, move mouse to rotate)
 - **Left Click Release**: Drop examined object and resume movement
 - **1-6 Keys**: Select hotbar slots (TODO: implement item usage)
+- **1-N Keys**: Test events (when EventTester is active)
 - **P**: Toggle phone
 - **ESC**: Unlock cursor (you may want to add this functionality)
 
@@ -263,6 +325,33 @@ float timeSpent = TimeManager.Instance.GetTimeSpent("Reading");
    - Ensure ExamineController is attached to the Camera (child of Player)
    - Check that FirstPersonController is on the same GameObject as the Camera
    - Verify the script can find the FirstPersonController component
+
+8. **Events not triggering**
+   - Check that EventObject components have correct eventName
+   - Verify event names match those defined in TimeManager
+   - Ensure EventInteractionController is attached to Camera
+   - Check that eventLayer includes "EventObject" layer
+   - Verify interactDistance is appropriate
+
+9. **Time not advancing**
+   - Check that events are within time windows (morning/evening)
+   - Verify event durations don't exceed window limits
+   - Ensure TimeManager has event names and durations configured
+   - Check console for warning messages about event failures
+
+10. **Day-part changes not working**
+    - Verify DayPartManager is properly configured
+    - Check that morning/evening Volume GameObjects exist
+    - Ensure directional light is assigned
+    - Verify time windows are correctly set in TimeManager
+
+11. **Interaction hints not showing**
+    - Check that InteractionHintController is attached to Player
+    - Verify Camera is assigned to the hint controller
+    - Ensure HintIcon Image is assigned and properly positioned
+    - Check that interactableLayers includes the correct layers
+    - Verify objects have proper tags ("Door") or layers ("Pickable", "Interactable")
+    - Ensure hintDistance matches your interaction range
 
 ## 📝 Next Steps
 
