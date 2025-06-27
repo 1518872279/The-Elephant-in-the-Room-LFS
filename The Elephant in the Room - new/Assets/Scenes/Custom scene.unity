@@ -18704,7 +18704,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!114 &477934552
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -38930,7 +38930,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 0}
+  m_Sprite: {fileID: 21300000, guid: f7d873c273809d9499185caf1a120504, type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -39319,7 +39319,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 1, g: 1, b: 1, a: 0.25490198}
+  m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
@@ -54945,9 +54945,9 @@ MonoBehaviour:
   interactableLayers:
     serializedVersion: 2
     m_Bits: 896
-  defaultDot: {fileID: 0}
-  doorIcon: {fileID: 0}
-  handIcon: {fileID: 0}
+  defaultDot: {fileID: 21300000, guid: b1d2f070bfe7f6b41972ef2195ccaa4f, type: 3}
+  doorIcon: {fileID: 21300000, guid: f7d873c273809d9499185caf1a120504, type: 3}
+  handIcon: {fileID: 21300000, guid: e7d15cf2e75f93147910163ada2acbf8, type: 3}
 --- !u!1001 &1481146460
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -59759,7 +59759,7 @@ Light:
   m_Type: 1
   m_Shape: 0
   m_Color: {r: 1, g: 0.95686275, b: 0.8392157, a: 1}
-  m_Intensity: 0
+  m_Intensity: 1
   m_Range: 10
   m_SpotAngle: 30
   m_InnerSpotAngle: 21.80208
@@ -69330,7 +69330,7 @@ MonoBehaviour:
   priority: 1
   blendDistance: 1
   weight: 1
-  sharedProfile: {fileID: 11400000, guid: c416d2a686ed13e48a111848a81bdcb1, type: 2}
+  sharedProfile: {fileID: 11400000, guid: 3dada0a6c9878f248a1f8ee941a02e0b, type: 2}
 --- !u!1001 &1843916675
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -69414,7 +69414,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!114 &1843924734
 MonoBehaviour:
   m_ObjectHideFlags: 0
