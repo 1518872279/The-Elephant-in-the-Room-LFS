@@ -25,6 +25,7 @@ public class PhoneUIController : MonoBehaviour
     {
         if (Input.GetKeyDown(KeyCode.P))
             TogglePhone();
+            
     }
 
     void TogglePhone()
@@ -32,7 +33,7 @@ public class PhoneUIController : MonoBehaviour
         bool isActive = !phonePanel.activeSelf;
         phonePanel.SetActive(isActive);
         postProcessVolume.weight = isActive ? 1f : 0f;
-
+        Debug.Log("phone's up");
         if (isActive && dof != null)
         {
             // Focus very close so the background blurs
