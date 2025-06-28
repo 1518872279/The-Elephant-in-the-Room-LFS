@@ -13,4 +13,4 @@ MonoBehaviour:
   m_Name: Wallet
   m_EditorClassIdentifier: 
   itemName: Wallet
-  icon: {fileID: 0}
+  icon: {fileID: 21300000, guid: 885646bd08a7c0a4d99d6050fd43b6c3, type: 3}

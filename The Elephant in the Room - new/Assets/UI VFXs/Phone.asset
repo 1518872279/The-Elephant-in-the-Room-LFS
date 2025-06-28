@@ -13,4 +13,4 @@ MonoBehaviour:
   m_Name: Phone
   m_EditorClassIdentifier: 
   itemName: Phone
-  icon: {fileID: 0}
+  icon: {fileID: 21300000, guid: 48a91c61b0d472349ba54ed83c174ffa, type: 3}

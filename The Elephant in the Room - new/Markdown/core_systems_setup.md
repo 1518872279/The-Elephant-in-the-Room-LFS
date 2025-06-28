@@ -124,11 +124,13 @@ using UnityEngine;
 using UnityEngine.Rendering;
 using UnityEngine.Rendering.Universal;
 
+[RequireComponent(typeof(FirstPersonController))]
 public class PhoneUIController : MonoBehaviour
 {
     [Header("UI and Post-Process References")]
     public GameObject phonePanel;
     public Volume postProcessVolume;
+    public FirstPersonController fpController;  // reference to player controller
 
     private DepthOfField dof;
 
@@ -141,6 +143,14 @@ public class PhoneUIController : MonoBehaviour
         // Cache the DepthOfField override
         if (!postProcessVolume.profile.TryGet(out dof))
             Debug.LogWarning("DepthOfField override not found on Volume Profile.");
+
+        // Ensure controller reference
+        if (fpController == null)
+            fpController = GetComponent<FirstPersonController>();
+
+        // Hide cursor initially
+        Cursor.visible = false;
+        Cursor.lockState = CursorLockMode.Locked;
     }
 
     void Update()
@@ -160,42 +170,24 @@ public class PhoneUIController : MonoBehaviour
             // Focus very close so the background blurs
             dof.focusDistance.value = 0.1f;
         }
-    }
-}
-```
 
-## 7. Event Trigger Tester
+        // Pause movement and look
+        fpController.enabled = !isActive;
 
-**Overview:**
-A simple prototype script that lets you trigger defined events via number keys (1–n) to advance game time and test your event logic.
-
-```csharp
-// EventTester.cs
-using UnityEngine;
-
-public class EventTester : MonoBehaviour
-{
-    [Tooltip("List of event names defined in TimeManager, order corresponds to number keys 1..n")]  
-    public string[] testEvents;
-
-    void Update()
-    {
-        for (int i = 0; i < testEvents.Length; i++)
+        // Cursor lock/visibility
+        if (isActive)
         {
-            if (Input.GetKeyDown(KeyCode.Alpha1 + i))
-            {
-                bool started = TimeManager.Instance.TryStartEvent(testEvents[i]);
-                if (started)
-                    Debug.Log($"[EventTester] Started event '{testEvents[i]}'. Current time: {TimeManager.Instance.GetCurrentTime()} mins since midnight.");
-                else
-                    Debug.LogWarning($"[EventTester] Failed to start '{testEvents[i]}'. Either undefined or exceeds window.");
-            }
+            Cursor.visible = true;
+            Cursor.lockState = CursorLockMode.None;
+        }
+        else
+        {
+            Cursor.visible = false;
+            Cursor.lockState = CursorLockMode.Locked;
         }
     }
 }
 ```
-
-Place this on any GameObject (e.g. a DebugManager) and assign your event names in the inspector to quickly test your time-driven events.
 
 *End of setup.*
 

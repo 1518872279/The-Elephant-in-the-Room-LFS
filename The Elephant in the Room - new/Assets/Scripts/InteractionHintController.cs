@@ -1,7 +1,7 @@
 using UnityEngine;
 using UnityEngine.UI;
 
-[RequireComponent(typeof(Camera))]
+//[RequireComponent(typeof(Camera))]
 public class InteractionHintController : MonoBehaviour
 {
     public Camera cam;
