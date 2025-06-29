@@ -83,6 +83,51 @@ public class PanControllerKeyboard : MonoBehaviour
 }
 ```
 
+---
+
+## 11. Physics Configuration for Pan & Food
+
+**Objective:** Prevent physics jitter by correctly configuring Rigidbody and Collider settings for both the pan and food items.
+
+### Pan Setup
+
+1. **Rigidbody Settings:**
+
+   * Remove or disable the pan’s `Rigidbody` component if using **PanControllerDirect** or **PanControllerKeyboard** (transform-based rotation).
+   * If a `Rigidbody` is required, set it to **isKinematic = true** and under **Constraints**, freeze **Position X/Y/Z** and **Rotation Y** (allow only X/Z rotation).
+   * Set **Collision Detection** to **Discrete** for stable behavior.
+2. **Collider Settings:**
+
+   * Use a **Mesh Collider** or **Box Collider** matching the pan’s interior as a **trigger** if you only need clamping logic (no physical bounce).
+
+### Food Setup
+
+1. **Rigidbody Settings:**
+
+   * On each food prefab’s `Rigidbody`, set **Use Gravity = false** to prevent falling and interference.
+   * During drag (`OnMouseDown`), set `rb.isKinematic = true` to disable physics.
+2. **Drop Logic:**
+
+   * After clamping inside the pan (in `OnMouseUp`), parent the food to the pan’s transform and keep its `Rigidbody.isKinematic = true`. This attaches the food without physics jitter.
+
+```csharp
+// Updated DraggableFood.Drop logic
+void OnMouseUp()
+{
+    var rb = GetComponent<Rigidbody>();
+    if (rb) rb.isKinematic = true;
+    if (panCollider != null)
+    {
+        Vector3 clampedPos = panCollider.ClosestPoint(transform.position);
+        transform.position = clampedPos;
+    }
+    // Parent to pan for static positioning
+    transform.SetParent(panCollider.transform);
+}
+```
+
+With these settings, the pan will rotate smoothly via transform controls, and food will remain firmly inside without physics-induced shaking.
+
 *End of setup.*
 
 *End of setup.*
@@ -593,6 +638,10 @@ public class DraggableFood : MonoBehaviour
     private Vector3 offset;
     private float zDepth;
 
+    [Header("Pan Bounds")]
+    [Tooltip("Collider of the pan to clamp dropped items inside its bounds")]
+    public Collider panCollider;
+
     void Start()
     {
         cam = Camera.main;
@@ -611,145 +660,14 @@ public class DraggableFood : MonoBehaviour
         Vector3 curWorld = cam.ScreenToWorldPoint(curScreen) + offset;
         transform.position = curWorld;
     }
-}
 
-// CookingMinigameController.cs
-using UnityEngine;
-using UnityEngine.UI;
-using System.Collections;
-
-public class CookingMinigameController : MonoBehaviour
-{
-    public static CookingMinigameController Instance;
-
-    [Header("Teleport & Lock Points")]
-    public Transform teleportPoint;
-    public Transform cameraLockPoint;
-
-    [Header("References")]
-    public FirstPersonController fpController;
-    public Camera playerCamera;
-    public Canvas minigameCanvas;
-    public Image fadeImage;
-    public PanController panController;
-    public Transform spawnPoint;
-
-    [Header("Ingredient Prefabs & Counts")]
-    public GameObject baconPrefab;
-    public GameObject eggPrefab;
-    public GameObject toastPrefab;
-    public int baconCount = 3;
-    public int eggCount = 2;
-    public int toastCount = 2;
-
-    [Header("Mini-Game Duration (seconds)")]
-    public float gameDuration = 15f;
-
-    private bool isPlaying;
-    private Vector3 originalPlayerPos;
-    private Quaternion originalPlayerRot;
-    private Vector3 originalCamPos;
-    private Quaternion originalCamRot;
-
-    void Awake()
+    void OnMouseUp()
     {
-        Instance = this;
-        minigameCanvas.enabled = false;
-        // Ensure pan control is disabled when not in mini-game
-        panController.enabled = false;
-    }
-
-    public void StartMinigame()
-    {
-        if (!isPlaying)
-            StartCoroutine(RunMinigame());
-    }
-
-    private IEnumerator RunMinigame()
-    {
-        isPlaying = true;
-
-        // Save original transforms
-        originalPlayerPos = fpController.transform.position;
-        originalPlayerRot = fpController.transform.rotation;
-        originalCamPos = playerCamera.transform.position;
-        originalCamRot = playerCamera.transform.rotation;
-
-        // Teleport & lock controls
-        fpController.enabled = false;
-        fpController.transform.position = teleportPoint.position;
-        fpController.transform.rotation = teleportPoint.rotation;
-        playerCamera.transform.position = cameraLockPoint.position;
-        playerCamera.transform.rotation = cameraLockPoint.rotation;
-
-        // Show UI & cursor
-        minigameCanvas.enabled = true;
-        Cursor.visible = true;
-        Cursor.lockState = CursorLockMode.None;
-
-        // Reset and enable pan control
-        panController.ResetPan();
-        panController.enabled = true;
-
-        // Spawn Ingredients in fixed sequence
-        SpawnIngredients(baconPrefab, baconCount);
-        yield return new WaitUntil(() => panController.FinishedSpawning);
-        SpawnIngredients(eggPrefab, eggCount);
-        yield return new WaitUntil(() => panController.FinishedSpawning);
-        SpawnIngredients(toastPrefab, toastCount);
-
-        // Cooking/shake phase
-        float timer = 0f;
-        while (timer < gameDuration)
+        if (panCollider != null)
         {
-            panController.RotateWithMouse();
-            timer += Time.deltaTime;
-            yield return null;
-        }
-
-        // Disable pan control
-        panController.enabled = false;
-
-        // Fade out/in
-        yield return StartCoroutine(FadeRoutine());
-
-        // Restore UI & controls
-        minigameCanvas.enabled = false;
-        Cursor.visible = false;
-        Cursor.lockState = CursorLockMode.Locked;
-
-        // Restore transforms
-        fpController.transform.position = originalPlayerPos;
-        fpController.transform.rotation = originalPlayerRot;
-        playerCamera.transform.position = originalCamPos;
-        playerCamera.transform.rotation = originalCamRot;
-
-        fpController.enabled = true;
-        isPlaying = false;
-    }
-
-    private void SpawnIngredients(GameObject prefab, int count)
-    {
-        panController.FinishedSpawning = false;
-        for (int i = 0; i < count; i++)
-            Instantiate(prefab, spawnPoint.position, Quaternion.identity);
-        panController.FinishedSpawning = true;
-    }
-
-    private IEnumerator FadeRoutine()
-    {
-        float t = 0f;
-        while (t < 1f)
-        {
-            fadeImage.color = new Color(0, 0, 0, t);
-            t += Time.deltaTime;
-            yield return null;
-        }
-        while (t > 0f)
-        {
-            fadeImage.color = new Color(0, 0, 0, t);
-            t -= Time.deltaTime;
-            yield return null;
+            // Clamp position to inside the pan collider
+            Vector3 clampedPos = panCollider.ClosestPoint(transform.position);
+            transform.position = clampedPos;
         }
     }
 }

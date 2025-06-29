@@ -131,7 +131,7 @@ Rigidbody:
   m_ImplicitTensor: 1
   m_UseGravity: 1
   m_IsKinematic: 0
-  m_Interpolate: 1
+  m_Interpolate: 0
   m_Constraints: 0
   m_CollisionDetection: 0
 --- !u!114 &8372907852182115446
@@ -146,3 +146,5 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 10d9274fc9c79e549bf1bcea741e6079, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  panCollider: {fileID: 1087044502118611990, guid: ba3f165a08118ca4dba786e04bdd4871,
+    type: 3}
