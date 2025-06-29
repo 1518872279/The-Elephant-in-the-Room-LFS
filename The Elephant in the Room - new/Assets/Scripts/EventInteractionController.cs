@@ -23,10 +23,26 @@ public class EventInteractionController : MonoBehaviour
                 var evtObj = hit.collider.GetComponent<EventObject>();
                 if (evtObj)
                 {
-                    bool started = TimeManager.Instance.TryStartEvent(evtObj.eventName);
-                    Debug.Log("time procceed " + TimeManager.Instance.currentTime);
-                    if (!started)
-                        Debug.LogWarning($"Failed to trigger event '{evtObj.eventName}'.");
+                    // Special handling for Breakfast event
+                    if (evtObj.eventName == "Breakfast")
+                    {
+                        if (CookingMinigameController.Instance != null)
+                        {
+                            CookingMinigameController.Instance.StartMinigame();
+                        }
+                        else
+                        {
+                            Debug.LogWarning("CookingMinigameController not found in scene.");
+                        }
+                    }
+                    else
+                    {
+                        // Regular event handling
+                        bool started = TimeManager.Instance.TryStartEvent(evtObj.eventName);
+                        Debug.Log("time procceed " + TimeManager.Instance.currentTime);
+                        if (!started)
+                            Debug.LogWarning($"Failed to trigger event '{evtObj.eventName}'.");
+                    }
                 }
             }
         }

@@ -16,180 +16,113 @@ This document summarizes the foundational systems for your Unity project and pro
 4. Define an “Interactable” layer for clickable objects.
 
 ```csharp
-// InventoryUI.cs
+// PanControllerDirect.cs
 using UnityEngine;
-using UnityEngine.UI;
-using System.Collections.Generic;
 
-public class InventoryUI : MonoBehaviour
+public class PanControllerDirect : MonoBehaviour
 {
-    [Header("Hotbar Slots (Bottom HUD)")]
-    [Tooltip("Assign six slot UI Images in order: slots 1-6 from left to right")]  
-    public Image[] hotbarSlots;    // length = 6
+    public Transform panTransform;
+    public float rotationSpeed = 50f;
+    public float maxTiltAngle = 30f;
+    public float smoothSpeed = 5f;
 
-    [Header("Fixed Items (Slots 1-3)")]
-    [Tooltip("Assign the Phone, Wallet, and Watch ScriptableItems here in order")]  
-    public List<Item> fixedItems;  // must contain exactly 3 items: Phone, Wallet, Watch
-
-    void Start()
-    {
-        Inventory.Instance.OnChanged += RefreshUI;
-        // initially hide all slot icons
-        ClearAllSlots();
-    }
-
-    void RefreshUI()
-    {
-        ClearAllSlots();
-
-        // 1. Place fixed items in slots 1-3 if owned
-        for (int i = 0; i < fixedItems.Count && i < hotbarSlots.Length; i++)
-        {
-            if (Inventory.Instance.Items.Contains(fixedItems[i]))
-            {
-                hotbarSlots[i].sprite = fixedItems[i].icon;
-                hotbarSlots[i].enabled = true;
-            }
-        }
-
-        // 2. Place remaining items in FILO order into slots 4-6
-        List<Item> dynamicItems = new List<Item>();
-        foreach (var item in Inventory.Instance.Items)
-        {
-            if (!fixedItems.Contains(item))
-                dynamicItems.Add(item);
-        }
-        
-        // FILO: most recently added item first
-        dynamicItems.Reverse();
-        int startIndex = fixedItems.Count;
-        for (int j = 0; j < dynamicItems.Count && (startIndex + j) < hotbarSlots.Length; j++)
-        {
-            hotbarSlots[startIndex + j].sprite = dynamicItems[j].icon;
-            hotbarSlots[startIndex + j].enabled = true;
-        }
-    }
-
-    void ClearAllSlots()
-    {
-        foreach (var slot in hotbarSlots)
-        {
-            slot.sprite = null;
-            slot.enabled = false;
-        }
-    }
+    private Vector2 targetAngles;
+    private Vector2 currentAngles;
 
     void Update()
     {
-        // Optionally, handle hotkey selection: 1-6
-        for (int i = 0; i < hotbarSlots.Length; i++)
+        if (Input.GetMouseButton(0))
         {
-            if (Input.GetKeyDown(KeyCode.Alpha1 + i))
-            {
-                // TODO: implement use of that slot's item
-            }
+            // Accumulate target angles from mouse movement
+            targetAngles.x += Input.GetAxis("Mouse X") * rotationSpeed * Time.deltaTime;
+            targetAngles.y -= Input.GetAxis("Mouse Y") * rotationSpeed * Time.deltaTime;
+            // Clamp tilt
+            targetAngles.y = Mathf.Clamp(targetAngles.y, -maxTiltAngle, maxTiltAngle);
         }
+
+        // Smoothly interpolate current angles towards target
+        currentAngles = Vector2.Lerp(currentAngles, targetAngles, smoothSpeed * Time.deltaTime);
+        // Apply rotation (pitch and roll)
+        panTransform.localRotation = Quaternion.Euler(currentAngles.y, 0f, currentAngles.x);
     }
 }
 ```
 
----
-
-## 3. Phone UI Panel
-
-**Overview:** Toggleable panel for in-game phone interface with URP Post-Processing blur effect.
-
-**Prerequisites:** Ensure your project uses the **Universal Render Pipeline** and has Post-Processing enabled in your URP Asset.
-
-**Setup Steps:**
-
-1. **Create UI Panel**: In your Canvas, create a **PhonePanel** GameObject (design your UI here) and set it inactive.
-2. **Add a Global Volume**:
-
-   * In the Hierarchy, create an empty GameObject named **PostProcessVolume**.
-   * Add a **Volume** component, check **Is Global**, and assign a new **Volume Profile**.
-   * In the Volume Profile, click **Add Override** ▶ **Unity** ▶ **DepthOfField**.
-   * Configure **DepthOfField** settings:
-
-     * **Focus Distance**: e.g. 0.1 (keeps the phone in sharp focus)
-     * **Aperture**: e.g. 32 (higher values yield stronger blur)
-     * **Focal Length**: e.g. 50
-   * Set the Volume’s **Weight** to **0**.
-3. **Assign References**: On your **PhoneUIController** script, expose the **Volume** reference alongside the **phonePanel**.
-4. **Toggle Logic**: Update your script to enable/disable both the phone UI and the Volume’s weight.
+### Alternative Pan Control: Keyboard Input
 
 ```csharp
-// PhoneUIController.cs
+// PanControllerKeyboard.cs
 using UnityEngine;
-using UnityEngine.Rendering;
-using UnityEngine.Rendering.Universal;
 
-[RequireComponent(typeof(FirstPersonController))]
-public class PhoneUIController : MonoBehaviour
+public class PanControllerKeyboard : MonoBehaviour
 {
-    [Header("UI and Post-Process References")]
-    public GameObject phonePanel;
-    public Volume postProcessVolume;
-    public FirstPersonController fpController;  // reference to player controller
-
-    private DepthOfField dof;
-
-    void Start()
-    {
-        // Start with UI and blur disabled
-        phonePanel.SetActive(false);
-        postProcessVolume.weight = 0f;
-
-        // Cache the DepthOfField override
-        if (!postProcessVolume.profile.TryGet(out dof))
-            Debug.LogWarning("DepthOfField override not found on Volume Profile.");
-
-        // Ensure controller reference
-        if (fpController == null)
-            fpController = GetComponent<FirstPersonController>();
-
-        // Hide cursor initially
-        Cursor.visible = false;
-        Cursor.lockState = CursorLockMode.Locked;
-    }
+    public Transform panTransform;
+    [Tooltip("Maximum lean angle in degrees")]
+    public float maxAngle = 30f;
+    [Tooltip("Rotation speed in degrees per second")]
+    public float rotateSpeed = 90f;
 
     void Update()
     {
-        if (Input.GetKeyDown(KeyCode.P))
-            TogglePhone();
-    }
+        // Read keyboard input
+        float forward = Input.GetKey(KeyCode.W) ? 1f : (Input.GetKey(KeyCode.S) ? -1f : 0f);
+        float right   = Input.GetKey(KeyCode.D) ? 1f : (Input.GetKey(KeyCode.A) ? -1f : 0f);
 
-    void TogglePhone()
-    {
-        bool isActive = !phonePanel.activeSelf;
-        phonePanel.SetActive(isActive);
-        postProcessVolume.weight = isActive ? 1f : 0f;
+        // Compute target lean angles
+        float xAngle = Mathf.Clamp(-forward * maxAngle, -maxAngle, maxAngle); // forward/back tilt
+        float zAngle = Mathf.Clamp(right   * maxAngle, -maxAngle, maxAngle); // left/right tilt
 
-        if (isActive && dof != null)
-        {
-            // Focus very close so the background blurs
-            dof.focusDistance.value = 0.1f;
-        }
-
-        // Pause movement and look
-        fpController.enabled = !isActive;
-
-        // Cursor lock/visibility
-        if (isActive)
-        {
-            Cursor.visible = true;
-            Cursor.lockState = CursorLockMode.None;
-        }
-        else
-        {
-            Cursor.visible = false;
-            Cursor.lockState = CursorLockMode.Locked;
-        }
+        // Smoothly rotate towards target
+        Quaternion targetRot = Quaternion.Euler(xAngle, 0f, zAngle);
+        panTransform.localRotation = Quaternion.RotateTowards(
+            panTransform.localRotation,
+            targetRot,
+            rotateSpeed * Time.deltaTime
+        );
     }
 }
 ```
 
 *End of setup.*
+
+*End of setup.*
+
+---
+
+## Triggering the Cooking Mini-Game
+
+To launch the breakfast mini-game when the player interacts with the stove:
+
+1. **Stove Setup**
+
+   * Create an empty GameObject at the stove and add the **EventObject** component.
+   * Set its **eventName** to **"Breakfast"**.
+   * Assign it to the **EventObject** layer.
+
+2. **EventInteractionController**
+
+   * Update the interaction logic so that when **eventName** is **"Breakfast"**, you invoke the cooking mini-game instead of advancing time:
+
+```csharp
+// Inside EventInteractionController.cs, replace or extend the interaction block:
+if (evtObj.eventName == "Breakfast")
+{
+    // Launch cooking mini-game
+    CookingMinigameController.Instance.StartMinigame();
+}
+else
+{
+    // Regular time event
+    TimeManager.Instance.TryStartEvent(evtObj.eventName);
+}
+```
+
+3. **Input Trigger**
+
+   * Ensure your `eventLayer` mask on **EventInteractionController** includes the **EventObject** layer.
+   * Use the same left-click interaction: pointing at the stove and clicking will now start the mini-game.
+
+That’s it—interacting with the stove object labeled "Breakfast" will teleport the player and begin the cooking sequence. Let me know if you need any refinements!
 
 ---
 
@@ -318,8 +251,7 @@ TimeManager advances `currentTime` only when `TryStartEvent` is called, so time 
 
 ## 7. Event Interaction System
 
-**Overview:**
-Allows players to trigger events by interacting with world objects on the **EventObject** layer. Each object specifies its associated `eventName`, and interaction attempts to start the event and advance time.
+**Overview:** Allows players to trigger events by interacting with world objects on the **EventObject** layer. Each object specifies its associated `eventName`, and interaction attempts to start the event and advance time.
 
 **Setup Steps:**
 
@@ -380,8 +312,7 @@ public class EventInteractionController : MonoBehaviour
 
 ## 8. Interaction Hint UI
 
-**Overview:**
-Displays a context-sensitive cursor hint at the screen center when an interactable object is in range.
+**Overview:** Displays a context-sensitive cursor hint at the screen center when an interactable object is in range.
 
 **Setup Steps:**
 
@@ -449,15 +380,9 @@ public class InteractionHintController : MonoBehaviour
 }
 ```
 
-\*End of setup.\*csharp
-// TimeManager.cs
-using System;
-using System.Collections.Generic;
-using UnityEngine;
+\*End of setup.\*csharp // TimeManager.cs using System; using System.Collections.Generic; using UnityEngine;
 
-public class TimeManager : MonoBehaviour
-{
-public static TimeManager Instance { get; private set; }
+public class TimeManager : MonoBehaviour { public static TimeManager Instance { get; private set; }
 
 ```
 [Header("Day Schedule (minutes since midnight)")]
@@ -520,7 +445,7 @@ public int GetCurrentTime() => currentTime;
 
 }
 
-````## 5. Pickup & Examine System
+````##
 
 **Overview:** Allows the player to pick up non-inventory objects tagged as "Examinable", hold them in front of the camera, and rotate them by moving the mouse. Press left click to pick up or drop the object, and while holding, spin the mouse to examine.
 
@@ -619,6 +544,213 @@ public class ExaminableObject : MonoBehaviour
         gameObject.layer = LayerMask.NameToLayer("Examinable");
         var rb = GetComponent<Rigidbody>();
         rb.isKinematic = false;
+    }
+}
+```
+
+## 9. Breakfast Cooking Mini‑Game
+
+**Overview:**
+A dedicated mini‑game for cooking breakfast when the **Breakfast** event is triggered. Players are teleported to a stove area, camera and movement are locked, and they must drag ingredients into the pan in a fixed sequence while shaking the pan. The mini‑game runs for a configurable duration (default 15 s) and ends with a screen fade transition, then returns the player and camera to their original state.
+
+### Setup Steps:
+
+1. **Scene Setup**
+
+   * Create an empty GameObject **StovePoint** at the stove location; this is the `teleportPoint`.
+   * Create an empty child **CameraLockPoint** under **StovePoint**; this is where you lock the camera during the mini‑game.
+2. **UI Setup**
+
+   * Add a **MinigameCanvas** (Screen Space–Overlay) with:
+
+     * An Image **FadeImage** covering full screen (black, alpha=0).
+     * Any UI instructions or timers you need.
+   * Disable **MinigameCanvas** by default.
+3. **Prefabs**
+
+   * Prepare ingredient prefabs (Bacon, Egg, Toast) with Collider + Rigidbody.
+   * Tag or layer them as **Pickable**.
+   * Add the **DraggableFood** component (script below) to each prefab for mouse-driven dragging.
+4. **Controllers**
+
+   * Attach the **CookingMinigameController** to your Player.
+
+     * Assign `teleportPoint`, `cameraLockPoint`, `fpController`, `playerCamera`, `minigameCanvas`, `fadeImage`, `panController`, and ingredient prefabs + `spawnPoint`.
+     * Set `gameDuration` (default 15 s).
+   * Create a **PanController** script on your pan object; assign its `panTransform` and `panRigidbody`.
+5. **Event Hookup**
+
+   * In your **EventInteractionController**, when `evtObj.eventName == "Breakfast"`, call `CookingMinigameController.Instance.StartMinigame()` instead of `TryStartEvent`.
+
+```csharp
+// DraggableFood.cs
+using UnityEngine;
+
+[RequireComponent(typeof(Collider))]
+public class DraggableFood : MonoBehaviour
+{
+    private Camera cam;
+    private Vector3 offset;
+    private float zDepth;
+
+    void Start()
+    {
+        cam = Camera.main;
+    }
+
+    void OnMouseDown()
+    {
+        zDepth = cam.WorldToScreenPoint(transform.position).z;
+        Vector3 screenPoint = new Vector3(Input.mousePosition.x, Input.mousePosition.y, zDepth);
+        offset = transform.position - cam.ScreenToWorldPoint(screenPoint);
+    }
+
+    void OnMouseDrag()
+    {
+        Vector3 curScreen = new Vector3(Input.mousePosition.x, Input.mousePosition.y, zDepth);
+        Vector3 curWorld = cam.ScreenToWorldPoint(curScreen) + offset;
+        transform.position = curWorld;
+    }
+}
+
+// CookingMinigameController.cs
+using UnityEngine;
+using UnityEngine.UI;
+using System.Collections;
+
+public class CookingMinigameController : MonoBehaviour
+{
+    public static CookingMinigameController Instance;
+
+    [Header("Teleport & Lock Points")]
+    public Transform teleportPoint;
+    public Transform cameraLockPoint;
+
+    [Header("References")]
+    public FirstPersonController fpController;
+    public Camera playerCamera;
+    public Canvas minigameCanvas;
+    public Image fadeImage;
+    public PanController panController;
+    public Transform spawnPoint;
+
+    [Header("Ingredient Prefabs & Counts")]
+    public GameObject baconPrefab;
+    public GameObject eggPrefab;
+    public GameObject toastPrefab;
+    public int baconCount = 3;
+    public int eggCount = 2;
+    public int toastCount = 2;
+
+    [Header("Mini-Game Duration (seconds)")]
+    public float gameDuration = 15f;
+
+    private bool isPlaying;
+    private Vector3 originalPlayerPos;
+    private Quaternion originalPlayerRot;
+    private Vector3 originalCamPos;
+    private Quaternion originalCamRot;
+
+    void Awake()
+    {
+        Instance = this;
+        minigameCanvas.enabled = false;
+        // Ensure pan control is disabled when not in mini-game
+        panController.enabled = false;
+    }
+
+    public void StartMinigame()
+    {
+        if (!isPlaying)
+            StartCoroutine(RunMinigame());
+    }
+
+    private IEnumerator RunMinigame()
+    {
+        isPlaying = true;
+
+        // Save original transforms
+        originalPlayerPos = fpController.transform.position;
+        originalPlayerRot = fpController.transform.rotation;
+        originalCamPos = playerCamera.transform.position;
+        originalCamRot = playerCamera.transform.rotation;
+
+        // Teleport & lock controls
+        fpController.enabled = false;
+        fpController.transform.position = teleportPoint.position;
+        fpController.transform.rotation = teleportPoint.rotation;
+        playerCamera.transform.position = cameraLockPoint.position;
+        playerCamera.transform.rotation = cameraLockPoint.rotation;
+
+        // Show UI & cursor
+        minigameCanvas.enabled = true;
+        Cursor.visible = true;
+        Cursor.lockState = CursorLockMode.None;
+
+        // Reset and enable pan control
+        panController.ResetPan();
+        panController.enabled = true;
+
+        // Spawn Ingredients in fixed sequence
+        SpawnIngredients(baconPrefab, baconCount);
+        yield return new WaitUntil(() => panController.FinishedSpawning);
+        SpawnIngredients(eggPrefab, eggCount);
+        yield return new WaitUntil(() => panController.FinishedSpawning);
+        SpawnIngredients(toastPrefab, toastCount);
+
+        // Cooking/shake phase
+        float timer = 0f;
+        while (timer < gameDuration)
+        {
+            panController.RotateWithMouse();
+            timer += Time.deltaTime;
+            yield return null;
+        }
+
+        // Disable pan control
+        panController.enabled = false;
+
+        // Fade out/in
+        yield return StartCoroutine(FadeRoutine());
+
+        // Restore UI & controls
+        minigameCanvas.enabled = false;
+        Cursor.visible = false;
+        Cursor.lockState = CursorLockMode.Locked;
+
+        // Restore transforms
+        fpController.transform.position = originalPlayerPos;
+        fpController.transform.rotation = originalPlayerRot;
+        playerCamera.transform.position = originalCamPos;
+        playerCamera.transform.rotation = originalCamRot;
+
+        fpController.enabled = true;
+        isPlaying = false;
+    }
+
+    private void SpawnIngredients(GameObject prefab, int count)
+    {
+        panController.FinishedSpawning = false;
+        for (int i = 0; i < count; i++)
+            Instantiate(prefab, spawnPoint.position, Quaternion.identity);
+        panController.FinishedSpawning = true;
+    }
+
+    private IEnumerator FadeRoutine()
+    {
+        float t = 0f;
+        while (t < 1f)
+        {
+            fadeImage.color = new Color(0, 0, 0, t);
+            t += Time.deltaTime;
+            yield return null;
+        }
+        while (t > 0f)
+        {
+            fadeImage.color = new Color(0, 0, 0, t);
+            t -= Time.deltaTime;
+            yield return null;
+        }
     }
 }
 ```
