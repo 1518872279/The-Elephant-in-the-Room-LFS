@@ -153,6 +153,7 @@ This guide walks you through setting up all the systems step by step.
 3. Add **Box Collider** to each child → Check "Is Trigger"
 4. Repeat for "TrashRanges" (3 children)
 5. Position ranges where you want garbage to spawn (floor areas only)
+6. **Note**: Items will be distributed evenly across all ranges (e.g., 10 stains across 3 ranges = 3, 3, 4)
 
 ### 7.3 Create Garbage Controller
 1. Create empty GameObject → Name it "GarbageCleanupController"
@@ -200,6 +201,7 @@ This guide walks you through setting up all the systems step by step.
 ### 7.8 How It Works
 - Player interacts with event object to start mini-game
 - System spawns random variations of stains and trash on floor
+- Items are distributed evenly across all spawn ranges
 - Debug text shows progress (e.g., "Cleaned: 5 / 18")
 - Click to clean each item
 - When all items are cleaned, fade transition plays

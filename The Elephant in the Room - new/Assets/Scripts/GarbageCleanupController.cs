@@ -62,25 +62,33 @@ public class GarbageCleanupController : MonoBehaviour
 
     void SpawnVariations(Transform[] ranges, GameObject[] prefabs, int count)
     {
-        for (int i = 0; i < count; i++)
+        int rangesCount = ranges.Length;
+        if (rangesCount == 0) return;
+        int baseCount = count / rangesCount;
+        int remainder = count % rangesCount;
+
+        for (int i = 0; i < rangesCount; i++)
         {
-            // Pick random range
-            Transform rangeT = ranges[Random.Range(0, ranges.Length)];
-            var box = rangeT.GetComponent<BoxCollider>();
-            Vector3 randomPoint = new Vector3(
-                Random.Range(box.bounds.min.x, box.bounds.max.x),
-                box.bounds.max.y + 1f,
-                Random.Range(box.bounds.min.z, box.bounds.max.z)
-            );
-            // Raycast down to floor
-            if (Physics.Raycast(randomPoint, Vector3.down, out RaycastHit hit, Mathf.Infinity, floorLayer))
+            int spawnCount = baseCount + (i < remainder ? 1 : 0);
+            var box = ranges[i].GetComponent<BoxCollider>();
+            for (int j = 0; j < spawnCount; j++)
             {
-                Vector3 spawnPos = hit.point + Vector3.up * verticalOffset;
-                // Select random prefab variation
-                GameObject prefab = prefabs[Random.Range(0, prefabs.Length)];
-                var go = Instantiate(prefab, spawnPos, Quaternion.identity);
-                go.AddComponent<GarbageItem>();
-                spawnedItems.Add(go);
+                // Pick random point within this specific range
+                Vector3 randomPoint = new Vector3(
+                    Random.Range(box.bounds.min.x, box.bounds.max.x),
+                    box.bounds.max.y + 1f,
+                    Random.Range(box.bounds.min.z, box.bounds.max.z)
+                );
+                // Raycast down to floor
+                if (Physics.Raycast(randomPoint, Vector3.down, out RaycastHit hit, Mathf.Infinity, floorLayer))
+                {
+                    Vector3 spawnPos = hit.point + Vector3.up * verticalOffset;
+                    // Select random prefab variation
+                    GameObject prefab = prefabs[Random.Range(0, prefabs.Length)];
+                    var go = Instantiate(prefab, spawnPos, Quaternion.identity);
+                    go.AddComponent<GarbageItem>();
+                    spawnedItems.Add(go);
+                }
             }
         }
     }

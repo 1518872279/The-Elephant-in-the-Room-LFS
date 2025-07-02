@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 7523585596920546044}
   - component: {fileID: -752178336853251179}
   - component: {fileID: 6996542548605356145}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: Prefab_Stain2
   m_TagString: Untagged
   m_Icon: {fileID: 0}
