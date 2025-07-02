@@ -35,6 +35,18 @@ public class EventInteractionController : MonoBehaviour
                             Debug.LogWarning("CookingMinigameController not found in scene.");
                         }
                     }
+                    // Special handling for GarbageCleanup event
+                    else if (evtObj.eventName == "GarbageCleanup")
+                    {
+                        if (GarbageCleanupController.Instance != null)
+                        {
+                            GarbageCleanupController.Instance.StartMinigame();
+                        }
+                        else
+                        {
+                            Debug.LogWarning("GarbageCleanupController not found in scene.");
+                        }
+                    }
                     else
                     {
                         // Regular event handling

@@ -128,6 +128,208 @@ void OnMouseUp()
 
 With these settings, the pan will rotate smoothly via transform controls, and food will remain firmly inside without physics-induced shaking.
 
+---
+
+## 12. Garbage Cleanup Mini-Game
+
+**Overview:**
+Procedurally generate floor-based stains and trash with multiple variation prefabs, within defined spawn ranges. Players must approach each item and press left mouse button to clean. The event advances time by a fixed 30 minutes.
+
+### TimeManager Setup
+
+1. In **TimeManager** inspector, add:
+
+   * **Event Name:** "GarbageCleanup"
+   * **Duration:** 30 (minutes)
+
+### Scene Setup
+
+1. Create empty GameObjects with **BoxCollider** (set as trigger) to define spawn volumes:
+
+   * **StainRanges** parent object; its children represent individual spawn areas.
+   * **TrashRanges** parent object.
+2. Assign these parent objects’ transforms in the generator.
+3. Ensure all BoxColliders cover only floor regions (no ceilings or walls).
+4. Set the **Floor** layer on your floor meshes; assign this layer to `floorLayer`.
+
+### GarbageCleanupController
+
+Attach this to an empty **GarbageCleanupController** GameObject and configure:
+
+```csharp
+// GarbageCleanupController.cs
+using UnityEngine;
+using UnityEngine.UI;
+using System.Collections;
+using System.Collections.Generic;
+
+public class GarbageCleanupController : MonoBehaviour
+{
+    public static GarbageCleanupController Instance;
+
+    [Header("Range Parents (with BoxColliders)")]
+    public Transform[] stainRanges;
+    public Transform[] trashRanges;
+
+    [Header("Garbage Variations & Counts")]
+    public GameObject[] stainPrefabs;
+    public GameObject[] trashPrefabs;
+    public int stainCount = 10;
+    public int trashCount = 8;
+
+    [Header("Spawn Settings")]
+    public LayerMask floorLayer;
+    public float verticalOffset = 0.01f;
+
+    [Header("Debug UI")]
+    public Text debugText;
+
+    [Header("End Fade Image")]
+    public Image fadeImage;
+    public float fadeDuration = 1f;
+
+    private List<GameObject> spawnedItems = new List<GameObject>();
+    private int totalItems;
+    private int cleanedItems;
+
+    void Awake()
+    {
+        Instance = this;
+    }
+
+    /// <summary>Call this when GarbageCleanup event starts.</summary>
+    public void StartMinigame()
+    {
+        GenerateGarbage();
+        cleanedItems = 0;
+        totalItems = spawnedItems.Count;
+        UpdateDebugText();
+    }
+
+    void GenerateGarbage()
+    {
+        // Clear previous
+        foreach (var go in spawnedItems) Destroy(go);
+        spawnedItems.Clear();
+
+        // Spawn stains and trash
+        SpawnVariations(stainRanges, stainPrefabs, stainCount);
+        SpawnVariations(trashRanges, trashPrefabs, trashCount);
+
+        // Set totals
+        totalItems = spawnedItems.Count;
+    }
+
+    void SpawnVariations(Transform[] ranges, GameObject[] prefabs, int count)
+    {
+        for (int i = 0; i < count; i++)
+        {
+            // Pick random range
+            Transform rangeT = ranges[Random.Range(0, ranges.Length)];
+            var box = rangeT.GetComponent<BoxCollider>();
+            Vector3 randomPoint = new Vector3(
+                Random.Range(box.bounds.min.x, box.bounds.max.x),
+                box.bounds.max.y + 1f,
+                Random.Range(box.bounds.min.z, box.bounds.max.z)
+            );
+            // Raycast down to floor
+            if (Physics.Raycast(randomPoint, Vector3.down, out RaycastHit hit, Mathf.Infinity, floorLayer))
+            {
+                Vector3 spawnPos = hit.point + Vector3.up * verticalOffset;
+                // Select random prefab variation
+                GameObject prefab = prefabs[Random.Range(0, prefabs.Length)];
+                var go = Instantiate(prefab, spawnPos, Quaternion.identity);
+                go.AddComponent<GarbageItem>();
+                spawnedItems.Add(go);
+            }
+        }
+    }
+
+    public void ItemCleaned()
+    {
+        cleanedItems++;
+        UpdateDebugText();
+        if (cleanedItems >= totalItems)
+        {
+            StartCoroutine(EndRoutine());
+        }
+    }
+
+    void UpdateDebugText()
+    {
+        if (debugText != null)
+            debugText.text = $"Cleaned: {cleanedItems} / {totalItems}";
+        else
+            Debug.Log($"Cleaned: {cleanedItems} / {totalItems}");
+    }
+
+    private IEnumerator EndRoutine()
+    {
+        // Fade to black
+        float t = 0f;
+        while (t < fadeDuration)
+        {
+            fadeImage.color = new Color(0, 0, 0, t / fadeDuration);
+            t += Time.deltaTime;
+            yield return null;
+        }
+        // Fade back in
+        t = fadeDuration;
+        while (t > 0f)
+        {
+            fadeImage.color = new Color(0, 0, 0, t / fadeDuration);
+            t -= Time.deltaTime;
+            yield return null;
+        }
+        // End of minigame logic, e.g., advance time
+        TimeManager.Instance.TryStartEvent("GarbageCleanup");
+    }
+}
+```
+
+### Garbage Item Interaction
+
+Attach this to each generated garbage instance (or let the controller add it):
+
+```csharp
+// GarbageItem.cs
+using UnityEngine;
+
+[RequireComponent(typeof(Collider))]
+public class GarbageItem : MonoBehaviour
+{
+    public float interactDistance = 2f;
+    private Camera cam;
+
+    void Start() => cam = Camera.main;
+
+    void Update()
+    {
+        if (Input.GetMouseButtonDown(0))
+        {
+            Ray ray = cam.ScreenPointToRay(Input.mousePosition);
+            if (Physics.Raycast(ray, out RaycastHit hit, interactDistance)
+                && hit.collider.gameObject == gameObject)
+            {
+                // Clean and remove
+                Destroy(gameObject);
+            }
+        }
+    }
+}
+```
+
+### Hookup
+
+In **EventInteractionController**, handle the "GarbageCleanup" event:
+
+```csharp
+if (evtObj.eventName == "GarbageCleanup")
+    GarbageCleanupController.Instance.StartMinigame();
+else
+    TimeManager.Instance.TryStartEvent(evtObj.eventName);
+```
+
 *End of setup.*
 
 *End of setup.*
@@ -615,7 +817,7 @@ A dedicated mini‑game for cooking breakfast when the **Breakfast** event is tr
 
    * Prepare ingredient prefabs (Bacon, Egg, Toast) with Collider + Rigidbody.
    * Tag or layer them as **Pickable**.
-   * Add the **DraggableFood** component (script below) to each prefab for mouse-driven dragging.
+   * Add the **DraggableFood** component (script below) to each prefab for mouse-driven dragging; for eggs, assign the `cookedPrefab` field to your cooked-egg prefab.
 4. **Controllers**
 
    * Attach the **CookingMinigameController** to your Player.
@@ -642,6 +844,10 @@ public class DraggableFood : MonoBehaviour
     [Tooltip("Collider of the pan to clamp dropped items inside its bounds")]
     public Collider panCollider;
 
+    [Header("Optional Cooked Prefab")]
+    [Tooltip("For items that change upon cooking (e.g., eggs)")]
+    public GameObject cookedPrefab;
+
     void Start()
     {
         cam = Camera.main;
@@ -663,11 +869,38 @@ public class DraggableFood : MonoBehaviour
 
     void OnMouseUp()
     {
+        // Disable physics
+        var rb = GetComponent<Rigidbody>();
+        if (rb) rb.isKinematic = true;
+
+        Vector3 finalPos = transform.position;
         if (panCollider != null)
         {
-            // Clamp position to inside the pan collider
-            Vector3 clampedPos = panCollider.ClosestPoint(transform.position);
-            transform.position = clampedPos;
+            // Project position onto pan surface
+            Transform panTransform = panCollider.transform;
+            Plane panPlane = new Plane(panTransform.up, panTransform.position);
+            Vector3 rayOrigin = transform.position + panTransform.up * 5f;
+            Ray downRay = new Ray(rayOrigin, -panTransform.up);
+            if (panPlane.Raycast(downRay, out float distance))
+            {
+                Vector3 surfacePoint = downRay.GetPoint(distance);
+                finalPos = panCollider.ClosestPoint(surfacePoint);
+            }
+        }
+
+        if (cookedPrefab != null)
+        {
+            // Instantiate cooked version with correct orientation and destroy raw
+            Quaternion spawnRot = Quaternion.FromToRotation(Vector3.up, panCollider.transform.up);
+            Instantiate(cookedPrefab, finalPos, spawnRot, panCollider.transform);
+            Destroy(gameObject);
+        }
+        }
+        else
+        {
+            // Place original on pan surface
+            transform.position = finalPos;
+            transform.SetParent(panCollider.transform);
         }
     }
 }

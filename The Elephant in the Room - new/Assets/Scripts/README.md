@@ -218,7 +218,61 @@ The time system now works with events:
 2. **Pickable objects**: Set layer to "Pickable" (or use existing "Interactable")
 3. **Other interactive objects**: Use your existing "Interactable" layer
 
-## 🎯 6. Complete Scene Setup Checklist
+## 🧹 7. Garbage Cleanup Mini-Game Setup
+
+### Step 1: TimeManager Configuration
+1. In your **TimeManager** inspector, add a new event:
+   - **Event Name**: "GarbageCleanup"
+   - **Duration**: 30 (minutes)
+
+### Step 2: Create Spawn Ranges
+1. Create empty GameObjects with **BoxCollider** components (set as trigger) to define spawn volumes:
+   - **StainRanges** parent object with children representing individual ranges
+   - **FecesRanges** parent object with children representing individual ranges
+   - **TrashRanges** parent object with children representing individual ranges
+2. Ensure all BoxColliders include the floor bounds and have appropriate size and height
+3. Set the **Floor** layer to any floors in your scene
+
+### Step 3: Setup Garbage Controller
+1. Create an empty GameObject named "GarbageCleanupController"
+2. Add the `GarbageCleanupController` script to it
+3. Assign the range parent transforms to the corresponding arrays:
+   - `stainRanges`: Array of Transform components from StainRanges children
+   - `fecesRanges`: Array of Transform components from FecesRanges children
+   - `trashRanges`: Array of Transform components from TrashRanges children
+4. Assign garbage prefabs:
+   - `stainPrefab`: Prefab for stain objects
+   - `fecesPrefab`: Prefab for elephant feces objects
+   - `trashPrefab`: Prefab for trash objects
+5. Configure spawn counts (default: 10 stains, 5 feces, 8 trash)
+6. Set `floorLayer` to your floor layer
+7. Adjust `verticalOffset` if needed (default: 0.01f)
+
+### Step 4: Create Garbage Prefabs
+1. Create prefabs for each garbage type (stains, feces, trash)
+2. Add a **Collider** component to each prefab
+3. Add the `GarbageItem` script to each prefab
+4. Configure `interactDistance` as needed (default: 2f)
+
+### Step 5: Create Event Trigger
+1. Create an empty GameObject at the location where you want to trigger the garbage cleanup
+2. Add the `EventObject` component to it
+3. Set the `eventName` to "GarbageCleanup"
+4. Assign it to the "EventObject" layer
+
+### Step 6: Verify EventInteractionController
+The `EventInteractionController` has been updated to handle the "GarbageCleanup" event automatically. When a player interacts with an EventObject named "GarbageCleanup", it will:
+1. Call `GarbageCleanupController.Instance.StartMinigame()`
+2. Generate garbage items in the defined ranges
+3. Allow players to click on garbage items to clean them
+
+### Usage
+- Players interact with the garbage cleanup trigger object
+- Garbage items are procedurally generated in the defined ranges
+- Players approach each piece and click to clean it
+- The event advances time by 30 minutes when triggered
+
+## 🎯 8. Complete Scene Setup Checklist
 
 ### Player Setup
 - [ ] Player GameObject with CharacterController
@@ -271,6 +325,19 @@ The time system now works with events:
 - [ ] Hint sprites (defaultDot, doorIcon, handIcon) assigned
 - [ ] Interactable layers configured
 - [ ] Object tags and layers set up (Door, Pickable, Interactable)
+
+### Garbage Cleanup Setup
+- [ ] "GarbageCleanup" event added to TimeManager with 30-minute duration
+- [ ] StainRanges, FecesRanges, and TrashRanges parent objects created
+- [ ] BoxCollider components added to range objects (set as triggers)
+- [ ] GarbageCleanupController GameObject created with script attached
+- [ ] Range transforms assigned to controller arrays
+- [ ] Garbage prefabs created with Collider and GarbageItem components
+- [ ] Prefabs assigned to controller
+- [ ] Floor layer configured and assigned to controller
+- [ ] Event trigger object created with EventObject component
+- [ ] Event trigger set to "GarbageCleanup" event name
+- [ ] Event trigger assigned to "EventObject" layer
 
 ## 🎮 Input Controls
 

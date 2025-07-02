@@ -140,14 +140,84 @@ This guide walks you through setting up all the systems step by step.
 2. **Pickable objects**: Set layer to "Pickable"
 3. **Other interactive**: Use "Interactable" layer
 
-## 🧪 Step 7: Testing
+## 🧹 Step 7: Garbage Cleanup Mini-Game
+
+### 7.1 Add Event to TimeManager
+1. In **TimeManager** inspector, add new event:
+   - Event Name: "GarbageCleanup"
+   - Duration: 30
+
+### 7.2 Create Spawn Ranges
+1. Create empty GameObject → Name it "StainRanges"
+2. Create 3 child objects → Name them "StainRange1", "StainRange2", "StainRange3"
+3. Add **Box Collider** to each child → Check "Is Trigger"
+4. Repeat for "TrashRanges" (3 children)
+5. Position ranges where you want garbage to spawn (floor areas only)
+
+### 7.3 Create Garbage Controller
+1. Create empty GameObject → Name it "GarbageCleanupController"
+2. Add **GarbageCleanupController** script
+3. Assign StainRanges children to `stainRanges` array
+4. Assign TrashRanges children to `trashRanges` array
+5. Set `stainCount` to 10 and `trashCount` to 8
+
+### 7.4 Create Garbage Prefabs
+1. Create multiple stain variations:
+   - Create a cube → Name it "StainPrefab1"
+   - Add **Box Collider**
+   - Create prefab from this object
+   - Repeat for 2-3 more stain variations
+2. Create multiple trash variations:
+   - Create a cube → Name it "TrashPrefab1"
+   - Add **Box Collider**
+   - Create prefab from this object
+   - Repeat for 2-3 more trash variations
+3. Assign all prefab arrays to GarbageCleanupController
+
+### 7.5 Setup UI Elements
+1. Create **Text** component for debug display:
+   - In Canvas, create **Text** → Name it "DebugText"
+   - Position it where you want progress to show
+   - Assign to `debugText` in GarbageCleanupController
+2. Create **Fade Image** for transitions:
+   - In Canvas, create **Image** → Name it "FadeImage"
+   - Set color to black, alpha to 0
+   - Cover full screen
+   - Assign to `fadeImage` in GarbageCleanupController
+   - **Note**: If using same canvas as CookingMinigameController, the controller will automatically re-enable it when needed
+
+### 7.6 Create Event Trigger
+1. Create empty GameObject → Name it "GarbageTrigger"
+2. Add **EventObject** script
+3. Set `eventName` to "GarbageCleanup"
+4. Set layer to "EventObject"
+
+### 7.7 Configure Floor Layer
+1. Create layer called "Floor"
+2. Assign floor objects to this layer
+3. Set `floorLayer` in GarbageCleanupController to "Floor"
+
+### 7.8 How It Works
+- Player interacts with event object to start mini-game
+- System spawns random variations of stains and trash on floor
+- Debug text shows progress (e.g., "Cleaned: 5 / 18")
+- Click to clean each item
+- When all items are cleaned, fade transition plays
+- Event automatically advances time by 30 minutes
+
+## 🧪 Step 8: Testing
 
 ### 7.1 Create Event Tester
 1. Create empty GameObject → Name it "EventTester"
 2. Add **EventTester** script
 3. Assign event names to `testEvents` array
 
-### 7.2 Test Everything
+### 8.1 Create Event Tester
+1. Create empty GameObject → Name it "EventTester"
+2. Add **EventTester** script
+3. Assign event names to `testEvents` array
+
+### 8.2 Test Everything
 1. **Movement**: WASD to move, mouse to look
 2. **Pickup Items**: Click on items with "Interactable" layer
 3. **Phone**: Press P to toggle
@@ -155,6 +225,7 @@ This guide walks you through setting up all the systems step by step.
 5. **Events**: Click on "EventObject" items or press T+number keys
 6. **Inventory**: Check hotbar at bottom of screen
 7. **Interaction Hints**: Look at different objects to see context hints
+8. **Garbage Cleanup**: Click on GarbageTrigger to spawn garbage, then click on garbage items to clean them
 
 ## 🎯 What Each System Does
 
@@ -166,6 +237,8 @@ This guide walks you through setting up all the systems step by step.
 - **ExamineController**: Allows detailed object inspection
 - **DayPartManager**: Changes lighting based on time of day
 - **InteractionHintController**: Shows context-sensitive interaction hints
+- **GarbageCleanupController**: Procedurally generates garbage items for cleanup mini-game
+- **GarbageItem**: Handles individual garbage item interaction and cleanup
 
 ## 🔧 Common Issues
 
