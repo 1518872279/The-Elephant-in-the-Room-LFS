@@ -1,22 +1,3 @@
-# Core Systems Setup
-
-This document summarizes the foundational systems for your Unity project and provides the complete scripts for Cursor to ingest.
-
----
-
-## 1. First-Person Controller
-
-**Overview:** Handles player movement, camera look, and object interaction.
-
-**Setup Steps:**
-
-1. Create a **Player** GameObject.
-2. Add a **CharacterController** component.
-3. Add a **Camera** as a child and assign to `cameraTransform`.
-4. Define an “Interactable” layer for clickable objects.
-
-````csharp
-// StormController.cs
 using UnityEngine;
 
 public class StormController : MonoBehaviour
@@ -96,6 +77,17 @@ public class StormController : MonoBehaviour
         if (stormAudio != null)
             stormAudio.Stop();
     }
-}
-```*
-````
+
+    // Inspector buttons for manual control
+    [ContextMenu("Activate Storm")]
+    public void ActivateStormFromInspector()
+    {
+        ActivateStorm();
+    }
+
+    [ContextMenu("Deactivate Storm")]
+    public void DeactivateStormFromInspector()
+    {
+        DeactivateStorm();
+    }
+} 

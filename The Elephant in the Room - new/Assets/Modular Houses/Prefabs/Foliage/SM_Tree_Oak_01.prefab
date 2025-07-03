@@ -25,9 +25,11 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 4218398983219819121}
+  serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: -0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 4218398983219326547}
   - {fileID: 4218398983219326549}
@@ -35,11 +37,10 @@ Transform:
   - {fileID: 4218398983219326553}
   - {fileID: 4218398983219326555}
   m_Father: {fileID: 0}
-  m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!95 &1259447179108627121
 Animator:
-  serializedVersion: 3
+  serializedVersion: 5
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
@@ -52,10 +53,12 @@ Animator:
   m_UpdateMode: 0
   m_ApplyRootMotion: 0
   m_LinearVelocityBlending: 0
+  m_StabilizeFeet: 0
   m_WarningMessage: 
   m_HasTransformHierarchy: 1
   m_AllowConstantClipSamplingOptimization: 1
-  m_KeepAnimatorControllerStateOnDisable: 0
+  m_KeepAnimatorStateOnDisable: 0
+  m_WriteDefaultValuesOnDisable: 0
 --- !u!205 &4218398983201422065
 LODGroup:
   m_ObjectHideFlags: 0
@@ -102,6 +105,7 @@ GameObject:
   - component: {fileID: 4218398983219326547}
   - component: {fileID: 4218398983218556529}
   - component: {fileID: 4218398983217556657}
+  - component: {fileID: 7280729689375871904}
   m_Layer: 0
   m_Name: SM_Tree_Oak_01_LOD0
   m_TagString: Untagged
@@ -116,12 +120,13 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 4218398983219819123}
+  serializedVersion: 2
   m_LocalRotation: {x: 7.1054265e-15, y: 0, z: -0, w: 1}
   m_LocalPosition: {x: -0, y: 0, z: 0}
   m_LocalScale: {x: 1.0000001, y: 1.0000001, z: 1.0000001}
+  m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 4218398983219326545}
-  m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!33 &4218398983218556529
 MeshFilter:
@@ -142,6 +147,7 @@ MeshRenderer:
   m_CastShadows: 1
   m_ReceiveShadows: 1
   m_DynamicOccludee: 1
+  m_StaticShadowCaster: 0
   m_MotionVectors: 1
   m_LightProbeUsage: 1
   m_ReflectionProbeUsage: 1
@@ -173,6 +179,25 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
+--- !u!114 &7280729689375871904
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4218398983219819123}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c29730b5011bbc743a66662b155fc044, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  windSensitivity: 1
+  maxBendAngle: 5
+  windFrequency: 1
+  windDirectionProperty: _WindDirection
+  windStrengthProperty: _WindStrength
+  windFrequencyProperty: _WindFrequency
+  windAmplitudeProperty: _WindAmplitude
 --- !u!1 &4218398983219819125
 GameObject:
   m_ObjectHideFlags: 0
@@ -184,6 +209,7 @@ GameObject:
   - component: {fileID: 4218398983219326549}
   - component: {fileID: 4218398983218556531}
   - component: {fileID: 4218398983217556659}
+  - component: {fileID: 161364849125299935}
   m_Layer: 0
   m_Name: SM_Tree_Oak_01_LOD1
   m_TagString: Untagged
@@ -198,12 +224,13 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 4218398983219819125}
+  serializedVersion: 2
   m_LocalRotation: {x: 7.1054265e-15, y: 0, z: -0, w: 1}
   m_LocalPosition: {x: -0, y: 0, z: 0}
   m_LocalScale: {x: 1.0000001, y: 1.0000001, z: 1.0000001}
+  m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 4218398983219326545}
-  m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!33 &4218398983218556531
 MeshFilter:
@@ -224,6 +251,7 @@ MeshRenderer:
   m_CastShadows: 1
   m_ReceiveShadows: 1
   m_DynamicOccludee: 1
+  m_StaticShadowCaster: 0
   m_MotionVectors: 1
   m_LightProbeUsage: 1
   m_ReflectionProbeUsage: 1
@@ -255,6 +283,25 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
+--- !u!114 &161364849125299935
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4218398983219819125}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c29730b5011bbc743a66662b155fc044, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  windSensitivity: 1
+  maxBendAngle: 5
+  windFrequency: 1
+  windDirectionProperty: _WindDirection
+  windStrengthProperty: _WindStrength
+  windFrequencyProperty: _WindFrequency
+  windAmplitudeProperty: _WindAmplitude
 --- !u!1 &4218398983219819127
 GameObject:
   m_ObjectHideFlags: 0
@@ -266,6 +313,7 @@ GameObject:
   - component: {fileID: 4218398983219326551}
   - component: {fileID: 4218398983218556533}
   - component: {fileID: 4218398983217556661}
+  - component: {fileID: 1777796942291992256}
   m_Layer: 0
   m_Name: SM_Tree_Oak_01_LOD2
   m_TagString: Untagged
@@ -280,12 +328,13 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 4218398983219819127}
+  serializedVersion: 2
   m_LocalRotation: {x: 7.1054265e-15, y: 0, z: -0, w: 1}
   m_LocalPosition: {x: -0, y: 0, z: 0}
   m_LocalScale: {x: 1.0000001, y: 1.0000001, z: 1.0000001}
+  m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 4218398983219326545}
-  m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!33 &4218398983218556533
 MeshFilter:
@@ -306,6 +355,7 @@ MeshRenderer:
   m_CastShadows: 1
   m_ReceiveShadows: 1
   m_DynamicOccludee: 1
+  m_StaticShadowCaster: 0
   m_MotionVectors: 1
   m_LightProbeUsage: 1
   m_ReflectionProbeUsage: 1
@@ -337,6 +387,25 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
+--- !u!114 &1777796942291992256
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4218398983219819127}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c29730b5011bbc743a66662b155fc044, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  windSensitivity: 1
+  maxBendAngle: 5
+  windFrequency: 1
+  windDirectionProperty: _WindDirection
+  windStrengthProperty: _WindStrength
+  windFrequencyProperty: _WindFrequency
+  windAmplitudeProperty: _WindAmplitude
 --- !u!1 &4218398983219819129
 GameObject:
   m_ObjectHideFlags: 0
@@ -348,6 +417,7 @@ GameObject:
   - component: {fileID: 4218398983219326553}
   - component: {fileID: 4218398983218556535}
   - component: {fileID: 4218398983217556663}
+  - component: {fileID: 3747007789160467466}
   m_Layer: 0
   m_Name: SM_Tree_Oak_01_LOD3
   m_TagString: Untagged
@@ -362,12 +432,13 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 4218398983219819129}
+  serializedVersion: 2
   m_LocalRotation: {x: 7.1054265e-15, y: 0, z: -0, w: 1}
   m_LocalPosition: {x: -0, y: 0, z: 0}
   m_LocalScale: {x: 1.0000001, y: 1.0000001, z: 1.0000001}
+  m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 4218398983219326545}
-  m_RootOrder: 3
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!33 &4218398983218556535
 MeshFilter:
@@ -388,6 +459,7 @@ MeshRenderer:
   m_CastShadows: 1
   m_ReceiveShadows: 1
   m_DynamicOccludee: 1
+  m_StaticShadowCaster: 0
   m_MotionVectors: 1
   m_LightProbeUsage: 1
   m_ReflectionProbeUsage: 1
@@ -419,6 +491,25 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
+--- !u!114 &3747007789160467466
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4218398983219819129}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c29730b5011bbc743a66662b155fc044, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  windSensitivity: 1
+  maxBendAngle: 5
+  windFrequency: 1
+  windDirectionProperty: _WindDirection
+  windStrengthProperty: _WindStrength
+  windFrequencyProperty: _WindFrequency
+  windAmplitudeProperty: _WindAmplitude
 --- !u!1 &4218398983219819131
 GameObject:
   m_ObjectHideFlags: 0
@@ -430,6 +521,7 @@ GameObject:
   - component: {fileID: 4218398983219326555}
   - component: {fileID: 4218398983218556537}
   - component: {fileID: 4218398983217556665}
+  - component: {fileID: 3160292930972849896}
   m_Layer: 0
   m_Name: SM_Tree_Oak_01_LOD4
   m_TagString: Untagged
@@ -444,12 +536,13 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 4218398983219819131}
+  serializedVersion: 2
   m_LocalRotation: {x: 7.1054265e-15, y: 0, z: -0, w: 1}
   m_LocalPosition: {x: -0, y: 0, z: 0}
   m_LocalScale: {x: 1.0000001, y: 1.0000001, z: 1.0000001}
+  m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 4218398983219326545}
-  m_RootOrder: 4
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!33 &4218398983218556537
 MeshFilter:
@@ -470,6 +563,7 @@ MeshRenderer:
   m_CastShadows: 1
   m_ReceiveShadows: 1
   m_DynamicOccludee: 1
+  m_StaticShadowCaster: 0
   m_MotionVectors: 1
   m_LightProbeUsage: 1
   m_ReflectionProbeUsage: 1
@@ -500,3 +594,22 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
+--- !u!114 &3160292930972849896
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4218398983219819131}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c29730b5011bbc743a66662b155fc044, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  windSensitivity: 1
+  maxBendAngle: 5
+  windFrequency: 1
+  windDirectionProperty: _WindDirection
+  windStrengthProperty: _WindStrength
+  windFrequencyProperty: _WindFrequency
+  windAmplitudeProperty: _WindAmplitude
