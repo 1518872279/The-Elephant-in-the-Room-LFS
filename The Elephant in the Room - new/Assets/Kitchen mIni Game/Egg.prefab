@@ -143,8 +143,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 8623546136721390705}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 10d9274fc9c79e549bf1bcea741e6079, type: 3}
+  m_Script: {fileID: 11500000, guid: 1dc552b5a7beadb4b8a8f4302d97e89c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  panCollider: {fileID: 1087044502118611990, guid: ba3f165a08118ca4dba786e04bdd4871,
-    type: 3}
+  panCollider: {fileID: 0}

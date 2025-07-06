@@ -6,91 +6,103 @@ public class KuwaharaRenderFeature : ScriptableRendererFeature
 {
     class CustomRenderPass : ScriptableRenderPass
     {
-        private Material material;
-#pragma warning disable 618
-        private RenderTargetHandle tempRT;
-#pragma warning restore 618
+        const string k_ProfilerTag = "Kuwahara Filter";
+        RenderTargetHandle m_TempRT;
+        Material m_Material;
+        int m_Radius;
 
         public CustomRenderPass(Material mat)
         {
-            this.material = mat;
-#pragma warning disable 618
-            tempRT.Init("_TempKuwaharaTex");
-#pragma warning restore 618
+            m_Material = mat;
+            m_TempRT.Init("_TempKuwaharaTex");
+            profilingSampler = new ProfilingSampler(k_ProfilerTag);
+        }
+
+        public void SetRadius(int radius)
+        {
+            m_Radius = radius;
+            m_Material.SetInt("_Radius", m_Radius);
+        }
+
+        // Called once per camera before Execute
+        public override void OnCameraSetup(CommandBuffer cmd, ref RenderingData renderingData)
+        {
+            // Copy the camera descriptor, but zero out depth bits
+            var desc = renderingData.cameraData.cameraTargetDescriptor;
+            desc.depthBufferBits = 0;
+
+            // Allocate a temporary RT matching the camera¡¯s color buffer
+            cmd.GetTemporaryRT(m_TempRT.id, desc, FilterMode.Bilinear);
+
+            // Tell URP that this pass will render into our temp RT
+            ConfigureTarget(m_TempRT.Identifier());
+            ConfigureClear(ClearFlag.None, Color.black);
         }
 
         public override void Execute(ScriptableRenderContext context, ref RenderingData renderingData)
         {
-            if (material == null)
+            if (m_Material == null)
                 return;
 
-            var cmd = CommandBufferPool.Get("KuwaharaFilter");
-            var desc = renderingData.cameraData.cameraTargetDescriptor;
-#pragma warning disable 618
-            cmd.GetTemporaryRT(tempRT.id, desc);
-#pragma warning restore 618
+            var cmd = CommandBufferPool.Get(k_ProfilerTag);
+            var cameraColor = renderingData.cameraData.renderer.cameraColorTarget;
 
-            // Source and destination RT
-            var source = renderingData.cameraData.renderer.cameraColorTarget;
-
-            // 1) Apply Kuwahara filter into tempRT
-            Blit(cmd, source, tempRT.Identifier(), material);
-            // 2) Copy back to camera target
-            cmd.CopyTexture(tempRT.Identifier(), source);
+            // 1) Blit from the camera¡¯s color buffer into our temp RT with the filter
+            Blit(cmd, cameraColor, m_TempRT.Identifier(), m_Material);
+            // 2) Blit back from temp RT into the camera¡¯s color buffer
+            Blit(cmd, m_TempRT.Identifier(), cameraColor);
 
             context.ExecuteCommandBuffer(cmd);
             CommandBufferPool.Release(cmd);
         }
 
-        public override void FrameCleanup(CommandBuffer cmd)
+        public override void OnCameraCleanup(CommandBuffer cmd)
         {
-            if (cmd == null) return;
-#pragma warning disable 618
-            cmd.ReleaseTemporaryRT(tempRT.id);
-#pragma warning restore 618
+            // Release the RT we allocated
+            cmd.ReleaseTemporaryRT(m_TempRT.id);
         }
     }
 
     [Header("Kuwahara Filter Settings")]
     public Shader shader;
-    [Tooltip("Radius of the Kuwahara filter sectors.")]
     [Range(1, 10)] public int radius = 3;
 
-    private CustomRenderPass pass;
-    private Material material;
+    CustomRenderPass m_ScriptablePass;
+    Material m_Material;
 
     public override void Create()
     {
         if (shader == null)
         {
-            Debug.LogWarning("Kuwahara shader not assigned in Render Feature.");
+            Debug.LogWarning("Kuwahara shader not assigned in RenderFeature.");
             return;
         }
-        material = CoreUtils.CreateEngineMaterial(shader);
-        pass = new CustomRenderPass(material)
+
+        m_Material = CoreUtils.CreateEngineMaterial(shader);
+        m_ScriptablePass = new CustomRenderPass(m_Material)
         {
-            renderPassEvent = RenderPassEvent.AfterRenderingTransparents
+            // Run just before URP¡¯s post-processing kicks in
+            renderPassEvent = RenderPassEvent.BeforeRenderingPostProcessing
         };
     }
 
+    // Here we pass in the current radius each frame
     public override void AddRenderPasses(ScriptableRenderer renderer, ref RenderingData renderingData)
     {
-        if (material == null)
+        if (m_Material == null)
             return;
 
-        // Set the radius property on the material
-        material.SetInt("_Radius", radius);
-
-        renderer.EnqueuePass(pass);
+        m_ScriptablePass.SetRadius(radius);
+        renderer.EnqueuePass(m_ScriptablePass);
     }
 
     protected override void Dispose(bool disposing)
     {
         base.Dispose(disposing);
-        if (disposing && material != null)
+        if (disposing && m_Material != null)
         {
-            CoreUtils.Destroy(material);
-            material = null;
+            CoreUtils.Destroy(m_Material);
+            m_Material = null;
         }
     }
 }
