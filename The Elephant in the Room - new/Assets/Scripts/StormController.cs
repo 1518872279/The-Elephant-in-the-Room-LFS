@@ -11,8 +11,12 @@ public class StormController : MonoBehaviour
     public LightningController lightningController; // Lightning controller component
     public AudioSource stormAudio;                  // Rain/wind ambience AudioSource
 
-    private bool stormActive;
+    [Header("Debug")]
+    [SerializeField] private bool stormActive;
+    
     private ParticleSystem rainParticles;
+
+    public bool IsStormActive => stormActive;
 
     void Awake()
     {
@@ -78,16 +82,11 @@ public class StormController : MonoBehaviour
             stormAudio.Stop();
     }
 
-    // Inspector buttons for manual control
-    [ContextMenu("Activate Storm")]
-    public void ActivateStormFromInspector()
+    public void ToggleStorm()
     {
-        ActivateStorm();
-    }
-
-    [ContextMenu("Deactivate Storm")]
-    public void DeactivateStormFromInspector()
-    {
-        DeactivateStorm();
+        if (stormActive)
+            DeactivateStorm();
+        else
+            ActivateStorm();
     }
 } 
