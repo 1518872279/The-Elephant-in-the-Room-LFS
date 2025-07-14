@@ -79,7 +79,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_Active: 1
   shader: {fileID: 4800000, guid: 44f434172dfff7c4280b304e621a2cfd, type: 3}
-  radius: 5
+  radius: 2
 --- !u!114 &11400000
 MonoBehaviour:
   m_ObjectHideFlags: 0
