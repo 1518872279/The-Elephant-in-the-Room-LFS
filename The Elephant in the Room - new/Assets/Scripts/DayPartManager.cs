@@ -12,37 +12,62 @@ public class DayPartManager : MonoBehaviour
     public float morningIntensity = 1f;
     public float eveningIntensity = 0.5f;
 
+    [Header("Day Counter (read-only)")]
+    [Tooltip("Number of in-game days that have passed")]
+    public int daysElapsed = 1;
+
     private enum DayPart { None, Morning, Evening }
     private DayPart currentPart = DayPart.None;
 
     void Start()
     {
         TimeManager.Instance.OnTimeChanged += OnTimeChanged;
+        // Initialize volumes & light based on current time
         OnTimeChanged(TimeManager.Instance.GetCurrentTime());
+    }
+
+    void OnDestroy()
+    {
+        if (TimeManager.Instance != null)
+            TimeManager.Instance.OnTimeChanged -= OnTimeChanged;
     }
 
     private void OnTimeChanged(int minutes)
     {
-        DayPart newPart = DeterminePart(minutes);
+        var newPart = DeterminePart(minutes);
         if (newPart != currentPart)
         {
+            // If we¡¯re moving from Evening ¡ú Morning, that¡¯s a new day
+            if (currentPart == DayPart.Evening && newPart == DayPart.Morning)
+                daysElapsed++;
+
             ApplyPart(newPart);
             currentPart = newPart;
         }
     }
 
     private DayPart DeterminePart(int minutes)
-        => minutes >= TimeManager.Instance.morningStart && minutes < TimeManager.Instance.morningEnd ? DayPart.Morning
-         : minutes >= TimeManager.Instance.eveningStart && minutes < TimeManager.Instance.eveningEnd ? DayPart.Evening
-         : DayPart.None;
+    {
+        if (minutes >= TimeManager.Instance.morningStart && minutes < TimeManager.Instance.morningEnd)
+            return DayPart.Morning;
+        if (minutes >= TimeManager.Instance.eveningStart && minutes < TimeManager.Instance.eveningEnd)
+            return DayPart.Evening;
+        return currentPart; // remain in current part if outside defined windows
+    }
 
     private void ApplyPart(DayPart part)
     {
-        morningVolume.weight = part == DayPart.Morning ? 1f : 0f;
-        eveningVolume.weight = part == DayPart.Evening ? 1f : 0f;
-        if (part == DayPart.Morning)
-            directionalLight.intensity = morningIntensity;
-        else if (part == DayPart.Evening)
-            directionalLight.intensity = eveningIntensity;
+        morningVolume.weight = (part == DayPart.Morning) ? 1f : 0f;
+        eveningVolume.weight = (part == DayPart.Evening) ? 1f : 0f;
+
+        switch (part)
+        {
+            case DayPart.Morning:
+                directionalLight.intensity = morningIntensity;
+                break;
+            case DayPart.Evening:
+                directionalLight.intensity = eveningIntensity;
+                break;
+        }
     }
-} 
+}
