@@ -62,4 +62,11 @@ public class TimeManager : MonoBehaviour
     }
 
     public int GetCurrentTime() => currentTime;
+
+    /// <summary>Manually set the in-game clock time</summary>
+    public void SetTime(int minutes)
+    {
+        currentTime = minutes;
+        OnTimeChanged?.Invoke(currentTime);
+    }
 } 

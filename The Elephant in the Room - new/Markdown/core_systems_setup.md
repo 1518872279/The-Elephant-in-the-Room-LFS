@@ -202,4 +202,162 @@ public class BedTransition : MonoBehaviour, IInteractable
     }
 }
 
-End of setup.
+15. Door Open/Close Mechanic
+
+Allows the player to press E when near the door to smoothly open or close it around its hinge pivot.
+
+15.1. Scene Setup
+
+Door Object: Ensure your door has a child Hinge Transform located at the desired pivot (e.g., the hinge side).
+
+Collider: Add a BoxCollider (set Is Trigger) around the door’s area. Tag the player GameObject (default: "Player").
+
+15. Door Open/Close Mechanic
+
+Allows the player to press E when near the door to smoothly open or close it around its hinge pivot.
+
+15.1. Scene Setup
+
+Door Object & Hinge: Your visible Door should have a child Hinge Transform at its pivot point.
+
+Trigger Zone: Create a new empty child GameObject named DoorTriggerZone under the door parent:
+
+Add a BoxCollider component.
+
+Set Is Trigger = true.
+
+Position and size this box to cover the area where the player should auto‐open/close the door (e.g. directly in front of it).
+
+Tag or Layer: Ensure the player GameObject is tagged (default: "Player") or on a detectable layer.
+
+15.2. DoorOpenClose.cs
+
+Attach this script to the DoorTriggerZone GameObject (not the Door itself). Then in the Inspector:
+
+Hinge: drag the Door’s Hinge transform here.
+
+Player Tag: set to your player’s tag (e.g. "Player").
+
+// DoorOpenClose.cs
+using UnityEngine;
+using System.Collections;
+
+public class DoorOpenClose : MonoBehaviour
+{
+    [Header("Rotation Settings")]
+    public Transform hinge;              // Pivot for rotation (the actual door hinge)
+    public float openAngle = 90f;        // Degrees to open
+    public float openSpeed = 3f;         // Lerp speed
+    public string playerTag = "Player"; // Tag used for detecting player entry/exit
+
+    private bool isOpen = false;
+    private Quaternion closedRot;
+    private Quaternion openRot;
+
+    void Start()
+    {
+        // Cache the start rotation of the door hinge
+        if (hinge == null)
+            Debug.LogError("Hinge Transform not set on DoorOpenClose.");
+        closedRot = hinge.localRotation;
+        openRot   = closedRot * Quaternion.Euler(0f, openAngle, 0f);
+    }
+
+    // Trigger events now fire on this trigger zone object
+    void OnTriggerEnter(Collider other)
+    {
+        if (other.CompareTag(playerTag) && !isOpen)
+        {
+            StopAllCoroutines();
+            StartCoroutine(RotateDoor(openRot));
+            isOpen = true;
+        }
+    }
+
+    void OnTriggerExit(Collider other)
+    {
+        if (other.CompareTag(playerTag) && isOpen)
+        {
+            StopAllCoroutines();
+            StartCoroutine(RotateDoor(closedRot));
+            isOpen = false;
+        }
+    }
+
+    private IEnumerator RotateDoor(Quaternion target)
+    {
+        // Smoothly slerp hinge rotation towards target
+        while (Quaternion.Angle(hinge.localRotation, target) > 0.1f)
+        {
+            hinge.localRotation = Quaternion.Slerp(
+                hinge.localRotation,
+                target,
+                Time.deltaTime * openSpeed);
+            yield return null;
+        }
+        hinge.localRotation = target;
+    }
+}
+
+End of setup. DoorOpenClose.cs
+Attach this to the Door GameObject (or its parent) and assign the hinge Transform:
+
+// DoorOpenClose.cs
+ing UnityEngine;
+using System.Collections;
+
+public class DoorOpenClose : MonoBehaviour
+{
+    [Header("Rotation Settings")]
+    public Transform hinge;              // Pivot for rotation
+    public float openAngle = 90f;        // Degrees to open
+    public float openSpeed = 3f;         // Lerp speed
+    public string playerTag = "Player"; // Tag used for detecting player
+
+    private bool isOpen = false;
+    private Quaternion closedRot;
+    private Quaternion openRot;
+
+    void Start()
+    {
+        if (hinge == null)
+            hinge = transform;
+        closedRot = hinge.localRotation;
+        openRot   = closedRot * Quaternion.Euler(0f, openAngle, 0f);
+    }
+
+    void OnTriggerEnter(Collider other)
+    {
+        if (other.CompareTag(playerTag) && !isOpen)
+        {
+            StopAllCoroutines();
+            StartCoroutine(RotateDoor(openRot));
+            isOpen = true;
+        }
+    }
+
+    void OnTriggerExit(Collider other)
+    {
+        if (other.CompareTag(playerTag) && isOpen)
+        {
+            StopAllCoroutines();
+            StartCoroutine(RotateDoor(closedRot));
+            isOpen = false;
+        }
+    }
+
+    private IEnumerator RotateDoor(Quaternion target)
+    {
+        while (Quaternion.Angle(hinge.localRotation, target) > 0.1f)
+        {
+            hinge.localRotation = Quaternion.Slerp(
+                hinge.localRotation,
+                target,
+                Time.deltaTime * openSpeed);
+            yield return null;
+        }
+        hinge.localRotation = target;
+    }
+}
+
+End of setup.*
