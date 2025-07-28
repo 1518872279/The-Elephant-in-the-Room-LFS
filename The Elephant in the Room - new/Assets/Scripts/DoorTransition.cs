@@ -11,6 +11,22 @@ public class DoorTransition : MonoBehaviour, IInteractable
     public void Interact()
     {
         if (isBusy) return;
+        
+        // Ensure fade image is available
+        if (fadeImage == null)
+        {
+            Debug.LogError("DoorTransition: No fade image assigned!");
+            return;
+        }
+        
+        // Ensure the canvas is enabled
+        Canvas canvas = fadeImage.GetComponentInParent<Canvas>();
+        if (canvas != null && !canvas.enabled)
+        {
+            Debug.Log("DoorTransition: Enabling transition canvas");
+            canvas.enabled = true;
+        }
+        
         int min = TimeManager.Instance.GetCurrentTime();
         if (min >= TimeManager.Instance.morningStart && min < TimeManager.Instance.morningEnd)
             StartCoroutine(Transition(TimeManager.Instance.eveningStart));

@@ -12,6 +12,7 @@ public class PhoneUIController : MonoBehaviour
 
     private DepthOfField dof;
 
+    public GameObject HomePage;
     void Start()
     {
         // Start with UI and blur disabled
@@ -39,6 +40,7 @@ public class PhoneUIController : MonoBehaviour
 
     void TogglePhone()
     {
+        HomePage.SetActive(true);
         bool isActive = !phonePanel.activeSelf;
         phonePanel.SetActive(isActive);
         postProcessVolume.weight = isActive ? 1f : 0f;

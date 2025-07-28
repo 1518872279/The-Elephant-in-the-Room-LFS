@@ -11,6 +11,22 @@ public class BedTransition : MonoBehaviour, IInteractable
     public void Interact()
     {
         if (isBusy) return;
+        
+        // Ensure fade image is available
+        if (fadeImage == null)
+        {
+            Debug.LogError("BedTransition: No fade image assigned!");
+            return;
+        }
+        
+        // Ensure the canvas is enabled
+        Canvas canvas = fadeImage.GetComponentInParent<Canvas>();
+        if (canvas != null && !canvas.enabled)
+        {
+            Debug.Log("BedTransition: Enabling transition canvas");
+            canvas.enabled = true;
+        }
+        
         int min = TimeManager.Instance.GetCurrentTime();
         if (min >= TimeManager.Instance.eveningStart && min < TimeManager.Instance.eveningEnd)
             StartCoroutine(Transition(TimeManager.Instance.morningStart));
