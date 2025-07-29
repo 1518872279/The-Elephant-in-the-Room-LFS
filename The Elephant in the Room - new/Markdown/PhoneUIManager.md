@@ -134,3 +134,144 @@ public class PhoneUIManager : MonoBehaviour
    - Call `OpenPhone()` from your activation logic (e.g., key press) and `ClosePhone()` from your close button or input.
 
 With this setup, every time the player opens their phone, the UI will reset to the home page automatically, providing a consistent starting point.
+
+# Phone Messaging System
+
+This file defines a timed messaging system that delivers messages at the start of the morning or evening and allows the player to reply with two choices.
+
+## 1. Extending DayPartManager
+
+First, broadcast day-part changes by adding an event to your existing `DayPartManager`:
+
+```csharp
+using System;
+
+// inside DayPartManager class
+public event Action<DayPart> OnDayPartChanged;
+
+private void OnTimeChanged(int minutes)
+{
+    var newPart = DeterminePart(minutes);
+    if (newPart != currentPart)
+    {
+        OnDayPartChanged?.Invoke(newPart);    // fire event
+        ApplyPart(newPart);
+        currentPart = newPart;
+    }
+}
+```
+
+## 2. Define the TimedMessage Data
+
+Create a serializable class to configure each message in the Inspector:
+
+```csharp
+[System.Serializable]
+public class TimedMessage
+{
+    public DayPartManager.DayPart triggerPart;  // Morning or Evening
+    public string senderName;
+    [TextArea] public string messageText;
+    public string replyOption1;
+    public string replyOption2;
+}
+```
+
+## 3. MessageManager Script
+
+Add a new `MessageManager` to handle scheduling, display, and replies:
+
+```csharp
+using UnityEngine;
+using UnityEngine.UI;
+using System.Collections.Generic;
+
+public class MessageManager : MonoBehaviour
+{
+    public static MessageManager Instance { get; private set; }
+
+    [Header("Configured Messages")]
+    public List<TimedMessage> messages;
+
+    [Header("UI References")]
+    public GameObject messagePanel;    // The pop-up panel
+    public Text senderText;            // UI Text for sender name
+    public Text messageContentText;    // UI Text for message body
+    public Button replyButton1;        // Button for first reply choice
+    public Button replyButton2;        // Button for second reply choice
+
+    // Fired after the player selects a reply (0 or 1)
+    public event System.Action<int> OnReplySelected;
+
+    void Awake()
+    {
+        if (Instance == null) Instance = this;
+        else Destroy(gameObject);
+    }
+
+    void Start()
+    {
+        // Hide at start
+        messagePanel.SetActive(false);
+        // Subscribe to day-part changes
+        DayPartManager.Instance.OnDayPartChanged += ShowMessageForPart;
+    }
+
+    void OnDestroy()
+    {
+        if (DayPartManager.Instance != null)
+            DayPartManager.Instance.OnDayPartChanged -= ShowMessageForPart;
+    }
+
+    private void ShowMessageForPart(DayPartManager.DayPart part)
+    {
+        // Find the first matching message for this part
+        TimedMessage msg = messages.Find(m => m.triggerPart == part);
+        if (msg == null) return;
+
+        // Populate UI
+        senderText.text         = msg.senderName;
+        messageContentText.text = msg.messageText;
+        replyButton1.GetComponentInChildren<Text>().text = msg.replyOption1;
+        replyButton2.GetComponentInChildren<Text>().text = msg.replyOption2;
+
+        // Clear previous listeners
+        replyButton1.onClick.RemoveAllListeners();
+        replyButton2.onClick.RemoveAllListeners();
+
+        // Hook up new listeners
+        replyButton1.onClick.AddListener(() => HandleReply(0));
+        replyButton2.onClick.AddListener(() => HandleReply(1));
+
+        // Show panel
+        messagePanel.SetActive(true);
+    }
+
+    private void HandleReply(int choice)
+    {
+        // Notify subscribers which choice was made
+        OnReplySelected?.Invoke(choice);
+        // Hide the panel
+        messagePanel.SetActive(false);
+    }
+}
+```
+
+## 4. Setup Instructions
+
+1. **Extend DayPartManager**  
+   - Implement the `OnDayPartChanged` event as shown.
+
+2. **Create UI Panel**  
+   - Add a `messagePanel` under your Canvas.  
+   - Inside it, place two Text components (for sender and message) and two Buttons.  
+   - Assign those GameObjects to the `MessageManager` fields in the Inspector.
+
+3. **Populate Messages**  
+   - In the `MessageManager` component, set the size of **Configured Messages**.  
+   - For each entry, choose **triggerPart** (Morning or Evening), fill **senderName**, **messageText**, and both **replyOption1** & **replyOption2**.
+
+4. **Handle Replies**  
+   - Subscribe to `MessageManager.Instance.OnReplySelected` from your game logic to react (e.g., adjust happiness, trigger events) based on the player’s choice.
+
+With these scripts in place, players will receive a message from a specified sender at the start of each morning or evening, and can reply using one of two options. Let me know if you need additional customization!

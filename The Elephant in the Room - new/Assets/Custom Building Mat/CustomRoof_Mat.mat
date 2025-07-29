@@ -110,7 +110,7 @@ Material:
     - _Mat1_BaseColor: 1.19
     - _Mat1_ColorTexture: 0
     - _Mat1_Metallic: 0
-    - _Mat1_Roughness: 0.5
+    - _Mat1_Roughness: 0
     - _Mat1_RoughnessTexture: 0
     - _Mat1_UV: 1
     - _Mat2_BaseColor: 0.56

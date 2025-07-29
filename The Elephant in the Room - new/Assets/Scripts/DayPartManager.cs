@@ -1,9 +1,12 @@
 using UnityEngine;
 using UnityEngine.Rendering;
 using UnityEngine.Rendering.Universal;
+using System;
 
 public class DayPartManager : MonoBehaviour
 {
+    public static DayPartManager Instance { get; private set; }
+
     public Volume morningVolume;
     public Volume eveningVolume;
     public Light directionalLight;
@@ -16,8 +19,17 @@ public class DayPartManager : MonoBehaviour
     [Tooltip("Number of in-game days that have passed")]
     public int daysElapsed = 1;
 
-    private enum DayPart { None, Morning, Evening }
+    public enum DayPart { None, Morning, Evening }
     private DayPart currentPart = DayPart.None;
+    
+    // Event for day part changes
+    public event Action<DayPart> OnDayPartChanged;
+
+    void Awake()
+    {
+        if (Instance == null) Instance = this;
+        else { Destroy(gameObject); return; }
+    }
 
     void Start()
     {
@@ -37,10 +49,11 @@ public class DayPartManager : MonoBehaviour
         var newPart = DeterminePart(minutes);
         if (newPart != currentPart)
         {
-            // If we¡¯re moving from Evening ¡ú Morning, that¡¯s a new day
+            // If we're moving from Evening to Morning, that's a new day
             if (currentPart == DayPart.Evening && newPart == DayPart.Morning)
                 daysElapsed++;
 
+            OnDayPartChanged?.Invoke(newPart);    // fire event
             ApplyPart(newPart);
             currentPart = newPart;
         }
