@@ -33,7 +33,7 @@ public class DoorOpenClose : MonoBehaviour
         
         closedRot = doorObject.transform.localRotation;
         openRot   = closedRot * Quaternion.Euler(0f, openAngle, 0f);
-        Debug.Log($"DoorOpenClose initialized - Door: {doorObject.name}, Hinge: {hinge.name}, Closed Rot: {closedRot}, Open Rot: {openRot}");
+        //Debug.Log($"DoorOpenClose initialized - Door: {doorObject.name}, Hinge: {hinge.name}, Closed Rot: {closedRot}, Open Rot: {openRot}");
     }
 
     // Trigger events now fire on this trigger zone object

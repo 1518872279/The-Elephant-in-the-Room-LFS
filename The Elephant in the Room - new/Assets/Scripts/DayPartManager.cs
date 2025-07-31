@@ -20,7 +20,7 @@ public class DayPartManager : MonoBehaviour
     public int daysElapsed = 1;
 
     public enum DayPart { None, Morning, Evening }
-    private DayPart currentPart = DayPart.None;
+    public DayPart currentPart = DayPart.None;
     
     // Event for day part changes
     public event Action<DayPart> OnDayPartChanged;

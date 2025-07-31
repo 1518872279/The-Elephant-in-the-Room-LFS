@@ -57,10 +57,10 @@ public class PhoneUIController : MonoBehaviour
             HomePage.SetActive(true);
             
             if (dof != null)
-            {
-                // Focus very close so the background blurs
-                dof.focusDistance.value = 0.1f;
-            }
+        {
+            // Focus very close so the background blurs
+            dof.focusDistance.value = 0.1f;
+        }
 
             // Pause movement and show cursor
             fpController.enabled = false;
