@@ -14,6 +14,7 @@ public class MessageManager : MonoBehaviour
     private DayPartManager.DayPart currentDayPart = DayPartManager.DayPart.None;
 
     [Header("UI References")]
+    public GameObject SecondaryInterface;
     public GameObject messagePanel;    // The pop-up panel
     public TextMeshProUGUI senderText;            // UI Text for sender name
     public TextMeshProUGUI messageContentText;    // UI Text for message body
@@ -24,10 +25,11 @@ public class MessageManager : MonoBehaviour
     public TextMeshProUGUI chosenReplyText;    // UI Text to show the chosen reply
     public GameObject replyOptionsPanel;        // Panel containing the reply buttons
     
-    [Header("Message Preview")]
-    public GameObject previewPanel;             // Panel to show all messages for current day part
-    public Transform previewContentParent;      // Parent transform for preview message items
-    public GameObject messagePreviewItemPrefab; // Prefab for individual message preview items
+    //[Header("Message Preview")]
+    // [DISABLED] Preview system temporarily disabled
+    // public GameObject previewPanel;             // Panel to show all messages for current day part
+    // public Transform previewContentParent;      // Parent transform for preview message items
+    // public GameObject messagePreviewItemPrefab; // Prefab for individual message preview items
 
     // Fired after the player selects a reply (0 or 1)
     public event System.Action<int> OnReplySelected;
@@ -49,9 +51,9 @@ public class MessageManager : MonoBehaviour
         if (chosenReplyText != null)
             chosenReplyText.gameObject.SetActive(false);
         
-        // Initialize preview panel
-        if (previewPanel != null)
-            previewPanel.SetActive(false);
+        // Initialize preview panel (disabled)
+        // if (previewPanel != null)
+        //     previewPanel.SetActive(false);
     }
 
     void OnDestroy()
@@ -64,114 +66,40 @@ public class MessageManager : MonoBehaviour
     {
         Debug.Log($"MessageManager: Day part changed to {part}");
         currentDayPart = part;
-        RefreshPreviewPanel();
+        ShowFirstMessageForDayPart(part);
     }
     
     /// <summary>
-    /// Refreshes the preview panel with current messages for the active day part
+    /// Shows the first message for the given day part (simplified without preview)
     /// </summary>
-    public void RefreshPreviewPanel()
+    public void ShowFirstMessageForDayPart(DayPartManager.DayPart dayPart)
     {
-        // Get current day part from DayPartManager if not set
-        if (currentDayPart == DayPartManager.DayPart.None && DayPartManager.Instance != null)
-        {
-            currentDayPart = DayPartManager.Instance.currentPart;
-            Debug.Log($"MessageManager: Got current day part from DayPartManager: {currentDayPart}");
-        }
-        
-        Debug.Log($"MessageManager: Refreshing preview panel for day part {currentDayPart}");
+        Debug.Log($"MessageManager: Looking for messages for day part {dayPart}");
         Debug.Log($"MessageManager: Total messages in list: {messages.Count}");
         
-        if (currentDayPart == DayPartManager.DayPart.None) 
-        {
-            Debug.Log("MessageManager: No day part set, skipping refresh");
-            return;
-        }
-        
-        // Find all messages for current day part
-        List<TimedMessage> dayPartMessages = messages.FindAll(m => m.triggerPart == currentDayPart);
-        Debug.Log($"MessageManager: Found {dayPartMessages.Count} messages for {currentDayPart}");
+        // Find all messages for the day part
+        List<TimedMessage> dayPartMessages = messages.FindAll(m => m.triggerPart == dayPart);
+        Debug.Log($"MessageManager: Found {dayPartMessages.Count} messages for {dayPart}");
         
         if (dayPartMessages.Count == 0)
         {
-            Debug.Log("MessageManager: No messages found for current day part, hiding preview panel");
-            // Hide preview panel if no messages
-            if (previewPanel != null)
-                previewPanel.SetActive(false);
+            Debug.Log("MessageManager: No messages found for this day part");
             return;
         }
 
-        // Show preview panel with all messages
-        ShowPreviewPanel(dayPartMessages);
-
-        // Show the first message in the main panel if not already showing a message
-        if (!messagePanel.activeSelf)
-        {
-            Debug.Log("MessageManager: Showing first message in main panel");
-            TimedMessage firstMsg = dayPartMessages[0];
-            ShowMessageInMainPanel(firstMsg);
-        }
-        else
-        {
-            Debug.Log("MessageManager: Main panel already active, skipping first message display");
-        }
+        // Show the first message in the main panel
+        Debug.Log("MessageManager: Showing first message in main panel");
+        TimedMessage firstMsg = dayPartMessages[0];
+        ShowMessageInMainPanel(firstMsg);
     }
     
-    private void ShowPreviewPanel(List<TimedMessage> dayPartMessages)
-    {
-        Debug.Log($"MessageManager: Showing preview panel with {dayPartMessages.Count} messages");
-        
-        if (previewPanel == null)
-        {
-            Debug.LogError("MessageManager: Preview panel is null!");
-            return;
-        }
-        
-        if (previewContentParent == null)
-        {
-            Debug.LogError("MessageManager: Preview content parent is null!");
-            return;
-        }
-        
-        // Clear existing preview items
-        int childCount = previewContentParent.childCount;
-        Debug.Log($"MessageManager: Clearing {childCount} existing preview items");
-        foreach (Transform child in previewContentParent)
-        {
-            Destroy(child.gameObject);
-        }
-        
-        // Create preview items for each message
-        foreach (TimedMessage msg in dayPartMessages)
-        {
-            Debug.Log($"MessageManager: Creating preview item for message from {msg.senderName}");
-            
-            if (messagePreviewItemPrefab != null)
-            {
-                GameObject previewItem = Instantiate(messagePreviewItemPrefab, previewContentParent);
-                MessagePreviewItem previewComponent = previewItem.GetComponent<MessagePreviewItem>();
-                
-                if (previewComponent != null)
-                {
-                    previewComponent.SetupPreview(msg, (selectedMsg) => ShowMessageInMainPanel(selectedMsg));
-                    Debug.Log($"MessageManager: Preview item created successfully");
-                }
-                else
-                {
-                    Debug.LogError("MessageManager: MessagePreviewItem component not found on prefab!");
-                }
-            }
-            else
-            {
-                Debug.LogError("MessageManager: Message preview item prefab is null!");
-            }
-        }
-        
-        previewPanel.SetActive(true);
-        Debug.Log("MessageManager: Preview panel activated");
-    }
+    // [DISABLED] Preview panel functionality temporarily disabled
+    // private void ShowPreviewPanel(List<TimedMessage> dayPartMessages)
+    // {
+    //     // Preview panel code commented out
+    // }
     
-    private void ShowMessageInMainPanel(TimedMessage msg)
+    public void ShowMessageInMainPanel(TimedMessage msg)
     {
         Debug.Log($"MessageManager: Showing message in main panel from {msg.senderName}");
         
@@ -251,36 +179,27 @@ public class MessageManager : MonoBehaviour
     }
     
     /// <summary>
-    /// Adds a new message to the list and refreshes preview if needed
+    /// Adds a new message to the list
     /// </summary>
     public void AddMessage(TimedMessage newMessage)
     {
         messages.Add(newMessage);
-        
-        // Refresh preview if this message is for the current day part
-        if (newMessage.triggerPart == currentDayPart)
-        {
-            RefreshPreviewPanel();
-        }
+        Debug.Log($"MessageManager: Added message from {newMessage.senderName} for {newMessage.triggerPart}");
     }
     
     /// <summary>
-    /// Removes a message from the list and refreshes preview if needed
+    /// Removes a message from the list
     /// </summary>
     public void RemoveMessage(TimedMessage messageToRemove)
     {
         if (messages.Remove(messageToRemove))
         {
-            // Refresh preview if this message was for the current day part
-            if (messageToRemove.triggerPart == currentDayPart)
-            {
-                RefreshPreviewPanel();
-            }
+            Debug.Log($"MessageManager: Removed message from {messageToRemove.senderName}");
         }
     }
     
     /// <summary>
-    /// Updates a message in the list and refreshes preview if needed
+    /// Updates a message in the list
     /// </summary>
     public void UpdateMessage(TimedMessage oldMessage, TimedMessage updatedMessage)
     {
@@ -288,22 +207,17 @@ public class MessageManager : MonoBehaviour
         if (index != -1)
         {
             messages[index] = updatedMessage;
-            
-            // Refresh preview if either the old or new message is for current day part
-            if (oldMessage.triggerPart == currentDayPart || updatedMessage.triggerPart == currentDayPart)
-            {
-                RefreshPreviewPanel();
-            }
+            Debug.Log($"MessageManager: Updated message from {updatedMessage.senderName}");
         }
     }
     
     /// <summary>
-    /// Clears all messages and refreshes preview
+    /// Clears all messages
     /// </summary>
     public void ClearAllMessages()
     {
         messages.Clear();
-        RefreshPreviewPanel();
+        Debug.Log("MessageManager: Cleared all messages");
     }
     
     /// <summary>
@@ -312,6 +226,17 @@ public class MessageManager : MonoBehaviour
     public List<TimedMessage> GetMessagesForDayPart(DayPartManager.DayPart dayPart)
     {
         return messages.FindAll(m => m.triggerPart == dayPart);
+    }
+    
+    /// <summary>
+    /// Gets all messages for a specific contact, day, and day part
+    /// </summary>
+    public List<TimedMessage> GetMessagesForContact(string contactName, int day, DayPartManager.DayPart dayPart)
+    {
+        return messages.FindAll(m => 
+            m.senderName == contactName && 
+            m.day == day && 
+            m.triggerPart == dayPart);
     }
     
     /// <summary>
@@ -336,15 +261,18 @@ public class MessageManager : MonoBehaviour
             Debug.Log("MessageManager: No messages found, creating test message");
             TimedMessage testMsg = new TimedMessage();
             testMsg.triggerPart = DayPartManager.DayPart.Morning;
+            testMsg.day = 1; // Test for day 1
             testMsg.senderName = "Test Sender";
             testMsg.messageText = "This is a test message to verify the UI is working properly.";
             testMsg.replyOption1 = "Test Reply 1";
             testMsg.replyOption2 = "Test Reply 2";
             messages.Add(testMsg);
         }
-        
-        // Force refresh
-        RefreshPreviewPanel();
+        //disable the secondary interface after tertiory interface is activated
+        SecondaryInterface.SetActive(false);
+        // Show first message for current day part
+        ShowFirstMessageForDayPart(DayPartManager.DayPart.Morning);
+
     }
     
     /// <summary>
@@ -354,15 +282,13 @@ public class MessageManager : MonoBehaviour
     public void TestMorningMessages()
     {
         Debug.Log("MessageManager: Testing morning messages...");
-        currentDayPart = DayPartManager.DayPart.Morning;
-        RefreshPreviewPanel();
+        ShowFirstMessageForDayPart(DayPartManager.DayPart.Morning);
     }
     
     [ContextMenu("Test Evening Messages")]
     public void TestEveningMessages()
     {
         Debug.Log("MessageManager: Testing evening messages...");
-        currentDayPart = DayPartManager.DayPart.Evening;
-        RefreshPreviewPanel();
+        ShowFirstMessageForDayPart(DayPartManager.DayPart.Evening);
     }
 } 
