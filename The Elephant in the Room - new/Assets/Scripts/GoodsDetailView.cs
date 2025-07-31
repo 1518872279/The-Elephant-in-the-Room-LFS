@@ -290,6 +290,16 @@ public class GoodsDetailView : MonoBehaviour
 
         Debug.Log($"GoodsDetailView: Purchase confirmed for '{currentGoods.goodsName}' at ${currentGoods.goodsPrice:F2}");
         
+        // Set the goods to unavailable after purchase
+        if (goodsManager != null)
+        {
+            goodsManager.SetGoodsAvailability(currentGoods.goodsName, false);
+            Debug.Log($"GoodsDetailView: Set '{currentGoods.goodsName}' to unavailable after purchase");
+        }
+        
+        // Refresh all GoodsPreview components to reflect the availability change
+        RefreshAllGoodsPreviews();
+        
         // Fire the purchase confirmed event
         OnPurchaseConfirmed?.Invoke(currentGoods);
         
@@ -416,5 +426,21 @@ public class GoodsDetailView : MonoBehaviour
         {
             Debug.Log($"GoodsDetailView: CancelPurchaseButton active: {cancelPurchaseButton.gameObject.activeInHierarchy}");
         }
+    }
+    
+    /// <summary>
+    /// Refresh all GoodsPreview components to reflect availability changes
+    /// </summary>
+    private void RefreshAllGoodsPreviews()
+    {
+        // Find all GoodsPreview components in the scene
+        GoodsPreview[] allPreviews = FindObjectsOfType<GoodsPreview>();
+        
+        foreach (GoodsPreview preview in allPreviews)
+        {
+            preview.RefreshGoodsAvailability();
+        }
+        
+        Debug.Log($"GoodsDetailView: Refreshed {allPreviews.Length} GoodsPreview components");
     }
 } 

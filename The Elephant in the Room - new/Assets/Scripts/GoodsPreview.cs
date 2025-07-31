@@ -136,6 +136,16 @@ public class GoodsPreview : MonoBehaviour
         if (selectButton != null)
         {
             selectButton.interactable = currentGoods.isAvailable;
+            
+            // Visual feedback for unavailable goods
+            if (!currentGoods.isAvailable)
+            {
+                // You can add visual effects here, such as:
+                // - Changing button color to gray
+                // - Adding "SOLD OUT" text
+                // - Disabling the button
+                Debug.Log($"GoodsPreview: '{currentGoods.goodsName}' is now unavailable");
+            }
         }
 
         Debug.Log($"GoodsPreview: Updated display for '{currentGoods.goodsName}' - Price: ${currentGoods.goodsPrice}, Available: {currentGoods.isAvailable}");
@@ -204,6 +214,24 @@ public class GoodsPreview : MonoBehaviour
     public void RefreshDisplay()
     {
         UpdateDisplay();
+    }
+    
+    /// <summary>
+    /// Refresh the display and update availability status
+    /// </summary>
+    public void RefreshGoodsAvailability()
+    {
+        if (currentGoods != null && goodsManager != null)
+        {
+            // Get the updated goods data from the manager
+            Goods updatedGoods = goodsManager.GetGoods(currentGoods.goodsName);
+            if (updatedGoods != null)
+            {
+                currentGoods = updatedGoods;
+                UpdateDisplay();
+                Debug.Log($"GoodsPreview: Refreshed availability for '{currentGoods.goodsName}' - Available: {currentGoods.isAvailable}");
+            }
+        }
     }
 
     /// <summary>
