@@ -9,6 +9,10 @@ public class FirstPersonController : MonoBehaviour
     public float interactDistance = 3f;
     public LayerMask interactLayer;
     
+    [Header("Watch Control")]
+    [Tooltip("Reference to the WatchAnimationManager component")]
+    public WatchAnimationManager watchManager;
+    
     [Header("Stair Climbing")]
     public float maxStepHeight = 0.3f;
     public float stepSmooth = 0.1f;
@@ -30,6 +34,7 @@ public class FirstPersonController : MonoBehaviour
         HandleLook();
         HandleMove();
         if (Input.GetMouseButtonDown(0)) HandleInteract();
+        HandleWatchInput();
     }
 
     void HandleLook()
@@ -106,5 +111,21 @@ public class FirstPersonController : MonoBehaviour
         Ray ray = new Ray(cameraTransform.position, cameraTransform.forward);
         if (Physics.Raycast(ray, out RaycastHit hit, interactDistance, interactLayer))
             hit.collider.GetComponent<IInteractable>()?.Interact();
+    }
+    
+    void HandleWatchInput()
+    {
+        // Check for watch input (key 3)
+        if (Input.GetKeyDown(KeyCode.Alpha3))
+        {
+            if (watchManager != null)
+            {
+                watchManager.HandleWatchInput();
+            }
+            else
+            {
+                Debug.LogWarning("WatchManager not assigned to FirstPersonController");
+            }
+        }
     }
 } 
