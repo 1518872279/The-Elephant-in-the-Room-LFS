@@ -43,6 +43,13 @@ In the Inspector, you can customize:
 2. In the FirstPersonController component, assign the WatchAnimationManager to the "Watch Manager" field
 3. The input handling is now managed by the FirstPersonController (always active)
 
+### 7. Set Up Time Synchronization (Optional)
+1. **Assign Watch Hands**: Drag the hour hand, minute hand, and second hand (optional) transforms to the respective fields
+2. **Auto Sync**: Enable "Auto Sync Time" to automatically update hands with game time
+3. **Rotation Direction**: Set "Clockwise Rotation" to true for standard clock rotation
+4. **Manual Sync**: Use `SyncWatchTime()` or `SyncWatchTime(hour, minute, second)` from other scripts
+5. **Game Time**: The watch automatically syncs with TimeManager.Instance.GetCurrentTime()
+
 ## How It Works
 
 ### Activation Behavior
@@ -80,6 +87,11 @@ watchManager.ForceIdle();
 // Activation control
 watchManager.ActivateWatch();
 watchManager.DeactivateWatch();
+
+// Time synchronization
+watchManager.SyncWatchTime(); // Sync to current game time
+watchManager.SyncWatchTime(14, 30, 45); // Sync to 2:30:45 PM
+watchManager.SyncWatchTime(870); // Sync to 14:30 (870 minutes since midnight)
 
 // Check current state
 if (watchManager.IsActivated) { /* ... */ }

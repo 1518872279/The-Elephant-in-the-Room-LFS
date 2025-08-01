@@ -7,34 +7,36 @@ public class OilPaintRenderFeature : ScriptableRendererFeature
     class CustomRenderPass : ScriptableRenderPass
     {
         Material mat;
-#pragma warning disable 618
         RenderTargetHandle tempRT;
-#pragma warning restore 618
 
         public CustomRenderPass(Material material)
         {
             mat = material;
-#pragma warning disable 618
             tempRT.Init("_TempOilPaintTex");
-#pragma warning restore 618
         }
 
         public override void Execute(ScriptableRenderContext context, ref RenderingData renderingData)
         {
+            // Only run on Game and SceneView cameras
+            var camType = renderingData.cameraData.cameraType;
+            if (camType != CameraType.Game && camType != CameraType.SceneView)
+                return;
+
             if (mat == null)
                 return;
 
             var cmd = CommandBufferPool.Get("OilPaintEffect");
+
+            // 1) Grab a copy of the camera's descriptor, zero out its depth buffer
             var desc = renderingData.cameraData.cameraTargetDescriptor;
-#pragma warning disable 618
-            cmd.GetTemporaryRT(tempRT.id, desc);
-#pragma warning restore 618
+            desc.depthBufferBits = 0;
 
+            // 2) Allocate a temp RT matching that descriptor, with bilinear filtering
+            cmd.GetTemporaryRT(tempRT.id, desc, FilterMode.Bilinear);
+
+            // 3) Run the two-pass blit
             var source = renderingData.cameraData.renderer.cameraColorTarget;
-
-            // Run effect
             Blit(cmd, source, tempRT.Identifier(), mat);
-            // good: Blit will resolve MSAA and copy back
             Blit(cmd, tempRT.Identifier(), source);
 
             context.ExecuteCommandBuffer(cmd);
@@ -44,17 +46,15 @@ public class OilPaintRenderFeature : ScriptableRendererFeature
         public override void FrameCleanup(CommandBuffer cmd)
         {
             if (cmd == null) return;
-#pragma warning disable 618
             cmd.ReleaseTemporaryRT(tempRT.id);
-#pragma warning restore 618
         }
     }
 
     [Header("Feature Toggles")]
     public bool enableOilPaint = true;
     public bool enableColorQuantize = true;
-    public bool enableCanvasGrain = true; // now only using bump, color ignored
-    public bool enableBumpAndNoise = true;
+    public bool enableCanvasGrain = true;
+    public bool enableBumpAndNoise = false;
     public bool enableContrast = true;
     public bool enableReflection = true;
 
@@ -70,7 +70,7 @@ public class OilPaintRenderFeature : ScriptableRendererFeature
     [Range(0, 1)] public float bumpInfluence = 0.5f;
     [Range(1, 16384)] public float grainNoiseFreq = 8192f;
     [Range(0, 1)] public float noiseInfluence = 0.05f;
-    [Range(0, .2f)] public float grainStrength = 0.08f; // final strength of bump-based grain
+    [Range(0, .2f)] public float grainStrength = 0.08f;
 
     [Header("Color & Reflection Controls")]
     [Range(0.5f, 2f)] public float contrast = 1f;
@@ -104,26 +104,21 @@ public class OilPaintRenderFeature : ScriptableRendererFeature
 
     public override void AddRenderPasses(ScriptableRenderer renderer, ref RenderingData renderingData)
     {
-        if (material == null) return;
+        if (material == null || !enableOilPaint)
+            return;
 
-        // Toggles
-        material.SetFloat("_EnableOilPaint", enableOilPaint ? 1f : 0f);
+        // Update shader keywords & properties:
         material.SetFloat("_EnableQuantize", enableColorQuantize ? 1f : 0f);
         material.SetFloat("_EnableGrain", enableCanvasGrain ? 1f : 0f);
         material.SetFloat("_EnableBumpNoise", enableBumpAndNoise ? 1f : 0f);
         material.SetFloat("_EnableContrast", enableContrast ? 1f : 0f);
         material.SetFloat("_EnableReflection", enableReflection ? 1f : 0f);
 
-        // Paint params
-        if (enableOilPaint)
-        {
-            material.SetFloat("_BrushSize", brushSize);
-            material.SetFloat("_ColorSteps", colorSteps);
-            material.SetFloat("_PainterNoise", noiseStrength);
-        }
+        material.SetFloat("_BrushSize", brushSize);
+        material.SetFloat("_ColorSteps", colorSteps);
+        material.SetFloat("_PainterNoise", noiseStrength);
 
-        // Bump + procedural noise as grain (color ignored)
-        if (enableCanvasGrain && bumpMap != null)
+        if (bumpMap != null)
         {
             material.SetTexture("_BumpMap", bumpMap);
             material.SetFloat("_BumpTiling", bumpTiling);
@@ -133,17 +128,14 @@ public class OilPaintRenderFeature : ScriptableRendererFeature
             material.SetFloat("_GrainStrength", grainStrength);
         }
 
-        // Contrast & reflection
         material.SetFloat("_Contrast", contrast);
         material.SetFloat("_ReflectThreshold", reflectThreshold);
         material.SetFloat("_ReflectAttenuation", reflectAttenuation);
 
-        // Lift-Gamma-Gain
         material.SetFloat("_Lift", lift);
         material.SetFloat("_Gamma", gamma);
         material.SetFloat("_Gain", gain);
 
-        // Saturation
         material.SetFloat("_Saturation", saturation);
 
         renderer.EnqueuePass(pass);

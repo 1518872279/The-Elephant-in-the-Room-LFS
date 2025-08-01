@@ -37,6 +37,22 @@ public class WatchAnimationManager : MonoBehaviour
     
     [Tooltip("Whether to deactivate the watch after put down animation")]
     public bool deactivateAfterPutDown = true;
+    
+    [Header("Time Synchronization")]
+    [Tooltip("Whether to automatically sync watch hands with game time")]
+    public bool autoSyncTime = true;
+    
+    [Tooltip("Transform for the hour hand")]
+    public Transform hourHand;
+    
+    [Tooltip("Transform for the minute hand")]
+    public Transform minuteHand;
+    
+    [Tooltip("Optional: Transform for the second hand")]
+    public Transform secondHand;
+    
+    [Tooltip("Clockwise rotation direction (true = clockwise, false = counter-clockwise)")]
+    public bool clockwiseRotation = true;
 
     private bool isCheckingTime = false;
     private bool isPuttingDown = false;
@@ -72,31 +88,23 @@ public class WatchAnimationManager : MonoBehaviour
         {
             Debug.LogError("WatchAnimationManager: No Animator component found!");
         }
+        
+        // Initial time synchronization
+        if (autoSyncTime)
+        {
+            SyncWatchTime();
+            Debug.Log("current Time is " + TimeManager.Instance.GetCurrentTime());
+        }
     }
 
-    // Remove input handling - this will be handled by FirstPersonController
-    // void Update()
-    // {
-    //     HandleInput();
-    // }
-    // 
-    // void HandleInput()
-    // {
-    //     if (Input.GetKeyDown(triggerKey))
-    //     {
-    //         if (!isActivated)
-    //         {
-    //             // Activate the watch and start check time animation
-    //             ActivateWatch();
-    //             StartCheckTimeAnimation();
-    //         }
-    //         else
-    //         {
-    //             // Handle normal animation cycling
-    //             ToggleWatchAnimation();
-    //         }
-    //     }
-    // }
+    void Update()
+    {
+        // Update watch hands if auto sync is enabled and watch is activated
+        if (autoSyncTime && isActivated)
+        {
+            UpdateWatchTime();
+        }
+    }
 
     void ToggleWatchAnimation()
     {
@@ -251,6 +259,111 @@ public class WatchAnimationManager : MonoBehaviour
         Debug.Log("Watch: Put down animation completed");
     }
 
+    // Time synchronization methods
+    public void SyncWatchTime()
+    {
+        if (!isActivated) return;
+        
+        if (TimeManager.Instance != null)
+        {
+            int gameMinutes = TimeManager.Instance.GetCurrentTime();
+            int hours = gameMinutes / 60;
+            int minutes = gameMinutes % 60;
+            UpdateWatchHands(hours, minutes, 0);
+            
+            Debug.Log($"Watch: Synchronized to game time {hours:D2}:{minutes:D2}:00");
+
+        }
+        else
+        {
+            Debug.LogWarning("Watch: TimeManager not found, using real time instead");
+            System.DateTime currentTime = System.DateTime.Now;
+            UpdateWatchHands(currentTime.Hour, currentTime.Minute, currentTime.Second);
+        }
+    }
+    
+    public void SyncWatchTime(int hour, int minute, int second = 0)
+    {
+        if (!isActivated) return;
+        
+        UpdateWatchHands(hour, minute, second);
+        
+        Debug.Log($"Watch: Synchronized to {hour:D2}:{minute:D2}:{second:D2}");
+    }
+    
+    public void SyncWatchTime(int gameMinutes)
+    {
+        if (!isActivated) return;
+        
+        int hours = gameMinutes / 60;
+        int minutes = gameMinutes % 60;
+        UpdateWatchHands(hours, minutes, 0);
+        
+        Debug.Log($"Watch: Synchronized to game time {hours:D2}:{minutes:D2}:00 ({gameMinutes} minutes)");
+    }
+    
+    public void UpdateWatchTime()
+    {
+        if (!isActivated) return;
+        
+        if (TimeManager.Instance != null)
+        {
+            int gameMinutes = TimeManager.Instance.GetCurrentTime();
+            int hours = gameMinutes / 60;
+            int minutes = gameMinutes % 60;
+            UpdateWatchHands(hours, minutes, 0);
+        }
+        else
+        {
+            // Fallback to real time if TimeManager not available
+            System.DateTime currentTime = System.DateTime.Now;
+            UpdateWatchHands(currentTime.Hour, currentTime.Minute, currentTime.Second);
+        }
+    }
+    
+    private void UpdateWatchHands(int hour, int minute, int second)
+    {
+        // Convert to 12-hour format for hour hand
+        int hour12 = hour % 12;
+        if (hour12 == 0) hour12 = 12;
+        
+        // Calculate rotation angles
+        // Hour hand: 30 degrees per hour (360/12) + minute influence
+        float hourAngle = (hour12 * 30f) + (minute * 0.5f); // 0.5 degrees per minute
+        
+        // Minute hand: 6 degrees per minute (360/60)
+        float minuteAngle = minute * 6f;
+        
+        // Second hand: 6 degrees per second (360/60)
+        float secondAngle = second * 6f;
+        
+        // Apply rotation direction
+        if (!clockwiseRotation)
+        {
+            hourAngle = -hourAngle;
+            minuteAngle = -minuteAngle;
+            secondAngle = -secondAngle;
+        }
+        
+        // Update hour hand
+        if (hourHand != null)
+        {
+            hourHand.localRotation = Quaternion.Euler(0, hourAngle, 0);
+        }
+        
+        // Update minute hand
+        if (minuteHand != null)
+        {
+            minuteHand.localRotation = Quaternion.Euler(0, minuteAngle, 0);
+        }
+        
+        // Update second hand (optional)
+        if (secondHand != null)
+        {
+            secondHand.localRotation = Quaternion.Euler(0, secondAngle, 0);
+        }
+    }
+    
     // Getter methods for external scripts to check current state
     public bool IsCheckingTime => isCheckingTime;
     public bool IsPuttingDown => isPuttingDown;
