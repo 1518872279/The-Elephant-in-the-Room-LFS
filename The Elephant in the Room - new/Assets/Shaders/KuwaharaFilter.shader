@@ -4,6 +4,7 @@ Shader "Hidden/KuwaharaFilter"
     {
         _MainTex("Source Texture",  2D) = "white" {}
         _Radius("Radius",          Range(1,10)) = 3
+        _Strength("Filter Strength", Range(0.001, 0.05)) = 0.01
     }
         SubShader
         {
@@ -16,12 +17,16 @@ Shader "Hidden/KuwaharaFilter"
                 #pragma target 3.0
                 #pragma vertex vert
                 #pragma fragment frag
+                #pragma multi_compile _ UNITY_SINGLE_PASS_STEREO STEREO_INSTANCING_ON
+                #pragma multi_compile _ STEREO_MULTIVIEW_ON
+                #pragma multi_compile _ STEREO_CUBEMAP_RENDER_ON
                 #include "UnityCG.cginc"
 
                 sampler2D _MainTex;
                 float4   _MainTex_ST;        // <<< Declare this for TRANSFORM_TEX
                 float4   _MainTex_TexelSize; // x = 1/width, y = 1/height
                 int      _Radius;
+                float    _Strength;
 
                 struct v2f {
                     float4 pos : SV_POSITION;
@@ -43,6 +48,9 @@ Shader "Hidden/KuwaharaFilter"
                     float minSigma = 1e20;
                     float3 bestMean = float3(0,0,0);
 
+                    // Use the strength parameter for resolution-independent UV offset scale
+                    float2 uvOffsetScale = _Strength;
+
                     for (int k = 0; k < 4; k++)
                     {
                         float3 mean = float3(0,0,0);
@@ -54,7 +62,8 @@ Shader "Hidden/KuwaharaFilter"
                         for (int x = 0; x <= r; x++)
                             for (int y = 0; y <= r; y++)
                             {
-                                float2 offsetUV = float2(xOff + x, yOff + y) * _MainTex_TexelSize.xy;
+                                // Use resolution-independent UV offsets
+                                float2 offsetUV = float2(xOff + x, yOff + y) * uvOffsetScale;
                                 float3 col = tex2Dlod(_MainTex, float4(i.uv + offsetUV, 0, 0)).rgb;
                                 mean += col;
                                 sigma += col * col;
