@@ -5493,7 +5493,7 @@ RectTransform:
   m_Father: {fileID: 769770990}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 0, y: 1}
+  m_AnchorMax: {x: 0, y: 0}
   m_AnchoredPosition: {x: 1.8999939, y: 0}
   m_SizeDelta: {x: 10, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
@@ -9048,6 +9048,39 @@ Transform:
     type: 3}
   m_PrefabInstance: {fileID: 192102533}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &192760793
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 192760794}
+  m_Layer: 0
+  m_Name: Hour Hand Pivot
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &192760794
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 192760793}
+  serializedVersion: 2
+  m_LocalRotation: {x: -4.6566118e-10, y: 0.000000007450579, z: -0.000000014901158,
+    w: 1}
+  m_LocalPosition: {x: 0.0028, y: 0.1802, z: -0.0155}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children:
+  - {fileID: 3646220332108009321}
+  m_Father: {fileID: 4950477350379754992}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1001 &193345949
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -80914,7 +80947,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!114 &1565807954
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -85823,7 +85856,7 @@ RectTransform:
   m_Father: {fileID: 515121886}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 0, y: 1}
+  m_AnchorMax: {x: 0, y: 0}
   m_AnchoredPosition: {x: 1.9000015, y: 0}
   m_SizeDelta: {x: 10, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
@@ -88492,6 +88525,39 @@ Transform:
     type: 3}
   m_PrefabInstance: {fileID: 1697304814}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &1699677749
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1699677750}
+  m_Layer: 0
+  m_Name: Minute Hand Pivot
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1699677750
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1699677749}
+  serializedVersion: 2
+  m_LocalRotation: {x: -4.6566118e-10, y: 0.000000007450579, z: -0.000000014901158,
+    w: 1}
+  m_LocalPosition: {x: 0.0028, y: 0.1802, z: -0.0155}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children:
+  - {fileID: 3166139185766164211}
+  m_Father: {fileID: 4950477350379754992}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1001 &1700917739
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -89473,7 +89539,7 @@ Material:
     - _ShadowColor: {r: 0, g: 0, b: 0, a: 1}
     - _ShadowIntensity: {r: 0, g: 1, b: 0, a: 0}
     - _ToLightDir: {r: -1.0000001, g: -0, b: -0.0000029206276, a: 0}
-    - _WindDirection: {r: 1.2349026, g: 0.8232686, b: 0, a: 164.39705}
+    - _WindDirection: {r: 0.35720134, g: 0.23813401, b: 0, a: 34.609905}
   m_BuildTextureStacks: []
 --- !u!1001 &1719773310
 PrefabInstance:
@@ -116133,12 +116199,12 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1646692779881866092}
   serializedVersion: 2
-  m_LocalRotation: {x: 0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0.004531639, y: 0.18012531, z: -0.04700179}
+  m_LocalRotation: {x: -0, y: -0, z: 3.4694453e-18, w: 1}
+  m_LocalPosition: {x: 0.001730992, y: -0.00007531039, z: -0.031502075}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
-  m_Father: {fileID: 4950477350379754992}
+  m_Father: {fileID: 1699677750}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!65 &3191163037331615511
 BoxCollider:
@@ -120518,12 +120584,12 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 3397643165268527990}
   serializedVersion: 2
-  m_LocalRotation: {x: 0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -0.018929081, y: 0.18071374, z: -0.005873709}
+  m_LocalRotation: {x: -0, y: -0, z: 3.4694453e-18, w: 1}
+  m_LocalPosition: {x: -0.021728914, y: 0.0005138808, z: 0.009626399}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
-  m_Father: {fileID: 4950477350379754992}
+  m_Father: {fileID: 192760794}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!4 &3664536635523358529
 Transform:
@@ -123398,8 +123464,8 @@ Transform:
   m_ConstrainProportionsScale: 1
   m_Children:
   - {fileID: 8489911960420638661}
-  - {fileID: 3646220332108009321}
-  - {fileID: 3166139185766164211}
+  - {fileID: 192760794}
+  - {fileID: 1699677750}
   - {fileID: 4326972869330702324}
   - {fileID: 3098524321377489321}
   - {fileID: 3694972353715175924}
@@ -123617,6 +123683,11 @@ MonoBehaviour:
   idleTrigger: Idle
   startDeactivated: 1
   deactivateAfterPutDown: 1
+  autoSyncTime: 1
+  hourHand: {fileID: 192760794}
+  minuteHand: {fileID: 1699677750}
+  secondHand: {fileID: 0}
+  clockwiseRotation: 0
 --- !u!4 &5874072882444832697
 Transform:
   m_ObjectHideFlags: 0
