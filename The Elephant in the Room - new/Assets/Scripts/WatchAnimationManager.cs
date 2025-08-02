@@ -179,7 +179,6 @@ public class WatchAnimationManager : MonoBehaviour
         isPuttingDown = false;
         
         Debug.Log("Watch: Returning to idle state");
-        
         // Deactivate the watch after put down if configured
         if (deactivateAfterPutDown)
         {

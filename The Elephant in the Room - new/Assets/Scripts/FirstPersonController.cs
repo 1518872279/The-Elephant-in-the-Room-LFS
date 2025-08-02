@@ -13,6 +13,10 @@ public class FirstPersonController : MonoBehaviour
     [Tooltip("Reference to the WatchAnimationManager component")]
     public WatchAnimationManager watchManager;
     
+    [Header("Elephant Teaser Control")]
+    [Tooltip("Reference to the ElephantTeaserAnimationManager component")]
+    public ElephantTeaserAnimationManager teaserManager;
+    
     [Header("Stair Climbing")]
     public float maxStepHeight = 0.3f;
     public float stepSmooth = 0.1f;
@@ -33,8 +37,13 @@ public class FirstPersonController : MonoBehaviour
     {
         HandleLook();
         HandleMove();
-        if (Input.GetMouseButtonDown(0)) HandleInteract();
+        if (Input.GetMouseButtonDown(0)) 
+        {
+            HandleInteract();
+            HandleTeaserMouseInput();
+        }
         HandleWatchInput();
+        HandleTeaserInput();
     }
 
     void HandleLook()
@@ -126,6 +135,31 @@ public class FirstPersonController : MonoBehaviour
             {
                 Debug.LogWarning("WatchManager not assigned to FirstPersonController");
             }
+        }
+    }
+    
+    void HandleTeaserInput()
+    {
+        // Check for elephant teaser input (key 4)
+        if (Input.GetKeyDown(KeyCode.Alpha4))
+        {
+            if (teaserManager != null)
+            {
+                teaserManager.HandleTeaserInput();
+            }
+            else
+            {
+                Debug.LogWarning("TeaserManager not assigned to FirstPersonController");
+            }
+        }
+    }
+    
+    void HandleTeaserMouseInput()
+    {
+        // Check for elephant teaser mouse input (left mouse button)
+        if (teaserManager != null)
+        {
+            teaserManager.HandleTeaserMouseInput();
         }
     }
 } 
