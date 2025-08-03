@@ -15,9 +15,13 @@ public class DayPartManager : MonoBehaviour
     public float morningIntensity = 1f;
     public float eveningIntensity = 0.5f;
 
-    [Header("Day Counter (read-only)")]
+    [Header("Day Counter")]
     [Tooltip("Number of in-game days that have passed")]
     public int daysElapsed = 1;
+    
+    [Header("Testing")]
+    [Tooltip("Manually advance to the next day for testing")]
+    public bool advanceToNextDay = false;
 
     public enum DayPart { None, Morning, Evening }
     public DayPart currentPart = DayPart.None;
@@ -81,6 +85,72 @@ public class DayPartManager : MonoBehaviour
             case DayPart.Evening:
                 directionalLight.intensity = eveningIntensity;
                 break;
+        }
+    }
+    
+    /// <summary>
+    /// Manually advance to the next day for testing purposes
+    /// </summary>
+    public void AdvanceToNextDay()
+    {
+        daysElapsed++;
+        Debug.Log($"DayPartManager: Manually advanced to day {daysElapsed}");
+        
+        // Trigger day part change to Morning to simulate new day
+        OnDayPartChanged?.Invoke(DayPart.Morning);
+        ApplyPart(DayPart.Morning);
+        currentPart = DayPart.Morning;
+    }
+    
+    /// <summary>
+    /// Set to a specific day for testing
+    /// </summary>
+    public void SetDay(int day)
+    {
+        if (day < 1) day = 1;
+        daysElapsed = day;
+        Debug.Log($"DayPartManager: Set to day {daysElapsed}");
+        
+        // Trigger day part change to Morning to simulate new day
+        OnDayPartChanged?.Invoke(DayPart.Morning);
+        ApplyPart(DayPart.Morning);
+        currentPart = DayPart.Morning;
+    }
+    
+    /// <summary>
+    /// Test method to advance to next day (for debugging)
+    /// </summary>
+    [ContextMenu("Advance to Next Day")]
+    public void TestAdvanceToNextDay()
+    {
+        AdvanceToNextDay();
+    }
+    
+    /// <summary>
+    /// Test method to set to day 2 (for debugging)
+    /// </summary>
+    [ContextMenu("Set to Day 2")]
+    public void TestSetToDay2()
+    {
+        SetDay(2);
+    }
+    
+    /// <summary>
+    /// Test method to set to day 3 (for debugging)
+    /// </summary>
+    [ContextMenu("Set to Day 3")]
+    public void TestSetToDay3()
+    {
+        SetDay(3);
+    }
+    
+    void Update()
+    {
+        // Check for manual day advancement in inspector
+        if (advanceToNextDay)
+        {
+            advanceToNextDay = false; // Reset the flag
+            AdvanceToNextDay();
         }
     }
 }

@@ -9,16 +9,20 @@ public class Goods
     public string goodsInformation;
     [TextArea(2, 3)]
     public string goodsShortIntro;  // Short version for preview
-    public float goodsPrice;
+    public int goodsPrice;
     
     [Header("Optional Details")]
     public Sprite goodsIcon;
     public bool isAvailable = true;
     
+    [Header("Delivery Prefab")]
+    [Tooltip("Prefab to instantiate when this goods is delivered")]
+    public GameObject deliveryPrefab;
+    
     /// <summary>
     /// Creates a new goods item
     /// </summary>
-    public Goods(string name, string info, string shortIntro, float price)
+    public Goods(string name, string info, string shortIntro, int price)
     {
         goodsName = name;
         goodsInformation = info;
@@ -30,13 +34,26 @@ public class Goods
     /// <summary>
     /// Creates a new goods item with all parameters
     /// </summary>
-    public Goods(string name, string info, string shortIntro, float price, Sprite icon)
+    public Goods(string name, string info, string shortIntro, int price, Sprite icon)
     {
         goodsName = name;
         goodsInformation = info;
         goodsShortIntro = shortIntro;
         goodsPrice = price;
         goodsIcon = icon;
+        isAvailable = true;
+    }
+    
+    /// <summary>
+    /// Creates a new goods item with delivery prefab
+    /// </summary>
+    public Goods(string name, string info, string shortIntro, int price, GameObject prefab)
+    {
+        goodsName = name;
+        goodsInformation = info;
+        goodsShortIntro = shortIntro;
+        goodsPrice = price;
+        deliveryPrefab = prefab;
         isAvailable = true;
     }
 } 

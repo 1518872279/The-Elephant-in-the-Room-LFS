@@ -5,7 +5,7 @@ public class MoneyDisplay : MonoBehaviour
 {
     [Header("UI References")]
     public TextMeshProUGUI moneyText;
-    public string moneyFormat = "Money: ${0:F2}";
+    public string moneyFormat = "Money: ${0}";
     
     private MoneyManager moneyManager;
 
@@ -43,7 +43,7 @@ public class MoneyDisplay : MonoBehaviour
     /// <summary>
     /// Handle money changes
     /// </summary>
-    private void OnMoneyChanged(float newAmount)
+    private void OnMoneyChanged(int newAmount)
     {
         UpdateMoneyDisplay();
     }

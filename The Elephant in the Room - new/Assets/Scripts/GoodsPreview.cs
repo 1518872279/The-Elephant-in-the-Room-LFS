@@ -118,7 +118,7 @@ public class GoodsPreview : MonoBehaviour
         // Update price
         if (goodsPriceText != null)
         {
-            goodsPriceText.text = $"${currentGoods.goodsPrice:F2}";
+            goodsPriceText.text = $"${currentGoods.goodsPrice:F0}";
         }
 
         // Update icon if available

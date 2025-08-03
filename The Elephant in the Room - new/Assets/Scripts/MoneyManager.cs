@@ -7,22 +7,22 @@ public class MoneyManager : MonoBehaviour
 
     [Header("Money Configuration")]
     [Tooltip("Starting money for the player")]
-    public float startingMoney = 100f;
+    public int startingMoney = 100;
     
     [Tooltip("Daily income amount")]
-    public float dailyIncome = 50f;
+    public int dailyIncome = 50;
     
     [Tooltip("Current player money")]
-    public float currentMoney = 100f;
+    public int currentMoney = 100;
     
     [Header("Day Tracking")]
     [Tooltip("Last day when money was given")]
     public int lastMoneyDay = 0;
     
     // Events
-    public event Action<float> OnMoneyChanged;
-    public event Action<float> OnMoneyEarned;
-    public event Action<float> OnMoneySpent;
+    public event Action<int> OnMoneyChanged;
+    public event Action<int> OnMoneyEarned;
+    public event Action<int> OnMoneySpent;
     public event Action OnInsufficientFunds;
 
     void Awake()
@@ -79,7 +79,7 @@ public class MoneyManager : MonoBehaviour
     /// <summary>
     /// Add money to player's balance
     /// </summary>
-    public void AddMoney(float amount)
+    public void AddMoney(int amount)
     {
         if (amount <= 0)
         {
@@ -87,7 +87,7 @@ public class MoneyManager : MonoBehaviour
             return;
         }
 
-        float oldMoney = currentMoney;
+        int oldMoney = currentMoney;
         currentMoney += amount;
         
         OnMoneyChanged?.Invoke(currentMoney);
@@ -99,7 +99,7 @@ public class MoneyManager : MonoBehaviour
     /// <summary>
     /// Spend money from player's balance
     /// </summary>
-    public bool SpendMoney(float amount)
+    public bool SpendMoney(int amount)
     {
         if (amount <= 0)
         {
@@ -114,7 +114,7 @@ public class MoneyManager : MonoBehaviour
             return false;
         }
 
-        float oldMoney = currentMoney;
+        int oldMoney = currentMoney;
         currentMoney -= amount;
         
         OnMoneyChanged?.Invoke(currentMoney);
@@ -127,7 +127,7 @@ public class MoneyManager : MonoBehaviour
     /// <summary>
     /// Check if player can afford a purchase
     /// </summary>
-    public bool CanAfford(float amount)
+    public bool CanAfford(int amount)
     {
         return currentMoney >= amount;
     }
@@ -135,7 +135,7 @@ public class MoneyManager : MonoBehaviour
     /// <summary>
     /// Get current money balance
     /// </summary>
-    public float GetCurrentMoney()
+    public int GetCurrentMoney()
     {
         return currentMoney;
     }
@@ -143,7 +143,7 @@ public class MoneyManager : MonoBehaviour
     /// <summary>
     /// Set money balance (for testing or save/load)
     /// </summary>
-    public void SetMoney(float amount)
+    public void SetMoney(int amount)
     {
         if (amount < 0)
         {
@@ -151,7 +151,7 @@ public class MoneyManager : MonoBehaviour
             return;
         }
 
-        float oldMoney = currentMoney;
+        int oldMoney = currentMoney;
         currentMoney = amount;
         
         OnMoneyChanged?.Invoke(currentMoney);
@@ -174,7 +174,7 @@ public class MoneyManager : MonoBehaviour
     [ContextMenu("Add $100")]
     public void AddTestMoney()
     {
-        AddMoney(100f);
+        AddMoney(100);
     }
 
     /// <summary>
@@ -183,7 +183,7 @@ public class MoneyManager : MonoBehaviour
     [ContextMenu("Spend $50")]
     public void SpendTestMoney()
     {
-        SpendMoney(50f);
+        SpendMoney(50);
     }
 
     /// <summary>

@@ -190,7 +190,7 @@ public class GoodsDetailView : MonoBehaviour
         // Update price
         if (goodsPriceText != null)
         {
-            goodsPriceText.text = $"Price: ${currentGoods.goodsPrice:F2}";
+            goodsPriceText.text = $"Price: ${currentGoods.goodsPrice:F0}";
         }
 
         // Update icon
@@ -210,7 +210,7 @@ public class GoodsDetailView : MonoBehaviour
         // Update button availability and visibility
         if (confirmPurchaseButton != null)
         {
-            bool canAfford = moneyManager == null || moneyManager.CanAfford(currentGoods.goodsPrice);
+            bool canAfford = moneyManager == null || moneyManager.CanAfford((int)currentGoods.goodsPrice);
             bool isAvailable = currentGoods.isAvailable;
             bool canPurchase = isAvailable && canAfford;
             
@@ -223,7 +223,7 @@ public class GoodsDetailView : MonoBehaviour
             }
             else if (!canAfford)
             {
-                Debug.Log($"GoodsDetailView: Confirm purchase button disabled - insufficient funds (Need ${currentGoods.goodsPrice:F2}, have ${moneyManager?.GetCurrentMoney():F2})");
+                Debug.Log($"GoodsDetailView: Confirm purchase button disabled - insufficient funds (Need ${currentGoods.goodsPrice:F0}, have ${moneyManager?.GetCurrentMoney()})");
             }
             else
             {
@@ -266,17 +266,17 @@ public class GoodsDetailView : MonoBehaviour
         }
 
         // Check if player can afford the purchase
-        if (moneyManager != null && !moneyManager.CanAfford(currentGoods.goodsPrice))
+        if (moneyManager != null && !moneyManager.CanAfford((int)currentGoods.goodsPrice))
         {
-            Debug.LogWarning($"GoodsDetailView: Cannot purchase '{currentGoods.goodsName}' - insufficient funds! Need ${currentGoods.goodsPrice:F2}, have ${moneyManager.GetCurrentMoney():F2}");
+            Debug.LogWarning($"GoodsDetailView: Cannot purchase '{currentGoods.goodsName}' - insufficient funds! Need ${currentGoods.goodsPrice:F0}, have ${moneyManager.GetCurrentMoney()}");
             return;
         }
 
         // Show confirmation panel if available
         if (confirmationPanel != null && confirmationText != null)
         {
-            string moneyInfo = moneyManager != null ? $" (You have ${moneyManager.GetCurrentMoney():F2})" : "";
-            confirmationText.text = $"Are you sure you want to purchase {currentGoods.goodsName} for ${currentGoods.goodsPrice:F2}?{moneyInfo}";
+            string moneyInfo = moneyManager != null ? $" (You have ${moneyManager.GetCurrentMoney()})" : "";
+            confirmationText.text = $"Are you sure you want to purchase {currentGoods.goodsName} for ${currentGoods.goodsPrice:F0}?{moneyInfo}";
             confirmationPanel.SetActive(true);
         }
         else
@@ -330,14 +330,21 @@ public class GoodsDetailView : MonoBehaviour
         // Spend the money
         if (moneyManager != null)
         {
-            if (!moneyManager.SpendMoney(currentGoods.goodsPrice))
+            if (!moneyManager.SpendMoney((int)currentGoods.goodsPrice))
             {
                 Debug.LogError("GoodsDetailView: Failed to spend money for purchase!");
                 return;
             }
         }
 
-        Debug.Log($"GoodsDetailView: Purchase confirmed for '{currentGoods.goodsName}' at ${currentGoods.goodsPrice:F2}");
+        Debug.Log($"GoodsDetailView: Purchase confirmed for '{currentGoods.goodsName}' at ${currentGoods.goodsPrice:F0}");
+        
+        // Schedule delivery for the purchased goods
+        if (goodsManager != null)
+        {
+            goodsManager.ScheduleDelivery(currentGoods);
+            Debug.Log($"GoodsDetailView: Scheduled delivery for '{currentGoods.goodsName}'");
+        }
         
         // Set the goods to unavailable after purchase
         if (goodsManager != null)
