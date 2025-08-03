@@ -19,6 +19,10 @@ public class GoodsDetailView : MonoBehaviour
     public Button confirmYesButton;            // Yes button for confirmation
     public Button confirmNoButton;             // No button for confirmation
     
+    [Header("Money Integration")]
+    [Tooltip("Reference to MoneyManager for purchase validation")]
+    public MoneyManager moneyManager;
+    
     private Goods currentGoods;
     private GoodsManager goodsManager;
     
@@ -36,6 +40,17 @@ public class GoodsDetailView : MonoBehaviour
         {
             Debug.LogError("GoodsDetailView: GoodsManager not found!");
             return;
+        }
+        
+        // Get reference to MoneyManager
+        if (moneyManager == null)
+        {
+            moneyManager = MoneyManager.Instance;
+        }
+        
+        if (moneyManager == null)
+        {
+            Debug.LogWarning("GoodsDetailView: MoneyManager not found! Purchase validation will be disabled.");
         }
 
         // Check UI components
@@ -195,9 +210,25 @@ public class GoodsDetailView : MonoBehaviour
         // Update button availability and visibility
         if (confirmPurchaseButton != null)
         {
-            confirmPurchaseButton.interactable = currentGoods.isAvailable;
+            bool canAfford = moneyManager == null || moneyManager.CanAfford(currentGoods.goodsPrice);
+            bool isAvailable = currentGoods.isAvailable;
+            bool canPurchase = isAvailable && canAfford;
+            
+            confirmPurchaseButton.interactable = canPurchase;
             confirmPurchaseButton.gameObject.SetActive(true);
-            Debug.Log($"GoodsDetailView: Confirm purchase button set to interactable: {currentGoods.isAvailable}");
+            
+            if (!isAvailable)
+            {
+                Debug.Log($"GoodsDetailView: Confirm purchase button disabled - goods not available");
+            }
+            else if (!canAfford)
+            {
+                Debug.Log($"GoodsDetailView: Confirm purchase button disabled - insufficient funds (Need ${currentGoods.goodsPrice:F2}, have ${moneyManager?.GetCurrentMoney():F2})");
+            }
+            else
+            {
+                Debug.Log($"GoodsDetailView: Confirm purchase button enabled - can purchase");
+            }
         }
         else
         {
@@ -234,10 +265,18 @@ public class GoodsDetailView : MonoBehaviour
             return;
         }
 
+        // Check if player can afford the purchase
+        if (moneyManager != null && !moneyManager.CanAfford(currentGoods.goodsPrice))
+        {
+            Debug.LogWarning($"GoodsDetailView: Cannot purchase '{currentGoods.goodsName}' - insufficient funds! Need ${currentGoods.goodsPrice:F2}, have ${moneyManager.GetCurrentMoney():F2}");
+            return;
+        }
+
         // Show confirmation panel if available
         if (confirmationPanel != null && confirmationText != null)
         {
-            confirmationText.text = $"Are you sure you want to purchase {currentGoods.goodsName} for ${currentGoods.goodsPrice:F2}?";
+            string moneyInfo = moneyManager != null ? $" (You have ${moneyManager.GetCurrentMoney():F2})" : "";
+            confirmationText.text = $"Are you sure you want to purchase {currentGoods.goodsName} for ${currentGoods.goodsPrice:F2}?{moneyInfo}";
             confirmationPanel.SetActive(true);
         }
         else
@@ -286,6 +325,16 @@ public class GoodsDetailView : MonoBehaviour
         {
             Debug.LogError("GoodsDetailView: Cannot process purchase - no goods selected!");
             return;
+        }
+
+        // Spend the money
+        if (moneyManager != null)
+        {
+            if (!moneyManager.SpendMoney(currentGoods.goodsPrice))
+            {
+                Debug.LogError("GoodsDetailView: Failed to spend money for purchase!");
+                return;
+            }
         }
 
         Debug.Log($"GoodsDetailView: Purchase confirmed for '{currentGoods.goodsName}' at ${currentGoods.goodsPrice:F2}");

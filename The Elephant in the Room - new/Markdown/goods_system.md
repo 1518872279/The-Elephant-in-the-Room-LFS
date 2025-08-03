@@ -4,11 +4,13 @@ This system provides a complete goods management solution with data storage and 
 
 ## Overview
 
-The system consists of four main components:
+The system consists of six main components:
 1. **Goods** - Data structure for goods information
 2. **GoodsManager** - Central manager for storing and managing goods
 3. **GoodsPreview** - UI component for displaying goods information (secondary interface)
 4. **GoodsDetailView** - UI component for displaying full goods details with purchase options (tertiary interface)
+5. **MoneyManager** - Central manager for player money with daily income
+6. **MoneyDisplay** - UI component for displaying current money balance
 
 ## Components
 
@@ -83,8 +85,38 @@ UI component that displays full goods information with purchase options:
 - Full goods information display
 - Purchase confirmation system
 - Availability checking
+- Money validation for purchases
 - Event system for purchase handling
 - Integration with GoodsPreview
+
+### 5. MoneyManager
+
+Central manager for player money with daily income:
+
+**Key Features:**
+- Daily income system
+- Purchase validation
+- Money balance tracking
+- Event system for money changes
+
+**Main Methods:**
+- `AddMoney()` - Add money to balance
+- `SpendMoney()` - Spend money (with validation)
+- `CanAfford()` - Check if player can afford purchase
+- `GiveDailyIncome()` - Give daily income
+- `GetCurrentMoney()` - Get current balance
+
+### 6. MoneyDisplay
+
+UI component that displays current money balance:
+
+**UI Components:**
+- `moneyText` - TextMeshProUGUI for displaying money
+
+**Features:**
+- Automatic updates when money changes
+- Customizable money format
+- Real-time balance display
 
 ## Setup
 
