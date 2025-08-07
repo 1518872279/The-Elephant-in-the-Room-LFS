@@ -22,6 +22,8 @@ public class FirstPersonController : MonoBehaviour
     public float stepSmooth = 0.1f;
     public LayerMask groundLayer = -1;
 
+
+
     private CharacterController controller;
     private float pitch;
     private Vector3 velocity;
@@ -162,4 +164,6 @@ public class FirstPersonController : MonoBehaviour
             teaserManager.HandleTeaserMouseInput();
         }
     }
+    
+
 } 

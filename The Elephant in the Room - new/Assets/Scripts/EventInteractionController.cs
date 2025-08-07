@@ -47,6 +47,19 @@ public class EventInteractionController : MonoBehaviour
                             Debug.LogWarning("GarbageCleanupController not found in scene.");
                         }
                     }
+                    // Special handling for ElephantWash event
+                    else if (evtObj.eventName == "ElephantWash")
+                    {
+                        ElephantWashManager washManager = FindObjectOfType<ElephantWashManager>();
+                        if (washManager != null)
+                        {
+                            washManager.StartWash();
+                        }
+                        else
+                        {
+                            Debug.LogWarning("ElephantWashManager not found in scene.");
+                        }
+                    }
                     else
                     {
                         // Regular event handling
