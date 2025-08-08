@@ -16,8 +16,17 @@ public class TimeManager : MonoBehaviour
     public List<string> eventNames;
     public List<int> eventDurations; // in minutes
 
+    [Header("Lighting Control")]
+    [Tooltip("Interior lights to control")]
+    public GameObject[] interiorLights;
+    [Tooltip("Exterior lights to control")]
+    public GameObject[] exteriorLights;
+    [Tooltip("Whether lights should be on during evening")]
+    public bool lightsOnInEvening = true;
+
     private Dictionary<string, int> durations = new Dictionary<string,int>();
     public int currentTime;
+    private bool lightsCurrentlyOn = false;
 
     public event Action<int> OnTimeChanged;
 
@@ -31,6 +40,12 @@ public class TimeManager : MonoBehaviour
 
         currentTime = morningStart;
         OnTimeChanged?.Invoke(currentTime);
+    }
+
+    void Start()
+    {
+        // Initialize lighting based on current time
+        UpdateLighting();
     }
 
     /// <summary>Tries to start an event by name. Advances time if within window.</summary>
@@ -49,6 +64,7 @@ public class TimeManager : MonoBehaviour
         }
         currentTime += duration;
         OnTimeChanged?.Invoke(currentTime);
+        UpdateLighting();
         return true;
     }
 
@@ -68,5 +84,90 @@ public class TimeManager : MonoBehaviour
     {
         currentTime = minutes;
         OnTimeChanged?.Invoke(currentTime);
+        UpdateLighting();
+    }
+
+    /// <summary>Update lighting based on current time</summary>
+    private void UpdateLighting()
+    {
+        bool shouldLightsBeOn = IsEveningTime() && lightsOnInEvening;
+        
+        if (shouldLightsBeOn != lightsCurrentlyOn)
+        {
+            lightsCurrentlyOn = shouldLightsBeOn;
+            
+            // Update interior lights
+            if (interiorLights != null)
+            {
+                foreach (GameObject lightObject in interiorLights)
+                {
+                    if (lightObject != null)
+                    {
+                        lightObject.SetActive(lightsCurrentlyOn);
+                    }
+                }
+            }
+            
+            // Update exterior lights
+            if (exteriorLights != null)
+            {
+                foreach (GameObject lightObject in exteriorLights)
+                {
+                    if (lightObject != null)
+                    {
+                        lightObject.SetActive(lightsCurrentlyOn);
+                    }
+                }
+            }
+            
+            string timeOfDay = IsEveningTime() ? "evening" : "morning";
+            string lightStatus = lightsCurrentlyOn ? "ON" : "OFF";
+            Debug.Log($"TimeManager: Lights turned {lightStatus} ({timeOfDay} time)");
+        }
+    }
+
+    /// <summary>Check if current time is in evening period</summary>
+    private bool IsEveningTime()
+    {
+        return currentTime >= eveningStart && currentTime < eveningEnd;
+    }
+
+    /// <summary>Check if current time is in morning period</summary>
+    private bool IsMorningTime()
+    {
+        return currentTime >= morningStart && currentTime < morningEnd;
+    }
+
+    /// <summary>Manually toggle lights on/off</summary>
+    public void ToggleLights(bool turnOn)
+    {
+        lightsCurrentlyOn = turnOn;
+        
+        // Update interior lights
+        if (interiorLights != null)
+        {
+            foreach (GameObject lightObject in interiorLights)
+            {
+                if (lightObject != null)
+                {
+                    lightObject.SetActive(turnOn);
+                }
+            }
+        }
+        
+        // Update exterior lights
+        if (exteriorLights != null)
+        {
+            foreach (GameObject lightObject in exteriorLights)
+            {
+                if (lightObject != null)
+                {
+                    lightObject.SetActive(turnOn);
+                }
+            }
+        }
+        
+        string lightStatus = turnOn ? "ON" : "OFF";
+        Debug.Log($"TimeManager: Lights manually turned {lightStatus}");
     }
 } 
