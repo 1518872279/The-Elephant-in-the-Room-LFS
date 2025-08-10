@@ -83,11 +83,15 @@ public class GarbageCleanupController : MonoBehaviour
                 if (Physics.Raycast(randomPoint, Vector3.down, out RaycastHit hit, Mathf.Infinity, floorLayer))
                 {
                     Vector3 spawnPos = hit.point + Vector3.up * verticalOffset;
-                    // Select random prefab variation
-                    GameObject prefab = prefabs[Random.Range(0, prefabs.Length)];
-                    var go = Instantiate(prefab, spawnPos, Quaternion.identity);
-                    go.AddComponent<GarbageItem>();
-                    spawnedItems.Add(go);
+                                    // Select random prefab variation
+                GameObject prefab = prefabs[Random.Range(0, prefabs.Length)];
+                var go = Instantiate(prefab, spawnPos, prefab.transform.rotation);
+                
+                // Preserve the original scale to prevent stretching
+                go.transform.localScale = prefab.transform.localScale;
+                
+                go.AddComponent<GarbageItem>();
+                spawnedItems.Add(go);
                 }
             }
         }

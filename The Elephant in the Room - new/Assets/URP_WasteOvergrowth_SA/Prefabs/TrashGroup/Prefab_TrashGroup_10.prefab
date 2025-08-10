@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 161914057026887334}
   - component: {fileID: 893198251599548145}
   - component: {fileID: 4928510406240675969}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: Prefab_TrashGroup_10
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -103,6 +103,11 @@ PrefabInstance:
       propertyPath: m_Name
       value: Prefab_BurgerBox_Cracked
       objectReference: {fileID: 0}
+    - target: {fileID: 461692670688170993, guid: d3887f0097534cc4baf4263f1b8093ff,
+        type: 3}
+      propertyPath: m_Layer
+      value: 7
+      objectReference: {fileID: 0}
     - target: {fileID: 5586354526533002755, guid: d3887f0097534cc4baf4263f1b8093ff,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -153,6 +158,16 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 6949233534190100357, guid: d3887f0097534cc4baf4263f1b8093ff,
+        type: 3}
+      propertyPath: m_Layer
+      value: 7
+      objectReference: {fileID: 0}
+    - target: {fileID: 7544772486320130391, guid: d3887f0097534cc4baf4263f1b8093ff,
+        type: 3}
+      propertyPath: m_Layer
+      value: 7
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -176,6 +191,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: Prefab_SaiceCup
+      objectReference: {fileID: 0}
+    - target: {fileID: 698171396981000514, guid: b29faf6740cb849438e53d55497b58ee,
+        type: 3}
+      propertyPath: m_Layer
+      value: 7
       objectReference: {fileID: 0}
     - target: {fileID: 2176078599250161769, guid: b29faf6740cb849438e53d55497b58ee,
         type: 3}
@@ -227,6 +247,16 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 7024757074840647030, guid: b29faf6740cb849438e53d55497b58ee,
+        type: 3}
+      propertyPath: m_Layer
+      value: 7
+      objectReference: {fileID: 0}
+    - target: {fileID: 9187023311596733755, guid: b29faf6740cb849438e53d55497b58ee,
+        type: 3}
+      propertyPath: m_Layer
+      value: 7
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -246,6 +276,11 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 161914057026887334}
     m_Modifications:
+    - target: {fileID: 2249339097161400633, guid: 28487c63b217ac342935299e9014381e,
+        type: 3}
+      propertyPath: m_Layer
+      value: 7
+      objectReference: {fileID: 0}
     - target: {fileID: 5513832700808676587, guid: 28487c63b217ac342935299e9014381e,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -296,10 +331,30 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 6803265288047186947, guid: 28487c63b217ac342935299e9014381e,
+        type: 3}
+      propertyPath: m_Layer
+      value: 7
+      objectReference: {fileID: 0}
     - target: {fileID: 7311506559397099704, guid: 28487c63b217ac342935299e9014381e,
         type: 3}
       propertyPath: m_Name
       value: Prefab_SodaCan_1
+      objectReference: {fileID: 0}
+    - target: {fileID: 7311506559397099704, guid: 28487c63b217ac342935299e9014381e,
+        type: 3}
+      propertyPath: m_Layer
+      value: 7
+      objectReference: {fileID: 0}
+    - target: {fileID: 7794679608689233398, guid: 28487c63b217ac342935299e9014381e,
+        type: 3}
+      propertyPath: m_Layer
+      value: 7
+      objectReference: {fileID: 0}
+    - target: {fileID: 7873424225176254160, guid: 28487c63b217ac342935299e9014381e,
+        type: 3}
+      propertyPath: m_Layer
+      value: 7
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -385,6 +440,11 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 3492590386159398914, guid: aa7a5e6f5619e454cbf84bede35b40f5,
+        type: 3}
+      propertyPath: m_Layer
+      value: 7
+      objectReference: {fileID: 0}
     - target: {fileID: 4266031307735820984, guid: aa7a5e6f5619e454cbf84bede35b40f5,
         type: 3}
       propertyPath: m_LocalRotation.w
@@ -410,10 +470,20 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.x
       value: -20.866
       objectReference: {fileID: 0}
+    - target: {fileID: 4992081982860199658, guid: aa7a5e6f5619e454cbf84bede35b40f5,
+        type: 3}
+      propertyPath: m_Layer
+      value: 7
+      objectReference: {fileID: 0}
     - target: {fileID: 7377003811093875828, guid: aa7a5e6f5619e454cbf84bede35b40f5,
         type: 3}
       propertyPath: m_Name
       value: Prefab_BurgerBox
+      objectReference: {fileID: 0}
+    - target: {fileID: 7377003811093875828, guid: aa7a5e6f5619e454cbf84bede35b40f5,
+        type: 3}
+      propertyPath: m_Layer
+      value: 7
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -434,10 +504,20 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 161914057026887334}
     m_Modifications:
+    - target: {fileID: 2838440170414584431, guid: 30858ef0644983d49814b826a7d53d39,
+        type: 3}
+      propertyPath: m_Layer
+      value: 7
+      objectReference: {fileID: 0}
     - target: {fileID: 3564632919824148345, guid: 30858ef0644983d49814b826a7d53d39,
         type: 3}
       propertyPath: m_Name
       value: Prefab_SodaCan_Crushed1 (1)
+      objectReference: {fileID: 0}
+    - target: {fileID: 3564632919824148345, guid: 30858ef0644983d49814b826a7d53d39,
+        type: 3}
+      propertyPath: m_Layer
+      value: 7
       objectReference: {fileID: 0}
     - target: {fileID: 5441006837568261448, guid: 30858ef0644983d49814b826a7d53d39,
         type: 3}
@@ -508,6 +588,11 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 161914057026887334}
     m_Modifications:
+    - target: {fileID: 2249339097161400633, guid: 28487c63b217ac342935299e9014381e,
+        type: 3}
+      propertyPath: m_Layer
+      value: 7
+      objectReference: {fileID: 0}
     - target: {fileID: 5513832700808676587, guid: 28487c63b217ac342935299e9014381e,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -558,10 +643,30 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 6803265288047186947, guid: 28487c63b217ac342935299e9014381e,
+        type: 3}
+      propertyPath: m_Layer
+      value: 7
+      objectReference: {fileID: 0}
     - target: {fileID: 7311506559397099704, guid: 28487c63b217ac342935299e9014381e,
         type: 3}
       propertyPath: m_Name
       value: Prefab_SodaCan_1 (1)
+      objectReference: {fileID: 0}
+    - target: {fileID: 7311506559397099704, guid: 28487c63b217ac342935299e9014381e,
+        type: 3}
+      propertyPath: m_Layer
+      value: 7
+      objectReference: {fileID: 0}
+    - target: {fileID: 7794679608689233398, guid: 28487c63b217ac342935299e9014381e,
+        type: 3}
+      propertyPath: m_Layer
+      value: 7
+      objectReference: {fileID: 0}
+    - target: {fileID: 7873424225176254160, guid: 28487c63b217ac342935299e9014381e,
+        type: 3}
+      propertyPath: m_Layer
+      value: 7
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -637,6 +742,16 @@ PrefabInstance:
       propertyPath: m_Name
       value: Prefab_WaterBottle_S_Crushed
       objectReference: {fileID: 0}
+    - target: {fileID: 3866911150615150090, guid: ffc03121a9bfce64d8271a2282d51e93,
+        type: 3}
+      propertyPath: m_Layer
+      value: 7
+      objectReference: {fileID: 0}
+    - target: {fileID: 6586783988998195771, guid: ffc03121a9bfce64d8271a2282d51e93,
+        type: 3}
+      propertyPath: m_Layer
+      value: 7
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -656,6 +771,26 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 161914057026887334}
     m_Modifications:
+    - target: {fileID: 1138377564248497675, guid: 3aabd8b880e393c41bb80c078fa94711,
+        type: 3}
+      propertyPath: m_Layer
+      value: 7
+      objectReference: {fileID: 0}
+    - target: {fileID: 2568847381861708434, guid: 3aabd8b880e393c41bb80c078fa94711,
+        type: 3}
+      propertyPath: m_Layer
+      value: 7
+      objectReference: {fileID: 0}
+    - target: {fileID: 2747079056470454247, guid: 3aabd8b880e393c41bb80c078fa94711,
+        type: 3}
+      propertyPath: m_Layer
+      value: 7
+      objectReference: {fileID: 0}
+    - target: {fileID: 3274823390069732331, guid: 3aabd8b880e393c41bb80c078fa94711,
+        type: 3}
+      propertyPath: m_Layer
+      value: 7
+      objectReference: {fileID: 0}
     - target: {fileID: 4661404057594134576, guid: 3aabd8b880e393c41bb80c078fa94711,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -711,6 +846,11 @@ PrefabInstance:
       propertyPath: m_Name
       value: Prefab_SodaCan_2 (1)
       objectReference: {fileID: 0}
+    - target: {fileID: 6017427612744027884, guid: 3aabd8b880e393c41bb80c078fa94711,
+        type: 3}
+      propertyPath: m_Layer
+      value: 7
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -734,6 +874,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: Prefab_SaiceCup (1)
+      objectReference: {fileID: 0}
+    - target: {fileID: 698171396981000514, guid: b29faf6740cb849438e53d55497b58ee,
+        type: 3}
+      propertyPath: m_Layer
+      value: 7
       objectReference: {fileID: 0}
     - target: {fileID: 1283291738128900922, guid: b29faf6740cb849438e53d55497b58ee,
         type: 3}
@@ -815,6 +960,16 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: -90.87
       objectReference: {fileID: 0}
+    - target: {fileID: 7024757074840647030, guid: b29faf6740cb849438e53d55497b58ee,
+        type: 3}
+      propertyPath: m_Layer
+      value: 7
+      objectReference: {fileID: 0}
+    - target: {fileID: 9187023311596733755, guid: b29faf6740cb849438e53d55497b58ee,
+        type: 3}
+      propertyPath: m_Layer
+      value: 7
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -838,6 +993,16 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: Prefab_toast
+      objectReference: {fileID: 0}
+    - target: {fileID: 3957322797577200171, guid: 5db318414bc2b8f4fb26b0ce6bf80cc3,
+        type: 3}
+      propertyPath: m_Layer
+      value: 7
+      objectReference: {fileID: 0}
+    - target: {fileID: 4905608438469662303, guid: 5db318414bc2b8f4fb26b0ce6bf80cc3,
+        type: 3}
+      propertyPath: m_Layer
+      value: 7
       objectReference: {fileID: 0}
     - target: {fileID: 5964474632874306470, guid: 5db318414bc2b8f4fb26b0ce6bf80cc3,
         type: 3}
@@ -913,6 +1078,16 @@ PrefabInstance:
       propertyPath: m_Name
       value: Prefab_toast (1)
       objectReference: {fileID: 0}
+    - target: {fileID: 3957322797577200171, guid: 5db318414bc2b8f4fb26b0ce6bf80cc3,
+        type: 3}
+      propertyPath: m_Layer
+      value: 7
+      objectReference: {fileID: 0}
+    - target: {fileID: 4905608438469662303, guid: 5db318414bc2b8f4fb26b0ce6bf80cc3,
+        type: 3}
+      propertyPath: m_Layer
+      value: 7
+      objectReference: {fileID: 0}
     - target: {fileID: 5964474632874306470, guid: 5db318414bc2b8f4fb26b0ce6bf80cc3,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -982,10 +1157,20 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 161914057026887334}
     m_Modifications:
+    - target: {fileID: 2997274570361771907, guid: c63954e080b8e4c4c9d9b9a977e03d90,
+        type: 3}
+      propertyPath: m_Layer
+      value: 7
+      objectReference: {fileID: 0}
     - target: {fileID: 3378511715486155667, guid: c63954e080b8e4c4c9d9b9a977e03d90,
         type: 3}
       propertyPath: m_Name
       value: Prefab_Pizza (1)
+      objectReference: {fileID: 0}
+    - target: {fileID: 3378511715486155667, guid: c63954e080b8e4c4c9d9b9a977e03d90,
+        type: 3}
+      propertyPath: m_Layer
+      value: 7
       objectReference: {fileID: 0}
     - target: {fileID: 8272948064921773860, guid: c63954e080b8e4c4c9d9b9a977e03d90,
         type: 3}
@@ -1056,10 +1241,20 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 161914057026887334}
     m_Modifications:
+    - target: {fileID: 2997274570361771907, guid: c63954e080b8e4c4c9d9b9a977e03d90,
+        type: 3}
+      propertyPath: m_Layer
+      value: 7
+      objectReference: {fileID: 0}
     - target: {fileID: 3378511715486155667, guid: c63954e080b8e4c4c9d9b9a977e03d90,
         type: 3}
       propertyPath: m_Name
       value: Prefab_Pizza
+      objectReference: {fileID: 0}
+    - target: {fileID: 3378511715486155667, guid: c63954e080b8e4c4c9d9b9a977e03d90,
+        type: 3}
+      propertyPath: m_Layer
+      value: 7
       objectReference: {fileID: 0}
     - target: {fileID: 8272948064921773860, guid: c63954e080b8e4c4c9d9b9a977e03d90,
         type: 3}
@@ -1135,6 +1330,16 @@ PrefabInstance:
       propertyPath: m_Name
       value: Prefab_toast 1
       objectReference: {fileID: 0}
+    - target: {fileID: 3957322797577200171, guid: cdd04f930203f044282efcb192698985,
+        type: 3}
+      propertyPath: m_Layer
+      value: 7
+      objectReference: {fileID: 0}
+    - target: {fileID: 4905608438469662303, guid: cdd04f930203f044282efcb192698985,
+        type: 3}
+      propertyPath: m_Layer
+      value: 7
+      objectReference: {fileID: 0}
     - target: {fileID: 5964474632874306470, guid: cdd04f930203f044282efcb192698985,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -1209,6 +1414,11 @@ PrefabInstance:
       propertyPath: m_Name
       value: Prefab_SodaCan_Crushed2
       objectReference: {fileID: 0}
+    - target: {fileID: 295543366600241890, guid: cd8c7024c8812e44ebf0d8443e27721e,
+        type: 3}
+      propertyPath: m_Layer
+      value: 7
+      objectReference: {fileID: 0}
     - target: {fileID: 4663289310866430169, guid: cd8c7024c8812e44ebf0d8443e27721e,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -1259,6 +1469,11 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 6650895125551472629, guid: cd8c7024c8812e44ebf0d8443e27721e,
+        type: 3}
+      propertyPath: m_Layer
+      value: 7
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -1282,6 +1497,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: Prefab_Pizzabox
+      objectReference: {fileID: 0}
+    - target: {fileID: 22648899321674013, guid: 6b33774543b7deb4988a0676e64e21fb,
+        type: 3}
+      propertyPath: m_Layer
+      value: 7
       objectReference: {fileID: 0}
     - target: {fileID: 176177520823191305, guid: 6b33774543b7deb4988a0676e64e21fb,
         type: 3}
@@ -1363,6 +1583,16 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 3966237177166066080, guid: 6b33774543b7deb4988a0676e64e21fb,
+        type: 3}
+      propertyPath: m_Layer
+      value: 7
+      objectReference: {fileID: 0}
+    - target: {fileID: 8831824632411566715, guid: 6b33774543b7deb4988a0676e64e21fb,
+        type: 3}
+      propertyPath: m_Layer
+      value: 7
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -1382,10 +1612,20 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 161914057026887334}
     m_Modifications:
+    - target: {fileID: 2016759640980583138, guid: 546453e5a2230d547b7b5d65f27e6331,
+        type: 3}
+      propertyPath: m_Layer
+      value: 7
+      objectReference: {fileID: 0}
     - target: {fileID: 7262956993760990891, guid: 546453e5a2230d547b7b5d65f27e6331,
         type: 3}
       propertyPath: m_Name
       value: Prefab_SodaBottle_L_Crushed
+      objectReference: {fileID: 0}
+    - target: {fileID: 7262956993760990891, guid: 546453e5a2230d547b7b5d65f27e6331,
+        type: 3}
+      propertyPath: m_Layer
+      value: 7
       objectReference: {fileID: 0}
     - target: {fileID: 8386619459735358368, guid: 546453e5a2230d547b7b5d65f27e6331,
         type: 3}
@@ -1461,6 +1701,11 @@ PrefabInstance:
       propertyPath: m_Name
       value: Prefab_SodaCan_Crushed2 (1)
       objectReference: {fileID: 0}
+    - target: {fileID: 295543366600241890, guid: cd8c7024c8812e44ebf0d8443e27721e,
+        type: 3}
+      propertyPath: m_Layer
+      value: 7
+      objectReference: {fileID: 0}
     - target: {fileID: 4663289310866430169, guid: cd8c7024c8812e44ebf0d8443e27721e,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -1511,6 +1756,11 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 6650895125551472629, guid: cd8c7024c8812e44ebf0d8443e27721e,
+        type: 3}
+      propertyPath: m_Layer
+      value: 7
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -1530,6 +1780,26 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 161914057026887334}
     m_Modifications:
+    - target: {fileID: 1138377564248497675, guid: 3aabd8b880e393c41bb80c078fa94711,
+        type: 3}
+      propertyPath: m_Layer
+      value: 7
+      objectReference: {fileID: 0}
+    - target: {fileID: 2568847381861708434, guid: 3aabd8b880e393c41bb80c078fa94711,
+        type: 3}
+      propertyPath: m_Layer
+      value: 7
+      objectReference: {fileID: 0}
+    - target: {fileID: 2747079056470454247, guid: 3aabd8b880e393c41bb80c078fa94711,
+        type: 3}
+      propertyPath: m_Layer
+      value: 7
+      objectReference: {fileID: 0}
+    - target: {fileID: 3274823390069732331, guid: 3aabd8b880e393c41bb80c078fa94711,
+        type: 3}
+      propertyPath: m_Layer
+      value: 7
+      objectReference: {fileID: 0}
     - target: {fileID: 4661404057594134576, guid: 3aabd8b880e393c41bb80c078fa94711,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -1585,6 +1855,11 @@ PrefabInstance:
       propertyPath: m_Name
       value: Prefab_SodaCan_2
       objectReference: {fileID: 0}
+    - target: {fileID: 6017427612744027884, guid: 3aabd8b880e393c41bb80c078fa94711,
+        type: 3}
+      propertyPath: m_Layer
+      value: 7
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -1608,6 +1883,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: Prefab_BurgerBox_Cracked (1)
+      objectReference: {fileID: 0}
+    - target: {fileID: 461692670688170993, guid: d3887f0097534cc4baf4263f1b8093ff,
+        type: 3}
+      propertyPath: m_Layer
+      value: 7
       objectReference: {fileID: 0}
     - target: {fileID: 5586354526533002755, guid: d3887f0097534cc4baf4263f1b8093ff,
         type: 3}
@@ -1659,6 +1939,16 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 6949233534190100357, guid: d3887f0097534cc4baf4263f1b8093ff,
+        type: 3}
+      propertyPath: m_Layer
+      value: 7
+      objectReference: {fileID: 0}
+    - target: {fileID: 7544772486320130391, guid: d3887f0097534cc4baf4263f1b8093ff,
+        type: 3}
+      propertyPath: m_Layer
+      value: 7
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -1678,10 +1968,20 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 161914057026887334}
     m_Modifications:
+    - target: {fileID: 2838440170414584431, guid: 30858ef0644983d49814b826a7d53d39,
+        type: 3}
+      propertyPath: m_Layer
+      value: 7
+      objectReference: {fileID: 0}
     - target: {fileID: 3564632919824148345, guid: 30858ef0644983d49814b826a7d53d39,
         type: 3}
       propertyPath: m_Name
       value: Prefab_SodaCan_Crushed1
+      objectReference: {fileID: 0}
+    - target: {fileID: 3564632919824148345, guid: 30858ef0644983d49814b826a7d53d39,
+        type: 3}
+      propertyPath: m_Layer
+      value: 7
       objectReference: {fileID: 0}
     - target: {fileID: 5441006837568261448, guid: 30858ef0644983d49814b826a7d53d39,
         type: 3}
@@ -1752,10 +2052,25 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 161914057026887334}
     m_Modifications:
+    - target: {fileID: 1721152368296840683, guid: 3b70239e577309b4b9e9cd193e820170,
+        type: 3}
+      propertyPath: m_Layer
+      value: 7
+      objectReference: {fileID: 0}
+    - target: {fileID: 1881433809273744311, guid: 3b70239e577309b4b9e9cd193e820170,
+        type: 3}
+      propertyPath: m_Layer
+      value: 7
+      objectReference: {fileID: 0}
     - target: {fileID: 3802344691026843448, guid: 3b70239e577309b4b9e9cd193e820170,
         type: 3}
       propertyPath: m_Name
       value: Prefab_SodaBottle_L
+      objectReference: {fileID: 0}
+    - target: {fileID: 3802344691026843448, guid: 3b70239e577309b4b9e9cd193e820170,
+        type: 3}
+      propertyPath: m_Layer
+      value: 7
       objectReference: {fileID: 0}
     - target: {fileID: 6060296159020548286, guid: 3b70239e577309b4b9e9cd193e820170,
         type: 3}
@@ -1807,6 +2122,11 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 9120983816274625719, guid: 3b70239e577309b4b9e9cd193e820170,
+        type: 3}
+      propertyPath: m_Layer
+      value: 7
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -1826,6 +2146,11 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 161914057026887334}
     m_Modifications:
+    - target: {fileID: 2249339097161400633, guid: 28487c63b217ac342935299e9014381e,
+        type: 3}
+      propertyPath: m_Layer
+      value: 7
+      objectReference: {fileID: 0}
     - target: {fileID: 5513832700808676587, guid: 28487c63b217ac342935299e9014381e,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -1876,10 +2201,30 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 6803265288047186947, guid: 28487c63b217ac342935299e9014381e,
+        type: 3}
+      propertyPath: m_Layer
+      value: 7
+      objectReference: {fileID: 0}
     - target: {fileID: 7311506559397099704, guid: 28487c63b217ac342935299e9014381e,
         type: 3}
       propertyPath: m_Name
       value: Prefab_SodaCan_1 (2)
+      objectReference: {fileID: 0}
+    - target: {fileID: 7311506559397099704, guid: 28487c63b217ac342935299e9014381e,
+        type: 3}
+      propertyPath: m_Layer
+      value: 7
+      objectReference: {fileID: 0}
+    - target: {fileID: 7794679608689233398, guid: 28487c63b217ac342935299e9014381e,
+        type: 3}
+      propertyPath: m_Layer
+      value: 7
+      objectReference: {fileID: 0}
+    - target: {fileID: 7873424225176254160, guid: 28487c63b217ac342935299e9014381e,
+        type: 3}
+      propertyPath: m_Layer
+      value: 7
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []

@@ -11,6 +11,12 @@ public class DayPartManager : MonoBehaviour
     public Volume eveningVolume;
     public Light directionalLight;
 
+    [Header("Skybox Materials")]
+    [Tooltip("Skybox material to use during morning hours")]
+    public Material morningSkybox;
+    [Tooltip("Skybox material to use during evening hours")]
+    public Material eveningSkybox;
+
     [Header("Lighting Intensities")]
     public float morningIntensity = 1f;
     public float eveningIntensity = 0.5f;
@@ -81,9 +87,19 @@ public class DayPartManager : MonoBehaviour
         {
             case DayPart.Morning:
                 directionalLight.intensity = morningIntensity;
+                if (morningSkybox != null)
+                {
+                    RenderSettings.skybox = morningSkybox;
+                    Debug.Log($"DayPartManager: Changed to morning skybox: {morningSkybox.name}");
+                }
                 break;
             case DayPart.Evening:
                 directionalLight.intensity = eveningIntensity;
+                if (eveningSkybox != null)
+                {
+                    RenderSettings.skybox = eveningSkybox;
+                    Debug.Log($"DayPartManager: Changed to evening skybox: {eveningSkybox.name}");
+                }
                 break;
         }
     }
@@ -142,6 +158,40 @@ public class DayPartManager : MonoBehaviour
     public void TestSetToDay3()
     {
         SetDay(3);
+    }
+    
+    /// <summary>
+    /// Manually set the skybox material
+    /// </summary>
+    public void SetSkybox(Material skyboxMaterial)
+    {
+        if (skyboxMaterial != null)
+        {
+            RenderSettings.skybox = skyboxMaterial;
+            Debug.Log($"DayPartManager: Manually set skybox to: {skyboxMaterial.name}");
+        }
+        else
+        {
+            Debug.LogWarning("DayPartManager: Attempted to set skybox to null material!");
+        }
+    }
+    
+    /// <summary>
+    /// Test method to set morning skybox (for debugging)
+    /// </summary>
+    [ContextMenu("Set Morning Skybox")]
+    public void TestSetMorningSkybox()
+    {
+        SetSkybox(morningSkybox);
+    }
+    
+    /// <summary>
+    /// Test method to set evening skybox (for debugging)
+    /// </summary>
+    [ContextMenu("Set Evening Skybox")]
+    public void TestSetEveningSkybox()
+    {
+        SetSkybox(eveningSkybox);
     }
     
     void Update()
