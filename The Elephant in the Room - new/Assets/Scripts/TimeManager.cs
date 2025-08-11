@@ -12,6 +12,10 @@ public class TimeManager : MonoBehaviour
     public int eveningStart = 18 * 60;
     public int eveningEnd   = 23 * 60;
 
+    [Header("Day Management")]
+    [Tooltip("Current day number (starts at 1)")]
+    public int currentDay = 1;
+
     [Header("Fixed Event Durations (in minutes)")]
     public List<string> eventNames;
     public List<int> eventDurations; // in minutes
@@ -29,6 +33,7 @@ public class TimeManager : MonoBehaviour
     private bool lightsCurrentlyOn = false;
 
     public event Action<int> OnTimeChanged;
+    public event Action<int> OnDayChanged;
 
     void Awake()
     {
@@ -40,6 +45,7 @@ public class TimeManager : MonoBehaviour
 
         currentTime = morningStart;
         OnTimeChanged?.Invoke(currentTime);
+        OnDayChanged?.Invoke(currentDay);
     }
 
     void Start()
@@ -78,6 +84,7 @@ public class TimeManager : MonoBehaviour
     }
 
     public int GetCurrentTime() => currentTime;
+    public int GetCurrentDay() => currentDay;
 
     /// <summary>Manually set the in-game clock time</summary>
     public void SetTime(int minutes)
@@ -85,6 +92,29 @@ public class TimeManager : MonoBehaviour
         currentTime = minutes;
         OnTimeChanged?.Invoke(currentTime);
         UpdateLighting();
+    }
+
+    /// <summary>Advance to the next day</summary>
+    public void AdvanceDay()
+    {
+        currentDay++;
+        OnDayChanged?.Invoke(currentDay);
+        Debug.Log($"TimeManager: Advanced to Day {currentDay}");
+    }
+
+    /// <summary>Set the current day</summary>
+    public void SetDay(int day)
+    {
+        if (day >= 1)
+        {
+            currentDay = day;
+            OnDayChanged?.Invoke(currentDay);
+            Debug.Log($"TimeManager: Set to Day {currentDay}");
+        }
+        else
+        {
+            Debug.LogWarning($"TimeManager: Invalid day number {day}. Must be 1 or greater");
+        }
     }
 
     /// <summary>Update lighting based on current time</summary>

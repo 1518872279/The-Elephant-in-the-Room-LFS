@@ -32,14 +32,52 @@ public class GarbageCleanupController : MonoBehaviour
     private int totalItems;
     private int cleanedItems;
 
+    // Day tracking for once-per-day restriction
+    private int lastCompletedDay = -1;
+
     void Awake()
     {
         Instance = this;
+    }
+    
+    void Start()
+    {
+        // Subscribe to day changes to reset the once-per-day restriction
+        if (DayPartManager.Instance != null)
+        {
+            DayPartManager.Instance.OnDayPartChanged += OnDayPartChanged;
+        }
+    }
+    
+    void OnDestroy()
+    {
+        // Unsubscribe from day changes
+        if (DayPartManager.Instance != null)
+        {
+            DayPartManager.Instance.OnDayPartChanged -= OnDayPartChanged;
+        }
+    }
+    
+    private void OnDayPartChanged(DayPartManager.DayPart newPart)
+    {
+        // Reset the restriction when a new day starts (morning)
+        if (newPart == DayPartManager.DayPart.Morning)
+        {
+            lastCompletedDay = -1;
+            Debug.Log("GarbageCleanupController: New day started, garbage cleanup minigame is now available again");
+        }
     }
 
     /// <summary>Call this when GarbageCleanup event starts.</summary>
     public void StartMinigame()
     {
+        // Check if already completed today
+        if (DayPartManager.Instance != null && lastCompletedDay == DayPartManager.Instance.daysElapsed)
+        {
+            Debug.Log("GarbageCleanupController: Garbage cleanup minigame already completed today. Try again tomorrow!");
+            return;
+        }
+        
         GenerateGarbage();
         cleanedItems = 0;
         totalItems = spawnedItems.Count;
@@ -83,15 +121,15 @@ public class GarbageCleanupController : MonoBehaviour
                 if (Physics.Raycast(randomPoint, Vector3.down, out RaycastHit hit, Mathf.Infinity, floorLayer))
                 {
                     Vector3 spawnPos = hit.point + Vector3.up * verticalOffset;
-                                    // Select random prefab variation
-                GameObject prefab = prefabs[Random.Range(0, prefabs.Length)];
+                    // Select random prefab variation
+                    GameObject prefab = prefabs[Random.Range(0, prefabs.Length)];
                 var go = Instantiate(prefab, spawnPos, prefab.transform.rotation);
                 
                 // Preserve the original scale to prevent stretching
                 go.transform.localScale = prefab.transform.localScale;
                 
-                go.AddComponent<GarbageItem>();
-                spawnedItems.Add(go);
+                    go.AddComponent<GarbageItem>();
+                    spawnedItems.Add(go);
                 }
             }
         }
@@ -117,6 +155,13 @@ public class GarbageCleanupController : MonoBehaviour
 
     private IEnumerator EndRoutine()
     {
+        // Mark as completed for today
+        if (DayPartManager.Instance != null)
+        {
+            lastCompletedDay = DayPartManager.Instance.daysElapsed;
+            Debug.Log($"GarbageCleanupController: Garbage cleanup minigame completed for day {lastCompletedDay}");
+        }
+        
         // Ensure fade image is available and canvas is enabled
         if (fadeImage != null)
         {
@@ -151,5 +196,30 @@ public class GarbageCleanupController : MonoBehaviour
         
         // End of minigame logic, e.g., advance time
         TimeManager.Instance.TryStartEvent("GarbageCleanup");
+    }
+    
+    /// <summary>
+    /// Check if the garbage cleanup minigame is available (not completed today)
+    /// </summary>
+    public bool IsMinigameAvailable()
+    {
+        if (DayPartManager.Instance == null) return true;
+        return lastCompletedDay != DayPartManager.Instance.daysElapsed;
+    }
+    
+    /// <summary>
+    /// Get the current day number
+    /// </summary>
+    public int GetCurrentDay()
+    {
+        return DayPartManager.Instance != null ? DayPartManager.Instance.daysElapsed : 1;
+    }
+    
+    /// <summary>
+    /// Get the last day the garbage cleanup was completed
+    /// </summary>
+    public int GetLastCompletedDay()
+    {
+        return lastCompletedDay;
     }
 } 

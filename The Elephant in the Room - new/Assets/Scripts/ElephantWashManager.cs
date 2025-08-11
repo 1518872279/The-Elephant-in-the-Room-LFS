@@ -8,6 +8,8 @@ public class ElephantWashManager : MonoBehaviour
 {
     [Header("Elephant Reference")]
     public GameObject elephantObject;
+    [Tooltip("Elephant GameObject to activate during wash minigame")]
+    public GameObject washElephantObject;
     
     [Header("Stain System")]
     public GameObject stainPrefab;
@@ -47,6 +49,9 @@ public class ElephantWashManager : MonoBehaviour
     private bool isWashActive = false;
     private List<GameObject> activeStains = new List<GameObject>();
     
+    // Day tracking for once-per-day restriction
+    private int lastCompletedDay = -1;
+    
     public System.Action OnWashStarted;
     public System.Action OnWashCompleted;
     public System.Action<int> OnStainCleaned;
@@ -69,11 +74,50 @@ public class ElephantWashManager : MonoBehaviour
             
         if (waterGun != null)
             waterGun.SetActive(false);
+            
+        // Ensure wash elephant is deactivated at start
+        if (washElephantObject != null)
+            washElephantObject.SetActive(false);
+    }
+    
+    void Start()
+    {
+        // Subscribe to day changes to reset the once-per-day restriction
+        if (DayPartManager.Instance != null)
+        {
+            DayPartManager.Instance.OnDayPartChanged += OnDayPartChanged;
+        }
+    }
+    
+    void OnDestroy()
+    {
+        // Unsubscribe from day changes
+        if (DayPartManager.Instance != null)
+        {
+            DayPartManager.Instance.OnDayPartChanged -= OnDayPartChanged;
+        }
+    }
+    
+    private void OnDayPartChanged(DayPartManager.DayPart newPart)
+    {
+        // Reset the restriction when a new day starts (morning)
+        if (newPart == DayPartManager.DayPart.Morning)
+        {
+            lastCompletedDay = -1;
+            Debug.Log("ElephantWashManager: New day started, wash minigame is now available again");
+        }
     }
 
     public void StartWash()
     {
         if (isWashActive) return;
+        
+        // Check if already completed today
+        if (DayPartManager.Instance != null && lastCompletedDay == DayPartManager.Instance.daysElapsed)
+        {
+            Debug.Log("ElephantWashManager: Wash minigame already completed today. Try again tomorrow!");
+            return;
+        }
         
         isWashActive = true;
         remainingStains = stainCount;
@@ -174,6 +218,13 @@ public class ElephantWashManager : MonoBehaviour
         
         isWashActive = false;
         
+        // Mark as completed for today
+        if (DayPartManager.Instance != null)
+        {
+            lastCompletedDay = DayPartManager.Instance.daysElapsed;
+            Debug.Log($"ElephantWashManager: Wash minigame completed for day {lastCompletedDay}");
+        }
+        
         if (washAudioSource != null && washCompleteSound != null)
         {
             washAudioSource.PlayOneShot(washCompleteSound);
@@ -189,9 +240,41 @@ public class ElephantWashManager : MonoBehaviour
         
         OnWashCompleted?.Invoke();
     }
+    
+    /// <summary>
+    /// Check if the wash minigame is available (not completed today)
+    /// </summary>
+    public bool IsWashAvailable()
+    {
+        if (DayPartManager.Instance == null) return true;
+        return lastCompletedDay != DayPartManager.Instance.daysElapsed;
+    }
+    
+    /// <summary>
+    /// Get the current day number
+    /// </summary>
+    public int GetCurrentDay()
+    {
+        return DayPartManager.Instance != null ? DayPartManager.Instance.daysElapsed : 1;
+    }
+    
+    /// <summary>
+    /// Get the last day the wash was completed
+    /// </summary>
+    public int GetLastCompletedDay()
+    {
+        return lastCompletedDay;
+    }
 
     private IEnumerator SwitchToWashView()
     {
+        // Activate wash elephant
+        if (washElephantObject != null)
+        {
+            washElephantObject.SetActive(true);
+            Debug.Log("ElephantWashManager: Activated wash elephant");
+        }
+        
         if (waterGun != null)
         {
             waterGun.SetActive(true);
@@ -241,6 +324,13 @@ public class ElephantWashManager : MonoBehaviour
         if (washCanvas != null)
         {
             washCanvas.SetActive(false);
+        }
+        
+        // Deactivate wash elephant
+        if (washElephantObject != null)
+        {
+            washElephantObject.SetActive(false);
+            Debug.Log("ElephantWashManager: Deactivated wash elephant");
         }
         
         // Fade in
