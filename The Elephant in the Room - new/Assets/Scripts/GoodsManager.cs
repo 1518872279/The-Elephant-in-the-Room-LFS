@@ -108,6 +108,11 @@ public class GoodsManager : MonoBehaviour
             "Pure spring water, bottled at the source. Essential for staying hydrated throughout the day.", 
             "Pure spring water for hydration.", 
             2);
+            
+        AddGoods("Companion Robot", 
+            "A friendly companion robot that helps increase elephant stability but may affect happiness. Press 6 to spawn after purchase.", 
+            "Companion robot for elephant stability.", 
+            25);
     }
 
     /// <summary>

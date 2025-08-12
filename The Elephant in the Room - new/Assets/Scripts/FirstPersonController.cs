@@ -17,6 +17,10 @@ public class FirstPersonController : MonoBehaviour
     [Tooltip("Reference to the ElephantTeaserAnimationManager component")]
     public ElephantTeaserAnimationManager teaserManager;
     
+    [Header("Companion Robot Control")]
+    [Tooltip("Reference to the CompanionRobotManager component")]
+    public CompanionRobotManager companionRobotManager;
+    
     [Header("Stair Climbing")]
     public float maxStepHeight = 0.3f;
     public float stepSmooth = 0.1f;
@@ -46,6 +50,7 @@ public class FirstPersonController : MonoBehaviour
         }
         HandleWatchInput();
         HandleTeaserInput();
+        HandleCompanionRobotInput();
     }
 
     void HandleLook()
@@ -162,6 +167,22 @@ public class FirstPersonController : MonoBehaviour
         if (teaserManager != null)
         {
             teaserManager.HandleTeaserMouseInput();
+        }
+    }
+    
+    void HandleCompanionRobotInput()
+    {
+        // Check for companion robot input (key 6)
+        if (Input.GetKeyDown(KeyCode.Alpha6))
+        {
+            if (companionRobotManager != null)
+            {
+                companionRobotManager.SpawnCompanionRobot();
+            }
+            else
+            {
+                Debug.LogWarning("CompanionRobotManager not assigned to FirstPersonController");
+            }
         }
     }
     

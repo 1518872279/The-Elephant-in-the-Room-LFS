@@ -2,6 +2,19 @@ using System;
 using System.Collections.Generic;
 using UnityEngine;
 
+[System.Serializable]
+public class DayBasedObject
+{
+    [Tooltip("Day number when this object should be activated/deactivated")]
+    public int day;
+    [Tooltip("Game object to activate/deactivate")]
+    public GameObject gameObject;
+    [Tooltip("Whether the object should be active (true) or inactive (false) on this day")]
+    public bool shouldBeActive;
+    [Tooltip("Description of what this object represents (for organization)")]
+    public string description;
+}
+
 public class TimeManager : MonoBehaviour
 {
     public static TimeManager Instance { get; private set; }
@@ -15,6 +28,10 @@ public class TimeManager : MonoBehaviour
     [Header("Day Management")]
     [Tooltip("Current day number (starts at 1)")]
     public int currentDay = 1;
+
+    [Header("Day-Based Object Management")]
+    [Tooltip("Objects that should be activated/deactivated on specific days")]
+    public List<DayBasedObject> dayBasedObjects = new List<DayBasedObject>();
 
     [Header("Fixed Event Durations (in minutes)")]
     public List<string> eventNames;
@@ -52,6 +69,9 @@ public class TimeManager : MonoBehaviour
     {
         // Initialize lighting based on current time
         UpdateLighting();
+        
+        // Initialize day-based objects
+        UpdateDayBasedObjects();
     }
 
     /// <summary>Tries to start an event by name. Advances time if within window.</summary>
@@ -99,6 +119,7 @@ public class TimeManager : MonoBehaviour
     {
         currentDay++;
         OnDayChanged?.Invoke(currentDay);
+        UpdateDayBasedObjects();
         Debug.Log($"TimeManager: Advanced to Day {currentDay}");
     }
 
@@ -109,12 +130,62 @@ public class TimeManager : MonoBehaviour
         {
             currentDay = day;
             OnDayChanged?.Invoke(currentDay);
+            UpdateDayBasedObjects();
             Debug.Log($"TimeManager: Set to Day {currentDay}");
         }
         else
         {
             Debug.LogWarning($"TimeManager: Invalid day number {day}. Must be 1 or greater");
         }
+    }
+
+    /// <summary>Update day-based objects based on current day</summary>
+    private void UpdateDayBasedObjects()
+    {
+        foreach (DayBasedObject dayObject in dayBasedObjects)
+        {
+            if (dayObject.gameObject != null && dayObject.day == currentDay)
+            {
+                dayObject.gameObject.SetActive(dayObject.shouldBeActive);
+                string action = dayObject.shouldBeActive ? "activated" : "deactivated";
+                string description = string.IsNullOrEmpty(dayObject.description) ? dayObject.gameObject.name : dayObject.description;
+                Debug.Log($"TimeManager: {description} {action} on Day {currentDay}");
+            }
+        }
+    }
+
+    /// <summary>Add a new day-based object programmatically</summary>
+    public void AddDayBasedObject(int day, GameObject gameObject, bool shouldBeActive, string description = "")
+    {
+        DayBasedObject newObject = new DayBasedObject
+        {
+            day = day,
+            gameObject = gameObject,
+            shouldBeActive = shouldBeActive,
+            description = description
+        };
+        
+        dayBasedObjects.Add(newObject);
+        
+        // If this is for the current day, apply it immediately
+        if (day == currentDay)
+        {
+            gameObject.SetActive(shouldBeActive);
+            string action = shouldBeActive ? "activated" : "deactivated";
+            Debug.Log($"TimeManager: {description} {action} on Day {currentDay}");
+        }
+    }
+
+    /// <summary>Remove a day-based object by game object reference</summary>
+    public void RemoveDayBasedObject(GameObject gameObject)
+    {
+        dayBasedObjects.RemoveAll(obj => obj.gameObject == gameObject);
+    }
+
+    /// <summary>Get all day-based objects for a specific day</summary>
+    public List<DayBasedObject> GetDayBasedObjects(int day)
+    {
+        return dayBasedObjects.FindAll(obj => obj.day == day);
     }
 
     /// <summary>Update lighting based on current time</summary>

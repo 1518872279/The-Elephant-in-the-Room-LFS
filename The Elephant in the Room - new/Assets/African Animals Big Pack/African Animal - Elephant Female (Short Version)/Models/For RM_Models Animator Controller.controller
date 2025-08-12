@@ -9,7 +9,7 @@ AnimatorStateTransition:
   m_Name: 
   m_Conditions:
   - m_ConditionMode: 1
-    m_ConditionEvent: Sad
+    m_ConditionEvent: isSad
     m_EventTreshold: 0
   m_DstStateMachine: {fileID: 0}
   m_DstState: {fileID: 2504867240519869137}
@@ -34,7 +34,7 @@ AnimatorStateTransition:
   m_Name: 
   m_Conditions:
   - m_ConditionMode: 2
-    m_ConditionEvent: Sad
+    m_ConditionEvent: isSad
     m_EventTreshold: 0
   m_DstStateMachine: {fileID: 0}
   m_DstState: {fileID: 5649149524032395367}
@@ -84,7 +84,7 @@ AnimatorStateTransition:
   m_Name: 
   m_Conditions:
   - m_ConditionMode: 2
-    m_ConditionEvent: Wave
+    m_ConditionEvent: isWaving
     m_EventTreshold: 0
   m_DstStateMachine: {fileID: 0}
   m_DstState: {fileID: 5649149524032395367}
@@ -109,13 +109,13 @@ AnimatorController:
   m_Name: For RM_Models Animator Controller
   serializedVersion: 5
   m_AnimatorParameters:
-  - m_Name: Happy
+  - m_Name: isHappy
     m_Type: 4
     m_DefaultFloat: 0
     m_DefaultInt: 0
     m_DefaultBool: 0
     m_Controller: {fileID: 9100000}
-  - m_Name: Sad
+  - m_Name: isSad
     m_Type: 4
     m_DefaultFloat: 0
     m_DefaultInt: 0
@@ -133,7 +133,7 @@ AnimatorController:
     m_DefaultInt: 0
     m_DefaultBool: 0
     m_Controller: {fileID: 9100000}
-  - m_Name: Wave
+  - m_Name: isWaving
     m_Type: 4
     m_DefaultFloat: 0
     m_DefaultInt: 0
@@ -519,7 +519,7 @@ AnimatorStateTransition:
   m_Name: 
   m_Conditions:
   - m_ConditionMode: 1
-    m_ConditionEvent: Wave
+    m_ConditionEvent: isWaving
     m_EventTreshold: 0
   m_DstStateMachine: {fileID: 0}
   m_DstState: {fileID: 3273861523817460399}
