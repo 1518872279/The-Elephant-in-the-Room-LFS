@@ -37,6 +37,20 @@ public class ElephantTeaserAnimationManager : MonoBehaviour
     [Header("Using Animation Settings")]
     [Tooltip("Duration of the using animation in seconds")]
     public float usingAnimationDuration = 2f;
+    
+    [Header("Elephant State Effects")]
+    [Tooltip("Happiness increase when using the elephant teaser")]
+    public float happinessIncrease = 15f;
+    [Tooltip("Event name for the elephant teaser usage")]
+    public string teaserEventName = "ElephantTeaser";
+    
+    [Header("Proximity Settings")]
+    [Tooltip("Reference to the elephant GameObject")]
+    public GameObject elephantObject;
+    [Tooltip("Maximum distance from elephant for happiness increase (in units)")]
+    public float maxProximityDistance = 5f;
+    [Tooltip("Tag of the player GameObject for distance calculation")]
+    public string playerTag = "Player";
 
     private bool isTakingOut = false;
     private bool isUsing = false;
@@ -44,6 +58,7 @@ public class ElephantTeaserAnimationManager : MonoBehaviour
     private bool isActivated = false;
     private bool isTakenOut = false;
     private float usingTimer = 0f;
+    private Transform playerTransform;
 
     void Start()
     {
@@ -51,6 +66,17 @@ public class ElephantTeaserAnimationManager : MonoBehaviour
         if (teaserAnimator == null)
         {
             teaserAnimator = GetComponent<Animator>();
+        }
+        
+        // Find player for proximity checking
+        GameObject player = GameObject.FindGameObjectWithTag(playerTag);
+        if (player != null)
+        {
+            playerTransform = player.transform;
+        }
+        else
+        {
+            Debug.LogWarning($"ElephantTeaserAnimationManager: No GameObject with tag '{playerTag}' found!");
         }
         
         // Deactivate the teaser by default if configured
@@ -180,6 +206,9 @@ public class ElephantTeaserAnimationManager : MonoBehaviour
         isUsing = true;
         isTakingBack = false;
         usingTimer = 0f; // Reset timer
+        
+        // Increase elephant happiness when using the teaser
+        IncreaseElephantHappiness();
     }
 
     void StopUsingAnimation()
@@ -312,4 +341,77 @@ public class ElephantTeaserAnimationManager : MonoBehaviour
     public bool IsTakingBack => isTakingBack;
     public bool IsActivated => isActivated;
     public bool IsTakenOut => isTakenOut;
+    
+    /// <summary>
+    /// Increase elephant happiness when using the teaser (only if player is close enough)
+    /// </summary>
+    private void IncreaseElephantHappiness()
+    {
+        // Check if player is close enough to the elephant
+        if (!IsPlayerNearElephant())
+        {
+            Debug.Log($"ElephantTeaserAnimationManager: Player too far from elephant. Distance: {GetDistanceToElephant():F1}m, Max: {maxProximityDistance}m");
+            return;
+        }
+        
+        if (ElephantStateController.Instance != null)
+        {
+            // Use the new ModifyHappiness method to directly control the happiness increase
+            ElephantStateController.Instance.ModifyHappiness(happinessIncrease, teaserEventName);
+            
+            Debug.Log($"ElephantTeaserAnimationManager: Increased elephant happiness by {happinessIncrease} using event: {teaserEventName}");
+        }
+        else
+        {
+            Debug.LogWarning("ElephantTeaserAnimationManager: ElephantStateController not found!");
+        }
+    }
+    
+    /// <summary>
+    /// Check if the player is within the proximity range of the elephant
+    /// </summary>
+    /// <returns>True if player is close enough, false otherwise</returns>
+    private bool IsPlayerNearElephant()
+    {
+        if (playerTransform == null)
+        {
+            Debug.LogWarning("ElephantTeaserAnimationManager: Player transform not found!");
+            return false;
+        }
+        
+        if (elephantObject == null)
+        {
+            Debug.LogWarning("ElephantTeaserAnimationManager: Elephant object not assigned!");
+            return false;
+        }
+        
+        float distance = Vector3.Distance(playerTransform.position, elephantObject.transform.position);
+        return distance <= maxProximityDistance;
+    }
+    
+    /// <summary>
+    /// Get the current distance between player and elephant
+    /// </summary>
+    /// <returns>Distance in units, or -1 if either object is missing</returns>
+    private float GetDistanceToElephant()
+    {
+        if (playerTransform == null || elephantObject == null)
+        {
+            return -1f;
+        }
+        
+        return Vector3.Distance(playerTransform.position, elephantObject.transform.position);
+    }
+    
+    /// <summary>
+    /// Draw gizmos to visualize the proximity range in the Scene view
+    /// </summary>
+    void OnDrawGizmosSelected()
+    {
+        if (elephantObject != null)
+        {
+            Gizmos.color = Color.cyan;
+            Gizmos.DrawWireSphere(elephantObject.transform.position, maxProximityDistance);
+        }
+    }
 }

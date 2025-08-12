@@ -62,6 +62,24 @@ public class ElephantStateController : MonoBehaviour
         if (stability <= 0f)
             LeavePlayer();
     }
+    
+    /// <summary>
+    /// Directly modify happiness and trigger the reaction event
+    /// </summary>
+    /// <param name="happinessDelta">Amount to change happiness by</param>
+    /// <param name="eventName">Name of the event that caused this change</param>
+    public void ModifyHappiness(float happinessDelta, string eventName = "")
+    {
+        happiness += happinessDelta;
+        ClampValues();
+        
+        if (!string.IsNullOrEmpty(eventName))
+        {
+            OnReactionTriggered?.Invoke(eventName);
+        }
+        
+        Debug.Log($"ElephantStateController: Happiness changed by {happinessDelta}. New happiness: {happiness}");
+    }
 
     void ClampValues()
     {

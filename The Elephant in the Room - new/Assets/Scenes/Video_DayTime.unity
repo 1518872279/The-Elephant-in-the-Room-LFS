@@ -144074,7 +144074,7 @@ Material:
     - _ShadowColor: {r: 0, g: 0, b: 0, a: 1}
     - _ShadowIntensity: {r: 0, g: 1, b: 0, a: 0}
     - _ToLightDir: {r: -1.0000001, g: -0, b: -0.0000029206276, a: 0}
-    - _WindDirection: {r: 0.96220493, g: 0.64147025, b: 0, a: 278.73334}
+    - _WindDirection: {r: 0.056926038, g: 0.037950687, b: 0, a: 7.416408}
   m_BuildTextureStacks: []
 --- !u!1001 &1719773310
 PrefabInstance:
@@ -188114,6 +188114,11 @@ MonoBehaviour:
   startDeactivated: 1
   deactivateAfterTakeBack: 1
   usingAnimationDuration: 2
+  happinessIncrease: 10
+  teaserEventName: ElephantTeaser
+  elephantObject: {fileID: 3560052024743353691}
+  maxProximityDistance: 5
+  playerTag: Player
 --- !u!95 &919132148202397163
 Animator:
   serializedVersion: 5
