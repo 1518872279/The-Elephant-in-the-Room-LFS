@@ -25,9 +25,24 @@ public class DayPartManager : MonoBehaviour
     [Tooltip("Number of in-game days that have passed")]
     public int daysElapsed = 1;
     
-    [Header("Testing")]
+    [Header("Video Recording Controls")]
     [Tooltip("Manually advance to the next day for testing")]
     public bool advanceToNextDay = false;
+    
+    [Tooltip("Manually switch day part for video recording")]
+    public bool switchToMorning = false;
+    public bool switchToEvening = false;
+    
+    [Tooltip("Current day part for video recording (can be manually set)")]
+    public DayPart manualDayPart = DayPart.Morning;
+    
+    [Header("Lighting Control")]
+    [Tooltip("Whether to control TimeManager lighting when switching day parts")]
+    public bool controlTimeManagerLighting = true;
+    
+    [Tooltip("Manually toggle lights on/off for video recording")]
+    public bool toggleLightsOn = false;
+    public bool toggleLightsOff = false;
 
     public enum DayPart { None, Morning, Evening }
     public DayPart currentPart = DayPart.None;
@@ -92,6 +107,11 @@ public class DayPartManager : MonoBehaviour
                     RenderSettings.skybox = morningSkybox;
                     Debug.Log($"DayPartManager: Changed to morning skybox: {morningSkybox.name}");
                 }
+                // Control TimeManager lighting
+                if (controlTimeManagerLighting && TimeManager.Instance != null)
+                {
+                    TimeManager.Instance.ToggleLights(false); // Turn off lights in morning
+                }
                 break;
             case DayPart.Evening:
                 directionalLight.intensity = eveningIntensity;
@@ -100,7 +120,64 @@ public class DayPartManager : MonoBehaviour
                     RenderSettings.skybox = eveningSkybox;
                     Debug.Log($"DayPartManager: Changed to evening skybox: {eveningSkybox.name}");
                 }
+                // Control TimeManager lighting
+                if (controlTimeManagerLighting && TimeManager.Instance != null)
+                {
+                    TimeManager.Instance.ToggleLights(true); // Turn on lights in evening
+                }
                 break;
+        }
+    }
+    
+    /// <summary>
+    /// Manually switch to morning for video recording
+    /// </summary>
+    public void SwitchToMorning()
+    {
+        OnDayPartChanged?.Invoke(DayPart.Morning);
+        ApplyPart(DayPart.Morning);
+        currentPart = DayPart.Morning;
+        manualDayPart = DayPart.Morning;
+        Debug.Log("DayPartManager: Manually switched to Morning for video recording");
+    }
+    
+    /// <summary>
+    /// Manually switch to evening for video recording
+    /// </summary>
+    public void SwitchToEvening()
+    {
+        OnDayPartChanged?.Invoke(DayPart.Evening);
+        ApplyPart(DayPart.Evening);
+        currentPart = DayPart.Evening;
+        manualDayPart = DayPart.Evening;
+        Debug.Log("DayPartManager: Manually switched to Evening for video recording");
+    }
+    
+    /// <summary>
+    /// Manually set day part for video recording
+    /// </summary>
+    public void SetDayPart(DayPart dayPart)
+    {
+        OnDayPartChanged?.Invoke(dayPart);
+        ApplyPart(dayPart);
+        currentPart = dayPart;
+        manualDayPart = dayPart;
+        Debug.Log($"DayPartManager: Manually set day part to {dayPart} for video recording");
+    }
+    
+    /// <summary>
+    /// Manually toggle lights on/off for video recording
+    /// </summary>
+    public void ToggleLights(bool turnOn)
+    {
+        if (TimeManager.Instance != null)
+        {
+            TimeManager.Instance.ToggleLights(turnOn);
+            Debug.Log($"DayPartManager: Manually toggled lights {(turnOn ? "ON" : "OFF")} for video recording");
+        }
+        else
+        {
+            Debug.LogWarning("DayPartManager: TimeManager not found, cannot toggle lights");
         }
     }
     
@@ -161,6 +238,42 @@ public class DayPartManager : MonoBehaviour
     }
     
     /// <summary>
+    /// Test method to switch to morning (for debugging)
+    /// </summary>
+    [ContextMenu("Switch to Morning")]
+    public void TestSwitchToMorning()
+    {
+        SwitchToMorning();
+    }
+    
+    /// <summary>
+    /// Test method to switch to evening (for debugging)
+    /// </summary>
+    [ContextMenu("Switch to Evening")]
+    public void TestSwitchToEvening()
+    {
+        SwitchToEvening();
+    }
+    
+    /// <summary>
+    /// Test method to turn lights on (for debugging)
+    /// </summary>
+    [ContextMenu("Turn Lights On")]
+    public void TestTurnLightsOn()
+    {
+        ToggleLights(true);
+    }
+    
+    /// <summary>
+    /// Test method to turn lights off (for debugging)
+    /// </summary>
+    [ContextMenu("Turn Lights Off")]
+    public void TestTurnLightsOff()
+    {
+        ToggleLights(false);
+    }
+    
+    /// <summary>
     /// Manually set the skybox material
     /// </summary>
     public void SetSkybox(Material skyboxMaterial)
@@ -201,6 +314,32 @@ public class DayPartManager : MonoBehaviour
         {
             advanceToNextDay = false; // Reset the flag
             AdvanceToNextDay();
+        }
+        
+        // Check for manual day part switching in inspector
+        if (switchToMorning)
+        {
+            switchToMorning = false; // Reset the flag
+            SwitchToMorning();
+        }
+        
+        if (switchToEvening)
+        {
+            switchToEvening = false; // Reset the flag
+            SwitchToEvening();
+        }
+        
+        // Check for manual lighting control in inspector
+        if (toggleLightsOn)
+        {
+            toggleLightsOn = false; // Reset the flag
+            ToggleLights(true);
+        }
+        
+        if (toggleLightsOff)
+        {
+            toggleLightsOff = false; // Reset the flag
+            ToggleLights(false);
         }
     }
 }

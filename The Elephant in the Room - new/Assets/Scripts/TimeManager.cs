@@ -270,5 +270,24 @@ public class TimeManager : MonoBehaviour
         
         string lightStatus = turnOn ? "ON" : "OFF";
         Debug.Log($"TimeManager: Lights manually turned {lightStatus}");
+        
+        // Notify DayPartManager if it exists
+        if (DayPartManager.Instance != null)
+        {
+            // This allows DayPartManager to know about lighting changes
+            // and potentially update its state accordingly
+        }
+    }
+    
+    /// <summary>Get current lighting state</summary>
+    public bool AreLightsOn()
+    {
+        return lightsCurrentlyOn;
+    }
+    
+    /// <summary>Check if current time should have lights on (based on evening time)</summary>
+    public bool ShouldLightsBeOn()
+    {
+        return IsEveningTime() && lightsOnInEvening;
     }
 } 

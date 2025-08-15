@@ -26,7 +26,7 @@ RenderSettings:
   m_AmbientIntensity: 0.82
   m_AmbientMode: 0
   m_SubtractiveShadowColor: {r: 0.42, g: 0.478, b: 0.627, a: 1}
-  m_SkyboxMaterial: {fileID: 2100000, guid: 892443b35a3a35643aca8b246097da85, type: 2}
+  m_SkyboxMaterial: {fileID: 2100000, guid: f2b5f3f20933f434e850db1b710542fd, type: 2}
   m_HaloStrength: 0.285
   m_FlareStrength: 1
   m_FlareFadeSpeed: 3
@@ -96,7 +96,7 @@ LightmapSettings:
     m_ExportTrainingData: 0
     m_TrainingDataDestination: TrainingData
     m_LightProbeSampleCountMultiplier: 4
-  m_LightingDataAsset: {fileID: 112000000, guid: ef15fe8f8d93fee42bfff280fa12aa32,
+  m_LightingDataAsset: {fileID: 112000000, guid: 34b80989cdec90343b7b2694c01652d8,
     type: 2}
   m_LightingSettings: {fileID: 4890085278179872738, guid: abf82a7177643e341a18bfa1b571ed20,
     type: 2}
@@ -2077,7 +2077,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!199 &41914390
 ParticleSystemRenderer:
   serializedVersion: 6
@@ -18813,6 +18813,7 @@ MonoBehaviour:
   itemData: {fileID: 11400000, guid: 45745694dcce2e741a2bebad1782ab09, type: 2}
   destroyOnPickup: 1
   pickupEffect: {fileID: 0}
+  objectToDeactivate: {fileID: 0}
 --- !u!1001 &259766977
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -19240,6 +19241,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: SM_Sky
+      objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: 49c91c3930d5dff489898d65e2a25bde,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -39143,8 +39149,19 @@ MonoBehaviour:
   morningVolume: {fileID: 1843924734}
   eveningVolume: {fileID: 477934552}
   directionalLight: {fileID: 1594799939}
+  morningSkybox: {fileID: 0}
+  eveningSkybox: {fileID: 0}
   morningIntensity: 1
   eveningIntensity: 0
+  daysElapsed: 1
+  advanceToNextDay: 0
+  switchToMorning: 0
+  switchToEvening: 0
+  manualDayPart: 1
+  controlTimeManagerLighting: 1
+  toggleLightsOn: 0
+  toggleLightsOff: 0
+  currentPart: 0
 --- !u!4 &633270774
 Transform:
   m_ObjectHideFlags: 0
@@ -76824,7 +76841,7 @@ GameObject:
   m_Icon: {fileID: 3936346786652291628, guid: 0000000000000000d000000000000000, type: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &1227136936
 Transform:
   m_ObjectHideFlags: 0
@@ -91759,6 +91776,9 @@ MonoBehaviour:
   interactLayer:
     serializedVersion: 2
     m_Bits: 128
+  watchManager: {fileID: 0}
+  teaserManager: {fileID: 0}
+  companionRobotManager: {fileID: 0}
   maxStepHeight: 0.3
   stepSmooth: 0.1
   groundLayer:
@@ -91778,6 +91798,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   cam: {fileID: 741866870}
   hintImage: {fileID: 2103062253}
+  hintText: {fileID: 0}
   hintDistance: 3
   interactableLayers:
     serializedVersion: 2
@@ -91785,6 +91806,11 @@ MonoBehaviour:
   defaultDot: {fileID: 21300000, guid: b1d2f070bfe7f6b41972ef2195ccaa4f, type: 3}
   doorIcon: {fileID: 21300000, guid: f7d873c273809d9499185caf1a120504, type: 3}
   handIcon: {fileID: 21300000, guid: e7d15cf2e75f93147910163ada2acbf8, type: 3}
+  bedIcon: {fileID: 0}
+  doorMessage: Press E to enter
+  pickableMessage: Press E to pick up
+  bedMessage: Press E to sleep
+  defaultMessage: Press E to interact
 --- !u!1001 &1479275929
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -91962,76 +91988,6 @@ Transform:
     type: 3}
   m_PrefabInstance: {fileID: 1480964366}
   m_PrefabAsset: {fileID: 0}
---- !u!1001 &1481146460
-PrefabInstance:
-  m_ObjectHideFlags: 0
-  serializedVersion: 2
-  m_Modification:
-    serializedVersion: 3
-    m_TransformParent: {fileID: 0}
-    m_Modifications:
-    - target: {fileID: 1294271778169428, guid: d19dd43872ee43b4896d75d23e9db9e6, type: 3}
-      propertyPath: m_IsActive
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 4025478222779210, guid: d19dd43872ee43b4896d75d23e9db9e6, type: 3}
-      propertyPath: m_RootOrder
-      value: 16
-      objectReference: {fileID: 0}
-    - target: {fileID: 4025478222779210, guid: d19dd43872ee43b4896d75d23e9db9e6, type: 3}
-      propertyPath: m_LocalScale.x
-      value: 0.26
-      objectReference: {fileID: 0}
-    - target: {fileID: 4025478222779210, guid: d19dd43872ee43b4896d75d23e9db9e6, type: 3}
-      propertyPath: m_LocalScale.y
-      value: 0.26
-      objectReference: {fileID: 0}
-    - target: {fileID: 4025478222779210, guid: d19dd43872ee43b4896d75d23e9db9e6, type: 3}
-      propertyPath: m_LocalScale.z
-      value: 0.26
-      objectReference: {fileID: 0}
-    - target: {fileID: 4025478222779210, guid: d19dd43872ee43b4896d75d23e9db9e6, type: 3}
-      propertyPath: m_LocalPosition.x
-      value: -15.396
-      objectReference: {fileID: 0}
-    - target: {fileID: 4025478222779210, guid: d19dd43872ee43b4896d75d23e9db9e6, type: 3}
-      propertyPath: m_LocalPosition.y
-      value: 0.977
-      objectReference: {fileID: 0}
-    - target: {fileID: 4025478222779210, guid: d19dd43872ee43b4896d75d23e9db9e6, type: 3}
-      propertyPath: m_LocalPosition.z
-      value: 24.919
-      objectReference: {fileID: 0}
-    - target: {fileID: 4025478222779210, guid: d19dd43872ee43b4896d75d23e9db9e6, type: 3}
-      propertyPath: m_LocalRotation.w
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 4025478222779210, guid: d19dd43872ee43b4896d75d23e9db9e6, type: 3}
-      propertyPath: m_LocalRotation.x
-      value: -0
-      objectReference: {fileID: 0}
-    - target: {fileID: 4025478222779210, guid: d19dd43872ee43b4896d75d23e9db9e6, type: 3}
-      propertyPath: m_LocalRotation.y
-      value: -0
-      objectReference: {fileID: 0}
-    - target: {fileID: 4025478222779210, guid: d19dd43872ee43b4896d75d23e9db9e6, type: 3}
-      propertyPath: m_LocalRotation.z
-      value: -0
-      objectReference: {fileID: 0}
-    - target: {fileID: 4025478222779210, guid: d19dd43872ee43b4896d75d23e9db9e6, type: 3}
-      propertyPath: m_ConstrainProportionsScale
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 82448226072829002, guid: d19dd43872ee43b4896d75d23e9db9e6,
-        type: 3}
-      propertyPath: m_Enabled
-      value: 1
-      objectReference: {fileID: 0}
-    m_RemovedComponents: []
-    m_RemovedGameObjects: []
-    m_AddedGameObjects: []
-    m_AddedComponents: []
-  m_SourcePrefab: {fileID: 100100000, guid: d19dd43872ee43b4896d75d23e9db9e6, type: 3}
 --- !u!1001 &1482655303
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -97125,6 +97081,8 @@ MonoBehaviour:
   phonePanel: {fileID: 1091325597}
   postProcessVolume: {fileID: 617770196}
   fpController: {fileID: 0}
+  HomePage: {fileID: 0}
+  allPages: []
 --- !u!114 &1565807960
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -97144,6 +97102,9 @@ MonoBehaviour:
   interactLayer:
     serializedVersion: 2
     m_Bits: 0
+  watchManager: {fileID: 0}
+  teaserManager: {fileID: 0}
+  companionRobotManager: {fileID: 0}
   maxStepHeight: 0.3
   stepSmooth: 0.1
   groundLayer:
@@ -106024,10 +105985,15 @@ MonoBehaviour:
   morningEnd: 540
   eveningStart: 1080
   eveningEnd: 1380
+  currentDay: 1
+  dayBasedObjects: []
   eventNames:
   - Breakfast
   - GarbageCleanup
   eventDurations: 0f0000001e000000
+  interiorLights: []
+  exteriorLights: []
+  lightsOnInEvening: 1
   currentTime: 0
 --- !u!4 &1706689442
 Transform:
@@ -127320,7 +127286,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!114 &2110673162
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -137223,7 +137189,6 @@ SceneRoots:
   - {fileID: 1904455351}
   - {fileID: 1216214955}
   - {fileID: 268867548}
-  - {fileID: 1481146460}
   - {fileID: 1594799940}
   - {fileID: 2058452471}
   - {fileID: 3560052024743248251}
@@ -137242,8 +137207,8 @@ SceneRoots:
   - {fileID: 500633810}
   - {fileID: 41914392}
   - {fileID: 58624839}
+  - {fileID: 1789918299}
   - {fileID: 1094918877}
   - {fileID: 196683478}
   - {fileID: 737351865}
   - {fileID: 373872230}
-  - {fileID: 1789918299}
